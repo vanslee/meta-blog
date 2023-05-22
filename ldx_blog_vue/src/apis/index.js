@@ -13,7 +13,7 @@ service.interceptors.request.use(
     start()
     let token = getStorage('LITUBAO_AUTHENTICATION')
     console.log('token', token)
-    if (token) {
+    if (token !== {}) {
       const { tokenName, tokenValue } = token
       config.headers = { [tokenName]: tokenValue }
     }

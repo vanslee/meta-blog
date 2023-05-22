@@ -48,6 +48,7 @@ export default {
   computed: {},
   methods: {
     async fetchData() {
+      console.log('sad')
       const { data } = await getArticleDetailsApi(this.$route.params.id)
       this.article = data
       this.$nextTick(() => {

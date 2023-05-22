@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
+ * @author Uaena
  * @TableName user
  */
 @TableName(value ="user")
@@ -33,6 +34,7 @@ public class User implements Serializable {
 
     private String recentlyLanded;
     private char isDelete;
+    private String ip;
 
     private static final long serialVersionUID = 1L;
 }

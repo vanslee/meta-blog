@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 /**
 * @author ldx
 * @description 针对表【tags】的数据库操作Service
-* @createDate 2023-05-15 23:17:28
+* @createDate 2023-05-22 20:47:28
 */
 public interface TagsService extends IService<Tags> {
 

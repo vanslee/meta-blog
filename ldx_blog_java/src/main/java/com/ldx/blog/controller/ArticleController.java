@@ -3,7 +3,9 @@ package com.ldx.blog.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ldx.blog.pojo.Article;
 import com.ldx.blog.pojo.ArticleDetails;
+import com.ldx.blog.result.RedisKey;
 import com.ldx.blog.result.Result;
+import com.ldx.blog.service.RedisService;
 import com.ldx.blog.service.impl.ArticleDetailsServiceImpl;
 import com.ldx.blog.service.impl.ArticleServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ public class ArticleController {
     private ArticleServiceImpl articleService;
     @Resource
     private ArticleDetailsServiceImpl articleDetailsService;
+    @Resource
+    private RedisService redisService;
 
     @GetMapping("/list")
     public Result<IPage<Article>> getArticleListApi(@RequestParam("current") Integer current, @RequestParam("size") Integer size) {
@@ -32,13 +36,16 @@ public class ArticleController {
 
     /**
      * 根据article_id获取文章详情
-     * @param article_id
+     * @param articleId
      * @return
      */
     @GetMapping("/details/{article_id}")
-    public Result<ArticleDetails> getArticleDetailsByIdApi(@PathVariable long article_id) {
-        log.debug("用户查询文章详情: {}",article_id);
-        return Result.success(articleDetailsService.getById(article_id));
+    public Result<ArticleDetails> getArticleDetailsByIdApi(@PathVariable("article_id") long articleId) {
+        log.debug("用户查询文章详情: {}",articleId);
+        String articleViewsKey = RedisKey.ARTICLE_VIEW.concat(String.valueOf(articleId));
+        Integer views = (Integer) redisService.get(articleViewsKey);
+        redisService.set(articleViewsKey,views+1);
+        return Result.success(articleDetailsService.getById(articleId));
     }
 //    /**
 //     * 发布文章

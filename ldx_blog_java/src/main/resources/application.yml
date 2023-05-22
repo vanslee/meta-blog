@@ -72,8 +72,10 @@ sa-token:
   # 是否输出操作日志
   is-log: true
 #网站域名
-website: www.lidengxiang.top
-website1: lidengxiang.top
+website:
+  config:
+    url: https://www.lidengxiang.top/
+    cdn: https://lidengxiang.top/
 qiniuyunwebsite: https://lidengxiang.top/
 ### 七牛云
 qiniuyun:

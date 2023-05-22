@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author ldx
 * @description 针对表【categories】的数据库操作Service实现
-* @createDate 2023-05-15 23:17:28
+* @createDate 2023-05-22 20:47:41
 */
 @Service
 public class CategoriesServiceImpl extends ServiceImpl<CategoriesMapper, Categories>

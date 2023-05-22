@@ -31,7 +31,7 @@ export default {
   },
   data() {
     const params = {
-      current: 1,
+      current: 0,
       size: 3
     }
     return {

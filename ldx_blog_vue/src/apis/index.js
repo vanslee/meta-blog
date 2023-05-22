@@ -4,21 +4,20 @@ import { close, start } from '@/utils/nprogress'
 import { getStorage, setStorage } from '@/utils/storage'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 30000
+  timeout: 1800000
 })
 
 /* 请求拦截器 */
 service.interceptors.request.use(
   config => {
     start()
-
     let token = getStorage('LITUBAO_AUTHENTICATION')
+    console.log('token', token)
     if (token) {
-      console.log('headers', config)
       const { tokenName, tokenValue } = token
       config.headers = { [tokenName]: tokenValue }
     }
-
+    console.log('config', config.headers)
     return config
   },
   error => {
@@ -59,7 +58,7 @@ service.interceptors.response.use(
     }
     Message.error(message)
     setStorage('LITUBAO_AUTHENTICATION', {})
-    location.reload()
+    location.replace('/')
     return Promise.resolve(error)
   }
 )

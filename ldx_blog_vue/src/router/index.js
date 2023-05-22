@@ -28,10 +28,16 @@ const routes = [
   {
     path: '/article/:id',
     name: 'article',
-    components: {
-      main: () => import('@/components/ArticleDetails.vue'),
-      left_aside: () => import('@/components/article/DetailsLeftAside.vue')
-    }
+    component: () => import('@/layout/BlogIndex.vue'),
+    children: [
+      {
+        path: '/',
+        components: {
+          main: () => import('@/components/ArticleDetails.vue'),
+          left_aside: () => import('@/components/article/DetailsLeftAside.vue')
+        }
+      }
+    ]
   },
   {
     path: '/write',

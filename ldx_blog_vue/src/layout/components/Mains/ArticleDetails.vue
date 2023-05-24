@@ -1,54 +1,50 @@
 <template>
   <div class="scorll_wraper" ref="scorll_wraper">
     <v-md-preview :text="article.content" ref="preview" />
-    <comment :article_id="$route.params.id" />
+    <comment :article_id="article_id" />
   </div>
 </template>
 <script>
 import { getArticleDetailsApi } from '@/apis/article'
-import Comment from '@/components/comment'
+import Comment from '@/views/comment'
 import { useArticleStore } from '@/stores/article'
+import { useUserStore } from '@/stores/user'
 export default {
   components: {
     Comment
+  },
+  computed: {
+    article_id() {
+      return parseInt(this.$route.params.id)
+    }
   },
   data() {
     const titles = []
     return {
       titles,
       article: {},
-      store: useArticleStore()
+      userStore: {},
+      articleStore: {}
     }
   },
   created() {},
   mounted() {
+    this.userStore = useUserStore()
+    this.articleStore = useArticleStore()
     this.fetchData()
     this.$bus.$on('directory-navigation', anchor => {
       const { scorll_wraper, preview } = this.$refs
       if (!scorll_wraper || !preview) {
         return
       }
-      // scorll_wraper['preview']
       scorll_wraper.scrollTop = scorll_wraper.clientHeight
       const { lineIndex } = anchor
       scorll_wraper.scrollTop =
         preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`).offsetTop - scorll_wraper.offsetTop
-      // const { preview } = this.$refs
-      // const { lineIndex } = anchor
-      // const heading = preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`)
-      // if (heading) {
-      //   preview.scrollToTarget({
-      //     target: heading,
-      //     scrollContainer: window,
-      //     top: 60
-      //   })
-      // }
     })
   },
-  computed: {},
   methods: {
     async fetchData() {
-      console.log('sad')
       const { data } = await getArticleDetailsApi(this.$route.params.id)
       this.article = data
       this.$nextTick(() => {
@@ -67,7 +63,7 @@ export default {
           lineIndex: el.getAttribute('data-v-md-line'),
           indent: hTags.indexOf(el.tagName)
         }))
-        this.store.titles = this.titles
+        this.articleStore.titles = this.titles
       })
     }
   }

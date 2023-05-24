@@ -1,7 +1,10 @@
-import request from '@/apis/index'
+import request from '@/utils/request'
 export function loginApi(params) {
   return request.post('user/login', params)
 }
-export function userInfoApi(userId) {
-  return request.get(`user/info/${userId}`)
+export function userInfoApi() {
+  return request.get('user/info')
+}
+export function logoutApi() {
+  return request.get(`user/logout`)
 }

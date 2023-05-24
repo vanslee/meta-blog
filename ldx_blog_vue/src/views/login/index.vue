@@ -65,10 +65,8 @@
   </div>
 </template>
 <script>
+import { useUserStore } from '@/stores/user'
 // import { validateIsNull } from "@/util/validate";
-import { loginApi } from '@/apis/user'
-import { useStorageStore } from '@/stores/storage'
-import { setStorage } from '@/utils/storage'
 export default {
   name: 'BlogLogin',
   data() {
@@ -85,12 +83,24 @@ export default {
       rules,
       params,
       isLoding: false,
-      store: useStorageStore()
+      redirect: undefined,
+      userStore: {}
     }
   },
-
+  watch: {
+    $route: {
+      handler(route) {
+        //URL变化时触发,route代表更新后的$route对象
+        this.redirect = route.query && route.query.redirect
+      },
+      immediate: true
+    }
+  },
   created() {},
   computed: {},
+  mounted() {
+    this.userStore = useUserStore()
+  },
   methods: {
     async toLogin() {
       const { username, password } = this.params
@@ -111,13 +121,11 @@ export default {
       usernameInput = null
       passwordInput = null
       this.isLoding = true
-      const { code, data, msg } = await loginApi(this.params)
-      this.isLoding = false
+      const { code } = await this.userStore.login(this.params)
       if (code === 200) {
-        setStorage('LITUBAO_AUTHENTICATION', data)
-        this.$message.success(msg)
-        this.$router.push({ name: 'index' })
+        this.$router.push({ path: this.redirect || '/' })
       }
+      this.isLoding = false
     }
   }
 }

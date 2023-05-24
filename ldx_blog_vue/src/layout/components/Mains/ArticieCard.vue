@@ -1,6 +1,6 @@
 <template>
   <el-row :gutter="20" type="flex" justify="space-between">
-    <el-col :span="16" class="article_card_box">
+    <el-col :span="16">
       <el-row>
         <el-col>
           <el-col :span="8">
@@ -16,7 +16,7 @@
           </el-col>
         </el-col>
         <el-col>
-          <div @click="jumpToArticleDetails">
+          <div @click="jumpToArticleDetails" style="cursor: pointer">
             <v-md-preview :text="article.articleOmission" />
           </div>
         </el-col>
@@ -80,7 +80,7 @@ export default {
   mounted() {},
   methods: {
     jumpToArticleDetails() {
-      this.$router.push({ path: `/article/${this.article.id}` })
+      this.$router.push({ name: `Article`, params: { id: this.article.id } })
     }
   }
 }

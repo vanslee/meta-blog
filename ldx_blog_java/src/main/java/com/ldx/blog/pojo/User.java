@@ -2,6 +2,7 @@ package com.ldx.blog.pojo;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -11,6 +12,7 @@ import java.io.Serializable;
  */
 @TableName(value ="user")
 @Data
+@Accessors(chain = true)
 public class User implements Serializable {
     private Integer id;
 

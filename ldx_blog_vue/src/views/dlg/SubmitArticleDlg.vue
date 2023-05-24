@@ -121,7 +121,7 @@
   </el-dialog>
 </template>
 <script>
-import { getStorage } from '@/utils/storage'
+import { getStorage } from '@/utils/auth'
 export default {
   components: {},
   data() {

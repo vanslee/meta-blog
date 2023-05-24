@@ -18,10 +18,10 @@
 import { uploadFilesApi } from '@/apis/qiniu'
 import { useClipboard } from '@vueuse/core'
 import { Notification } from 'element-ui'
-import SubmitArticleDlg from './SubmitArticleDlg.vue'
+import SubmitArticleDlg from '@/views/dlg/SubmitArticleDlg.vue'
 import { debounce, throttle } from 'lodash'
 import { useArticleStore } from '@/stores/article'
-import { setStorage } from '@/utils/storage'
+import { setStorage } from '@/utils/auth'
 export default {
   components: {
     SubmitArticleDlg
@@ -83,7 +83,6 @@ export default {
   created() {},
   watch: {
     articleContent: debounce(function (newValue) {
-      console.log(newValue)
       // 发送搜索请求，获取搜索结果
       // 这里只是一个示例，具体的实现方式根据业务需求而定
       // this.searchResults = getSearchResults(newValue);

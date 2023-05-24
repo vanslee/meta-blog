@@ -12,7 +12,7 @@ public enum ResultCodeEnum{
     /**
      * success
      */
-    SUCCESS(0,"操作成功"),
+    SUCCESS(200,"操作成功"),
     UPLOAD_FILE_SUCCESS(200,"上传成功"),
     PUBLISH_SUCCESS(200, "发布文章成功"),
     /**
@@ -30,7 +30,7 @@ public enum ResultCodeEnum{
 
     LOGIN_PARAM_NULL(500, "缺少用户名或密码"),
     LOGIN_ERROR(500, "用户名或密码错误"),
-    LOGIN_SUCCESS(200,"登录成功" );
+    LOGIN_SUCCESS(200,"登录成功" ), LOGOUT_SUCCESS(200, "退出成功");
 
 
     /**

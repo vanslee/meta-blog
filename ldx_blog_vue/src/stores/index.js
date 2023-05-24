@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia'
-import { setStorage, getStorage } from '@/utils/storage'
+import { setStorage, getStorage } from '@/utils/auth'
 const __piniaKey = '__DEFAULT_KEY__'
 
 //利用函数柯丽华接受用户入参
@@ -9,6 +9,7 @@ const piniaPlugin = options => {
     const { store } = context
     const data = getStorage(`${options?.key ?? __piniaKey}_${store.$id}`)
     store.$subscribe(() => {
+      console.log('set1', store.$state.local)
       setStorage(`${options?.key ?? __piniaKey}_${store.$id}`, store.$state.local)
     })
     return {

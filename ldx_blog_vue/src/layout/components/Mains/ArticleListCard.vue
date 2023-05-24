@@ -24,7 +24,7 @@
 <script>
 import { formatTimeStamp } from '@/utils/time'
 import { getArticleListApi } from '@/apis/article'
-import ArticleCard from '@/components/ArticieCard.vue'
+import ArticleCard from '@/layout/components/Mains/ArticieCard.vue'
 export default {
   components: {
     ArticleCard

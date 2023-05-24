@@ -1,100 +1,100 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import { close, start } from '@/utils/nprogress'
-import { hasPermission } from '@/utils/auth'
-import { getStorage } from '@/utils/storage'
+import Layout from '@/layout'
+import { getStorage } from '@/utils/auth'
 Vue.use(VueRouter)
-const routes = [
+const constantRoutes = [
   {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/layout/Login.vue')
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/')
+      }
+    ]
   },
   {
     path: '/',
-    meta: { requiresAuth: true },
-    component: () => import('@/layout/BlogIndex.vue'),
+    redirect: '/articles',
+    component: Layout,
     children: [
       {
-        path: '/',
-        name: 'index',
+        path: 'articles',
+        name: 'articles',
         components: {
-          main: () => import('@/components/article/ArticleListCard.vue'),
-          left_aside: () => import('@/layout/BlogLeftAside.vue')
+          main: () => import('@/layout/components/Mains/ArticleListCard.vue'),
+          left_aside: () => import('@/layout/components/Sidebar/BlogRightAside.vue')
         }
       }
     ]
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/login/'),
+    hidden: true
+  },
+  {
+    path: '/auth-redirect',
+    component: () => import('@/views/login/auth-redirect')
+  },
+  {
     path: '/article/:id',
-    name: 'article',
-    component: () => import('@/layout/BlogIndex.vue'),
+    component: Layout,
     children: [
       {
-        path: '/',
+        path: '',
+        name: 'Article',
         components: {
-          main: () => import('@/components/ArticleDetails.vue'),
-          left_aside: () => import('@/components/article/DetailsLeftAside.vue')
+          main: () => import('@/layout/components/Mains/ArticleDetails.vue'),
+          left_aside: () => import('@/layout/components/Sidebar/DetailsLeftAside.vue')
         }
       }
     ]
   },
   {
     path: '/write',
-    name: 'write',
-    meta: { requiresAuth: true },
-    component: () => import('@/layout/BlogIndex.vue'),
+    component: Layout,
     children: [
       {
-        path: '/write',
+        path: '',
+        name: 'Write',
         components: {
-          main: () => import('@/components/article/ArticleWrite.vue'),
-          left_aside: () => import('@/components/article/WriteLeftAside.vue')
+          main: () => import('@/layout/components/Mains/ArticleWrite.vue'),
+          left_aside: () => import('@/layout/components/Sidebar/WriteLeftAside.vue')
         }
       }
     ]
   },
+  { path: '*', redirect: '/404' },
   {
-    path: '/test',
-    name: 'test',
-    component: () => import('@/components/comment/CommentItem.vue')
+    path: '/404',
+    component: () => import('@/views/error-page/404.vue')
   }
 ]
 
-const router = new VueRouter({
-  mode: 'hash',
-  routes
-})
+const createRouter = () =>
+  new VueRouter({
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
+const router = createRouter()
 
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
 router.beforeEach((to, from, next) => {
   start()
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    const tokenInfo = getStorage('LITUBAO_AUTHENTICATION') // 假设你将用户角色存储在 localStorage 中
-    const { isLogin } = tokenInfo
-    if (!isLogin) {
-      // 如果没登录
-      next({ name: 'login' })
-    } else {
-      // 已经登录判断是否有权限
-      if (hasPermission(isLogin, to.name)) {
-        console.log('from', from)
-        console.log('to', to)
-        // 有权限
-        next()
-      } else {
-        // 没有权限
-        next({ name: to.name })
-      }
-    }
-  } else {
-    if (to.name === 'login') {
-      const tokenInfo = getStorage('LITUBAO_AUTHENTICATION')
-      const { isLogin } = tokenInfo
-      isLogin ? next({ name: 'index' }) : next()
-    } else {
-      next()
+  if (to.name === 'login') {
+    if (getStorage('LITUBAO_user')['isLogin']) {
+      next(from.fullPath)
     }
   }
+  next()
 })
 
 router.afterEach(() => {

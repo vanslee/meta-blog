@@ -1,4 +1,4 @@
-import request from '@/apis/index'
+import request from '@/utils/request'
 export function getArticleListApi(params) {
   const { current, size } = params
   return request.get(`article/list?current=${current}&size=${size}`)

@@ -15,8 +15,8 @@ export default {
   },
   props: {
     article_id: {
-      type: String,
-      default: '0'
+      type: Number,
+      default: -1
     }
   },
   data() {

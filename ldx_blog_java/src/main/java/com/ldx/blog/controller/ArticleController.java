@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Objects;
 
 /**
  * @author Uaena
@@ -30,21 +31,26 @@ public class ArticleController {
 
     @GetMapping("/list")
     public Result<IPage<Article>> getArticleListApi(@RequestParam("current") Integer current, @RequestParam("size") Integer size) {
-        log.debug("用户查询分页: current:{},Size:{}",current,size);
-       return articleService.getArticlePage(current,size);
+        log.debug("用户查询分页: current:{},Size:{}", current, size);
+        return articleService.getArticlePage(current, size);
     }
 
     /**
      * 根据article_id获取文章详情
+     *
      * @param articleId
      * @return
      */
     @GetMapping("/details/{article_id}")
     public Result<ArticleDetails> getArticleDetailsByIdApi(@PathVariable("article_id") long articleId) {
-        log.debug("用户查询文章详情: {}",articleId);
+        log.debug("用户查询文章详情: {}", articleId);
         String articleViewsKey = RedisKey.ARTICLE_VIEW.concat(String.valueOf(articleId));
         Integer views = (Integer) redisService.get(articleViewsKey);
-        redisService.set(articleViewsKey,views+1);
+        if (Objects.isNull(views)) {
+            redisService.set(articleViewsKey, 1);
+        } else {
+            redisService.set(articleViewsKey, views + 1);
+        }
         return Result.success(articleDetailsService.getById(articleId));
     }
 //    /**

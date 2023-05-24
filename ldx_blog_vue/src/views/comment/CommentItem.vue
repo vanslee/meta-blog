@@ -1,19 +1,37 @@
 <template>
   <div>
-    <el-row type="flex" justify="space-between" :gutter="10">
-      <el-col :span="4">
-        <el-image src="https://lidengxiang.top/Chat/2023-03-23_21-55-27.PNG"></el-image>
+    <el-row type="flex" justify="space-between">
+      <el-col :span="2">
+        <el-image
+          v-if="isLogin"
+          src="https://lidengxiang.top/Chat/2023-03-23_21-55-27.PNG"
+          class="user-avatar"
+        ></el-image>
+        <el-image
+          v-else
+          src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
+          class="user-avatar"
+        ></el-image>
       </el-col>
-      <el-col :span="16">
-        <el-input type="textarea" :rows="3" placeholder="机会是留给有准备的人" v-model="params.root_content" />
+      <el-col :span="17">
+        <el-input
+          type="textarea"
+          :rows="3"
+          placeholder="机会是留给有准备的人"
+          v-model="params.root_content"
+          :disabled="!isLogin"
+        />
       </el-col>
       <el-col :span="4">
-        <el-button style="width: 100%; height: 100%" type="primary" @click="submitComment('root')">发表评论</el-button>
+        <el-button v-if="isLogin" style="height: 75px" type="primary" @click="submitComment('root')">
+          发表评论
+        </el-button>
+        <el-button v-else style="height: 75px" type="primary" disabled>请先登录</el-button>
       </el-col>
     </el-row>
-    <el-row>
-      <el-col :span="4">&nbsp;</el-col>
-      <el-col :span="20">
+    <el-row :gutter="10" type="flex" justify="space-between">
+      <el-col :span="2">&nbsp;</el-col>
+      <el-col :span="17">
         <el-tooltip v-model="emojiRootVisible">
           <div slot="content">
             <VEmojiPicker @select="selectRootEmoji" />
@@ -24,11 +42,15 @@
           </el-button>
         </el-tooltip>
       </el-col>
+      <el-col :span="4">&nbsp;</el-col>
     </el-row>
     <el-divider />
     <el-row>
-      <el-col :span="4">
-        <el-image src="https://lidengxiang.top/Chat/2023-03-23_21-55-27.PNG"></el-image>
+      <el-col :span="3">
+        <el-image
+          src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
+          class="user-avatar"
+        ></el-image>
       </el-col>
       <el-col :span="20">
         <el-row>
@@ -53,13 +75,13 @@
           v-for="children in comment.childrens.records"
           :key="children.id"
         >
-          <el-col :span="3">
+          <el-col :span="2">
             <el-image
               :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
               src="https://lidengxiang.top/Chat/2023-03-23_21-55-27.PNG"
             ></el-image>
           </el-col>
-          <el-col :span="21">
+          <el-col :span="22">
             <el-row>
               <el-row>
                 <i>{{ children.userNick }}</i>
@@ -109,6 +131,7 @@
 <script>
 import { VEmojiPicker } from 'v-emoji-picker'
 import { formatTime } from '@/utils/time'
+import { useUserStore } from '@/stores/user'
 export default {
   components: { VEmojiPicker },
   props: {
@@ -117,8 +140,8 @@ export default {
       default: () => {}
     },
     article_id: {
-      type: String,
-      default: '0'
+      type: Number,
+      default: -1
     }
   },
   data() {
@@ -137,13 +160,22 @@ export default {
       params,
       emoji: '',
       formatTime,
+      userStore: {},
       emojiRootVisible: false,
       emojiReplyVisible: false,
       commentInputVisible: false
     }
   },
   created() {},
-  computed: {},
+  mounted() {
+    this.userStore = useUserStore()
+  },
+
+  computed: {
+    isLogin() {
+      return this.userStore.isLogin
+    }
+  },
   methods: {
     // closeCommentInput() {
     //   this.commentInputVisible = false
@@ -177,5 +209,10 @@ i {
   color: gray;
   cursor: pointer;
   font-size: 0.8rem;
+}
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
 }
 </style>

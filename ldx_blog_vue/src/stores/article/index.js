@@ -12,9 +12,7 @@ export const useArticleStore = defineStore('article', {
     getTitles: state => state.titles || []
   },
   actions: {
-    setTitles(titles) {
-      console.log('titles', titles)
-    },
+    setTitles() {},
     randomizeCounter() {
       this.counter = Math.round(100 * Math.random())
     }

@@ -52,8 +52,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
     }
 
-    public Result<User> userSafeInfo(String userId) {
-        User user = userMapper.selectById(userId);
+    public Result<User> userSafeInfo() {
+        String userId = (String) StpUtil.getLoginId();
+        User user = userMapper.selectById(userId).setPassword("********").setPhone("131********");
         return Result.success(user);
     }
 }

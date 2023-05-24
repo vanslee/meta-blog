@@ -6,7 +6,10 @@ import '@/assets/styles/index.css'
 import '@/assets/login/style_login.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'default-passive-events'
-import pinia from './stores'
+import '@/router/permission'
+import { PiniaVuePlugin } from 'pinia'
+import pinia from '@/stores/'
+Vue.use(PiniaVuePlugin)
 
 /**
  * ----------------------------
@@ -32,7 +35,6 @@ VMdEditor.use(githubTheme, {
 VMdEditor.use(createCopyCodePlugin())
 Vue.use(VMdPreview)
 Vue.use(VMdEditor)
-Vue.use(pinia)
 /**
  * 事件总线
  */
@@ -52,6 +54,7 @@ const fixElTableErr = table => {
 fixElTableErr(Table)
 Vue.use(ElementUI)
 new Vue({
+  pinia,
   router,
   render: h => h(App)
 }).$mount('#app')

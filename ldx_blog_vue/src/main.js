@@ -8,7 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'default-passive-events'
 import '@/router/permission'
 import { PiniaVuePlugin } from 'pinia'
-import pinia from '@/stores/'
+import pinia from '@/stores'
 Vue.use(PiniaVuePlugin)
 
 /**

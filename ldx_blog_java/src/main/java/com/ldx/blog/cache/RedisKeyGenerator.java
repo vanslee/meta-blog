@@ -12,14 +12,20 @@ import java.lang.reflect.Method;
 @Component
 public class RedisKeyGenerator implements KeyGenerator {
     /**
-     *
-     * @param target the target instance
-     * @param method the method being called
-     * @param params the method parameters (with any var-args expanded)
-     * @return
+     * 自定义缓存的redis的KeyGenerator【key生成策略】
+     * 注意: 该方法只是声明了key的生成策略,需在@Cacheable注解中通过keyGenerator属性指定具体的key生成策略
+     * 可以根据业务情况，配置多个生成策略
+     * 如: @Cacheable(value = "key", keyGenerator = "cacheKeyGenerator")
      */
     @Override
     public Object generate(Object target, Method method, Object... params) {
-      
+        // 类名
+        String className = target.getClass().getSimpleName();
+        // 方法名
+        String name = method.getName();
+        StringBuilder sb = new StringBuilder(className);
+        String customKey = sb.append(":").append(name).append(":").toString();
+        return customKey;
+
     }
 }

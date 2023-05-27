@@ -6,3 +6,6 @@ export function getArticleListApi(params) {
 export function getArticleDetailsApi(article_id) {
   return request.get(`article/details/${article_id}`)
 }
+export function publishArticleApi(article) {
+  return request.put('article/publish', article)
+}

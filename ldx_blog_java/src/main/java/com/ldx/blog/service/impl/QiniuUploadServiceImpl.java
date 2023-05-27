@@ -29,7 +29,7 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
     private static final Long KEEP_ALIVE_TIME = 1L;
     private static final ArrayBlockingQueue ARRAY_BLOCKING_QUEUE = new ArrayBlockingQueue(QUEUE_CAPACITY);
 
-    @Value("${qiniuyunwebsite}")
+    @Value("${website.config.cdn}")
     public String qiniuyun;
 
     @Override

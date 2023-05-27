@@ -4,6 +4,12 @@
       <el-col :span="16" class="article_card_box">
         <el-row>
           <el-col>
+            <h1>
+              文章标题: &nbsp;
+              <el-input style="width: 50%" v-model="articleVO.articleTitle" placeholder="请输入文章标题" />
+            </h1>
+          </el-col>
+          <el-col>
             <el-radio-group v-model="articleVO.articleType">
               <el-radio label="原创" value="原创">原创:</el-radio>
               <el-radio label="转载" value="转载">转载:</el-radio>
@@ -22,20 +28,17 @@
             <el-divider />
           </el-col>
           <el-col :span="6">
-            <el-image :src="articleVO.imgUrl" style="border-radius: 50%; width: 60px; height: 60px" />
+            <el-image :src="user.avatarImgUrl" style="border-radius: 50%; width: 60px; height: 60px" />
           </el-col>
           <el-col :span="10">
             <h1>作者: {{ articleVO.author }}</h1>
           </el-col>
-
           <el-col>
-            <v-md-preview :text="articleVO.articleContent.substring(0, 50)" />
+            <v-md-preview :text="articleVO.articleContent" />
           </el-col>
-
           <el-col>
-            <el-divider />
             <el-tag
-              v-for="(tag, index) in articleVO.articleTags"
+              v-for="(tag, index) in articleVO.tags"
               :key="tag + index"
               closable
               style="margin: 5px"
@@ -65,7 +68,7 @@
           </el-col>
           <el-col>
             <el-tag
-              v-for="(category, index) in articleVO.articleCategories"
+              v-for="(category, index) in articleVO.categories"
               :key="category + index"
               class="mx-1"
               style="margin: 5px"
@@ -116,26 +119,30 @@
     </el-row>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" html-type="submit">发布</el-button>
+      <el-button type="primary" @click="submit" :loading="loading">发布</el-button>
     </span>
   </el-dialog>
 </template>
 <script>
-import { getStorage } from '@/utils/auth'
+import { getStorage, getUserInfo, removeStorage } from '@/utils/auth'
+import { publishArticleApi } from '@/apis/article'
 export default {
   components: {},
   data() {
+    const user = getUserInfo()
     const articleVO = {
-      author: 'ldx',
-      imgUrl:
-        'https://th.bing.com/th/id/R.0dee2228031e4ef5b03d0c5734aef866?rik=BD%2bnjbFbllVmEQ&riu=http%3a%2f%2fimg.zcool.cn%2fcommunity%2f01cf02554336f10000019ae9df1dad.jpg%403000w_1l_2o_100sh.jpg&ehk=zvcYgjHlqK2U2x9ploUbmiBIk7BewUd6lyA0AIswegQ%3d&risl=&pid=ImgRaw&r=0',
-      articleContent: '# 1',
-      articleTags: [],
-      articleCategories: [],
-      articleType: '原创'
+      imgUrl: '',
+      tags: [],
+      categories: [],
+      userId: user.id,
+      articleTitle: '',
+      articleContent: '',
+      articleType: '原创',
+      author: user.username
     }
     return {
       url: '',
+      user,
       rules: {},
       visible: false,
       articleVO,
@@ -169,7 +176,16 @@ export default {
         })
       }
     },
-    submit() {},
+    async submit() {
+      this.loading = true
+      const { code } = await publishArticleApi(this.articleVO)
+      if (code === 200) {
+        removeStorage('content')
+        this.visible = false
+        this.articleVO = {}
+      }
+      this.loading = false
+    },
     handleAvatarSuccess(res) {
       const { data, code } = res
       if (code === 200) {
@@ -177,26 +193,26 @@ export default {
       }
     },
     showDlg() {
-      this.articleVO.articleContent = getStorage('LITUBAO_article')
+      this.articleVO.articleContent = getStorage('content')
       this.visible = true
     },
     handleInputConfirm(flag) {
       if (flag == 'category') {
         if (this.categoryValue) {
-          if (!Array.isArray(this.articleVO.articleCategories)) {
-            this.articleVO.articleCategories = []
+          if (!Array.isArray(this.articleVO.categories)) {
+            this.articleVO.categories = []
           }
-          this.articleVO.articleCategories.push(this.categoryValue)
+          this.articleVO.categories.push(this.categoryValue)
         }
         this.categoryValue = ''
         this.categoryInputVisible = false
       }
       if (flag == 'tag') {
         if (this.tagValue) {
-          if (!Array.isArray(this.articleVO.articleTags)) {
-            this.articleVO.articleTags = []
+          if (!Array.isArray(this.articleVO.tags)) {
+            this.articleVO.tags = []
           }
-          this.articleVO.articleTags.push(this.tagValue)
+          this.articleVO.tags.push(this.tagValue)
         }
         this.tagValue = ''
         this.tagInputVisible = false
@@ -205,10 +221,10 @@ export default {
     },
     removeItem(flag, value) {
       if (flag === 'category') {
-        this.articleVO.articleCategories.splice(this.articleVO.articleCategories.indexOf(value), 1)
+        this.articleVO.categories.splice(this.articleVO.categories.indexOf(value), 1)
       }
       if (flag === 'tag') {
-        this.articleVO.articleTags.splice(this.articleVO.articleTags.indexOf(value), 1)
+        this.articleVO.tags.splice(this.articleVO.tags.indexOf(value), 1)
       }
       return
     }

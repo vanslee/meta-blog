@@ -8,6 +8,7 @@ import com.ldx.blog.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -21,8 +22,9 @@ public class UserController {
     private UserServiceImpl userService;
 
     @PostMapping("login")
-    public Result<Object> doLoginApi(@RequestBody Map<String, String> loginForm) {
-        return userService.doLogin(loginForm);
+    public Result<Object> doLoginApi(HttpServletRequest request, @RequestBody Map<String, String> loginForm) {
+        String ip = request.getRemoteAddr();
+        return userService.doLogin(loginForm,ip);
     }
 
     @GetMapping("logout")

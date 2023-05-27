@@ -34,7 +34,7 @@ public class User implements Serializable {
 
     private String avatarImgUrl;
 
-    private String recentlyLanded;
+    private long recentlyLanded;
     private char isDelete;
     private String ip;
 

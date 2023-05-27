@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { close, start } from '@/utils/nprogress'
 import Layout from '@/layout'
-import { getStorage } from '@/utils/auth'
 Vue.use(VueRouter)
 const constantRoutes = [
   {
@@ -19,6 +17,7 @@ const constantRoutes = [
   {
     path: '/',
     redirect: '/articles',
+    title: '文章列表',
     component: Layout,
     children: [
       {
@@ -34,6 +33,7 @@ const constantRoutes = [
   {
     path: '/login',
     name: 'login',
+    title: 'name',
     component: () => import('@/views/login/'),
     hidden: true
   },
@@ -44,6 +44,7 @@ const constantRoutes = [
   {
     path: '/article/:id',
     component: Layout,
+    title: '文章详情',
     children: [
       {
         path: '',
@@ -58,6 +59,7 @@ const constantRoutes = [
   {
     path: '/write',
     component: Layout,
+    title: '发布文章',
     children: [
       {
         path: '',
@@ -87,17 +89,17 @@ export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
-router.beforeEach((to, from, next) => {
-  start()
-  if (to.name === 'login') {
-    if (getStorage('LITUBAO_user')['isLogin']) {
-      next(from.fullPath)
-    }
-  }
-  next()
-})
+// router.beforeEach((to, from, next) => {
+//   start()
+//   if (to.name === 'login') {
+//     if (getStorage('LITUBAO_user')['isLogin']) {
+//       next(from.fullPath)
+//     }
+//   }
+//   next()
+// })
 
-router.afterEach(() => {
-  close()
-})
+// router.afterEach(() => {
+//   close()
+// })
 export default router

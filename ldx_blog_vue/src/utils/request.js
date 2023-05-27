@@ -1,8 +1,10 @@
 import axios from 'axios'
 import { close, start } from '@/utils/nprogress'
 import { MessageBox, Message } from 'element-ui'
+import { throttle } from 'lodash'
 // import { useUserStore } from '@/stores/user'
 import { getToken } from '@/utils/auth'
+import { removeToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -21,34 +23,30 @@ service.interceptors.request.use(
   error => {
     // do something with request error
     console.log(error) // for debug
-    return Promise.reject(error)
+    return { code: 500, data: {} }
+    // return Promise.reject(error)
   }
 )
-
+const tipError = res => {
+  // console.log(res)
+  Message({
+    message: res.msg || '未知错误',
+    type: 'error',
+    duration: 5 * 1000
+  })
+}
+const throttled = throttle(tipError, 1000, {
+  leading: true, // 在开始时立即执行函数
+  trailing: false // 在结束时不执行函数
+})
 // response interceptor
 service.interceptors.response.use(
-  /**
-   * If you want to get http information such as headers or status
-   * Please return  response => response
-   */
-
-  /**
-   * Determine the request status by custom code
-   * Here is just an example
-   * You can also judge the status by HTTP Status Code
-   */
   response => {
     close()
     const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.
     if (res.code !== 200) {
-      Message({
-        message: res.message || 'Error',
-        type: 'error',
-        duration: 5 * 1000
-      })
-
+      throttled(res)
+      removeToken()
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
@@ -61,23 +59,25 @@ service.interceptors.response.use(
             type: 'warning'
           }
         ).then(() => {
-          // store.resetToken().then(() => {
-          //   location.reload()
-          // })
+          //清空用户信息和缓存并刷新页面
+          location.reload()
         })
       }
-      return Promise.reject(new Error(res.message || 'Error'))
-    } else {
-      return res
+      // return Promise.reject(new Error(res.msg || '未知错误'))
     }
+    return res
+    // }
   },
   error => {
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
-    return Promise.reject(error)
+    // Message({
+    //   message: error.msg,
+    //   type: 'error',
+    //   duration: 5 * 1000
+    // })
+    removeToken()
+    console.log(error)
+    // return { code: 500, data: {} }
+    return Promise.reject()
   }
 )
 

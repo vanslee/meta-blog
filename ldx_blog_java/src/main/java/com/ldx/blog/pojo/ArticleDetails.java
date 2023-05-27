@@ -1,6 +1,8 @@
 package com.ldx.blog.pojo;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -8,7 +10,9 @@ import java.io.Serializable;
 * @author Uaena
 * @TableName article_details
 */
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class ArticleDetails implements Serializable {
 
     /**

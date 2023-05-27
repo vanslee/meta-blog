@@ -20,8 +20,7 @@ import { useClipboard } from '@vueuse/core'
 import { Notification } from 'element-ui'
 import SubmitArticleDlg from '@/views/dlg/SubmitArticleDlg.vue'
 import { debounce, throttle } from 'lodash'
-import { useArticleStore } from '@/stores/article'
-import { setStorage } from '@/utils/auth'
+import { getStorage, setStorage } from '@/utils/auth'
 export default {
   components: {
     SubmitArticleDlg
@@ -76,20 +75,27 @@ export default {
     return {
       toolbar,
       files: [],
-      articleContent: '#1',
-      store: useArticleStore()
+      articleContent: ''
     }
   },
-  created() {},
+
+  computed: {
+    // article_content() {
+    //   return this.store.local
+    // }
+  },
   watch: {
     articleContent: debounce(function (newValue) {
       // 发送搜索请求，获取搜索结果
       // 这里只是一个示例，具体的实现方式根据业务需求而定
       // this.searchResults = getSearchResults(newValue);
-      this.store.local = newValue
+      // console.log(newValue)
+      setStorage('content', newValue)
     }, 3000)
   },
-  computed: {},
+  mounted() {
+    this.articleContent = getStorage('content')
+  },
   methods: {
     /**
      * 上传图片函数
@@ -131,7 +137,8 @@ export default {
       })
     },
     saveData() {
-      setStorage('LITUBAO_article', this.articleContent)
+      setStorage('content', this.articleContent)
+      // setStorage('LITUBAO_article', this.articleContent)
       this.$notify({
         title: '提示',
         message: '内容已保存',

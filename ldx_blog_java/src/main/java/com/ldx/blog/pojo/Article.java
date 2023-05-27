@@ -1,6 +1,9 @@
 package com.ldx.blog.pojo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,6 +19,7 @@ public class Article implements Serializable {
     /**
      *
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
      *
@@ -32,10 +36,12 @@ public class Article implements Serializable {
     /**
      *
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long publishDate;
     /**
      *
      */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateDate;
     /**
      *
@@ -57,7 +63,8 @@ public class Article implements Serializable {
      *
      */
     private Object comments;
-    private char isDelete;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Integer isDelete;
     @TableField(exist = false)
     private String authorAvatar;
     @TableField(exist = false)
@@ -66,6 +73,8 @@ public class Article implements Serializable {
     private List<String> categories;
     @TableField(exist = false)
     private List<String> tags;
+    @TableField(exist = false)
+    private String articleContent;
 
 
 }

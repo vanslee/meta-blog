@@ -19,6 +19,7 @@ public enum ResultCodeEnum{
      * fail
      */
     FAIL(-1,"操作失败"),
+    NOT_LOGIN(5000,"身份已过期"),
     UNKNOWN_ERROR(301,"未知错误"),
     UPLOAD_FILE_ERROR(505,"上传失败"),
     PUBLISH_FAIL(506,"发布文章失败" ),
@@ -30,7 +31,8 @@ public enum ResultCodeEnum{
 
     LOGIN_PARAM_NULL(500, "缺少用户名或密码"),
     LOGIN_ERROR(500, "用户名或密码错误"),
-    LOGIN_SUCCESS(200,"登录成功" ), LOGOUT_SUCCESS(200, "退出成功");
+    LOGIN_SUCCESS(200,"登录成功" ), LOGOUT_SUCCESS(200, "退出成功"),
+    TOKEN_INVALID(500, "身份已过期" );
 
 
     /**

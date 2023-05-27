@@ -6,18 +6,18 @@
     <el-menu-item index="4">文章标签</el-menu-item>
     <el-menu-item index="5">照片墙</el-menu-item>
     <el-menu-item index="6">捐赠</el-menu-item>
-    <el-menu-item index="7" v-if="!user.isLogin" @click="$router.push({ name: 'login' })">登录</el-menu-item>
+    <el-menu-item index="7" v-if="!isLogin" @click="$router.push({ name: 'login' })">登录</el-menu-item>
     <el-submenu v-else index="8">
       <template slot="title">
         <el-image
           style="border-radius: 50%; width: 40px; height: 40px; margin-right: 10px"
-          :src="user.avatar"
+          :src="user.avatarImgUrl"
         ></el-image>
         <span>
-          {{ user.name }}
+          {{ user.username }}
         </span>
       </template>
-      <div v-show="user.isLogin">
+      <div v-show="isLogin">
         <el-menu-item index="/write">
           <i class="el-icon-edit-outline" />
           写博客
@@ -35,22 +35,23 @@
   </el-menu>
 </template>
 <script>
-import { useUserStore } from '@/stores/user'
-import { getStorage } from '@/utils/auth'
+import { getUserInfo, isLogin } from '@/utils/auth'
 export default {
   data() {
     const activeIndex = '1'
     return {
-      user: getStorage('LITUBAO_user'),
-      userStore: {},
+      user: getUserInfo(),
       activeIndex
     }
   },
-  created() {},
-  mounted() {
-    this.userStore = useUserStore()
+  created() {
+    console.log(isLogin())
   },
-  computed: {},
+  computed: {
+    isLogin() {
+      return isLogin()
+    }
+  },
   methods: {
     handleSelect(key, keyPath) {
       console.log(key, keyPath)

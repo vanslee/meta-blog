@@ -29,7 +29,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
-    public Result<Object> doLogin(Map<String, String> loginForm) {
+    public Result<Object> doLogin(Map<String, String> loginForm, String ip) {
         if (Objects.isNull(loginForm)) {
             log.error("登录用户信息为空");
             return Result.fail(ResultCodeEnum.LOGIN_PARAM_NULL);
@@ -44,6 +44,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String password = loginForm.get("password");
         if (BCrypt.checkpw(password, user.getPassword())) {
             StpUtil.login(user.getId());
+            user.setIp(ip);
+            user.setRecentlyLanded(System.currentTimeMillis()/1000);
+            userMapper.updateById(user);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             tokenInfo.setTag(username);
             return Result.success(ResultCodeEnum.LOGIN_SUCCESS, tokenInfo);

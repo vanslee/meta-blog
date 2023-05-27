@@ -5,6 +5,7 @@ import com.ldx.blog.pojo.Article;
 import com.ldx.blog.pojo.ArticleDetails;
 import com.ldx.blog.result.RedisKey;
 import com.ldx.blog.result.Result;
+import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.RedisService;
 import com.ldx.blog.service.impl.ArticleDetailsServiceImpl;
 import com.ldx.blog.service.impl.ArticleServiceImpl;
@@ -53,16 +54,16 @@ public class ArticleController {
         }
         return Result.success(articleDetailsService.getById(articleId));
     }
-//    /**
-//     * 发布文章
-//     */
-//    @PutMapping("/article/publish")
-//    public Result<ResultCodeEnum> publishArticleApi(@RequestBody Article article){
-//        boolean save = articleService.publishArticle(article);
-//        if (save){
-//            return Result.success(ResultCodeEnum.PUBLISH_SUCCESS);
-//        }else {
-//            return Result.fail(ResultCodeEnum.PUBLISH_FAIL);
-//        }
-//    }
+    /**
+     * 发布文章
+     */
+    @PutMapping("/publish")
+    public Result<ResultCodeEnum> publishArticleApi(@RequestBody Article article){
+        boolean save = articleService.publishArticle(article);
+        if (save){
+            return Result.success(ResultCodeEnum.PUBLISH_SUCCESS);
+        }else {
+            return Result.fail(ResultCodeEnum.PUBLISH_FAIL);
+        }
+    }
 }

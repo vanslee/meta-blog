@@ -1,6 +1,8 @@
 package com.ldx.blog.pojo;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
@@ -9,7 +11,9 @@ import java.io.Serializable;
 * @TableName article_tag
  *
 */
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
 public class ArticleTag implements Serializable {
 
     /**
@@ -19,6 +23,6 @@ public class ArticleTag implements Serializable {
     /**
     * 
     */
-    private Long tagId;
+    private Integer tagId;
 
 }

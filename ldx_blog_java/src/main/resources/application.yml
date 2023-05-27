@@ -13,9 +13,9 @@ spring:
     password: qazwsxedc123..
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      minimum-idle: 5
+      minimum-idle: 10
       # 空闲连接存活最大时间，默认600000（10分钟）
-      idle-timeout: 180000
+      idle-timeout: 600000
       # 连接池最大连接数，默认是10
       maximum-pool-size: 10
       # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
@@ -52,6 +52,11 @@ mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     map-underscore-to-camel-case: false
+  global-config:
+    db-config:
+      logic-delete-field: "isDelete"
+      logic-not-delete-value: 0
+      logic-delete-value: 1
 
 logging:
   level:
@@ -76,7 +81,6 @@ website:
   config:
     url: https://www.lidengxiang.top/
     cdn: https://lidengxiang.top/
-qiniuyunwebsite: https://lidengxiang.top/
 ### 七牛云
 qiniuyun:
   accessKeyId: FRMyr6yfm88JgtXwjILNam_uomMzbWOk7WrDWzjh

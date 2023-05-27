@@ -2,8 +2,6 @@ package com.ldx.blog.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -48,12 +46,14 @@ public class RedisCacheConfig {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer()))
                 //当value为null时不进行缓存
                 .disableCachingNullValues()
+                //cacheNames后面变单引号
+                .computePrefixWith(name->name + ":")
                 // 配置缓存空间名称的前缀
-                .prefixCacheNameWith("blog:article:")
+//                .prefixCacheNameWith("blog:article:")
                 //全局配置缓存过期时间【可以不配置】
                 .entryTtl(Duration.ofMinutes(30L));
         //专门指定某些缓存空间的配置，如果过期时间【主要这里的key为缓存空间名称】
-        Map<String, RedisCacheConfiguration> map = new HashMap<>();
+        Map<String, RedisCacheConfiguration> map = new HashMap<>(3);
         Set<Map.Entry<String, Long>> entries = ttlParams.entrySet();
         for (Map.Entry<String, Long> entry : entries) {
             //指定特定缓存空间对应的过期时间
@@ -69,29 +69,5 @@ public class RedisCacheConfig {
                 .build();
     }
 
-
-    /**
-     * 自定义缓存的redis的KeyGenerator【key生成策略】
-     * 注意: 该方法只是声明了key的生成策略,需在@Cacheable注解中通过keyGenerator属性指定具体的key生成策略
-     * 可以根据业务情况，配置多个生成策略
-     * 如: @Cacheable(value = "key", keyGenerator = "cacheKeyGenerator")
-     */
-    @Bean
-    public KeyGenerator keyGenerator() {
-        /**
-         * target: 类
-         * method: 方法
-         * params: 方法参数
-         */
-        return (target, method, params) -> {
-            //获取代理对象的最终目标对象
-            StringBuilder sb = new StringBuilder();
-            sb.append(target.getClass().getSimpleName()).append(":");
-            sb.append(method.getName()).append(":");
-            //调用SimpleKey的key生成器
-            Object key = SimpleKeyGenerator.generateKey(params);
-            return sb.append(key);
-        };
-    }
 
 }

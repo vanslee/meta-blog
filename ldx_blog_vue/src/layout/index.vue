@@ -8,7 +8,7 @@
         <el-aside width="15%">
           <router-view name="left_aside" />
         </el-aside>
-        <el-main style="margin: 0 100px">
+        <el-main>
           <router-view name="main" />
         </el-main>
         <el-aside width="15%">

@@ -65,7 +65,8 @@
   </div>
 </template>
 <script>
-import { useUserStore } from '@/stores/user'
+import { loginApi } from '@/apis/user'
+import { setToken } from '@/utils/auth'
 // import { validateIsNull } from "@/util/validate";
 export default {
   name: 'BlogLogin',
@@ -98,9 +99,7 @@ export default {
   },
   created() {},
   computed: {},
-  mounted() {
-    this.userStore = useUserStore()
-  },
+  mounted() {},
   methods: {
     async toLogin() {
       const { username, password } = this.params
@@ -121,8 +120,10 @@ export default {
       usernameInput = null
       passwordInput = null
       this.isLoding = true
-      const { code } = await this.userStore.login(this.params)
+      const { code, data } = await loginApi(this.params)
+      console.log('data', data)
       if (code === 200) {
+        setToken(data['tokenValue'])
         this.$router.push({ path: this.redirect || '/' })
       }
       this.isLoding = false

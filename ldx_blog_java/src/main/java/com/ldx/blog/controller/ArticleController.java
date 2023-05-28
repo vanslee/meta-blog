@@ -22,6 +22,7 @@ import java.util.Objects;
 @Slf4j
 @RestController
 @RequestMapping(value = "article")
+@CrossOrigin
 public class ArticleController {
     @Resource
     private ArticleServiceImpl articleService;

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ldx.blog.mapper.*;
 import com.ldx.blog.result.Result;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import javax.annotation.Resource;
  */
 @RestController
 @RequestMapping("website")
+@CrossOrigin
 @Cacheable(cacheNames = {"WEBSITE"},keyGenerator = "redisKeyGenerator")
 public class WebsiteController {
     @Resource

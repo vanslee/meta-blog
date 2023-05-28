@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 @RequestMapping("comment")
 @RestController
 @Slf4j
+@CrossOrigin
 public class CommentController {
     @Resource
     private ArticleCommentServiceImpl articleCommentService;

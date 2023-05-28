@@ -3,6 +3,7 @@ package com.ldx.blog.controller;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.service.impl.QiniuUploadServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("upload")
+@CrossOrigin
 public class QiniuUploadController {
     @Autowired
     private QiniuUploadServiceImpl uploadService;

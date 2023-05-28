@@ -19,6 +19,9 @@ const constantRoutes = [
     redirect: '/articles',
     title: '文章列表',
     component: Layout,
+    meta: {
+      requireAuth: false
+    },
     children: [
       {
         path: 'articles',
@@ -34,6 +37,9 @@ const constantRoutes = [
     path: '/login',
     name: 'login',
     title: 'name',
+    meta: {
+      requireAuth: false
+    },
     component: () => import('@/views/login/'),
     hidden: true
   },
@@ -45,6 +51,9 @@ const constantRoutes = [
     path: '/article/:id',
     component: Layout,
     title: '文章详情',
+    meta: {
+      requireAuth: false
+    },
     children: [
       {
         path: '',
@@ -60,6 +69,9 @@ const constantRoutes = [
     path: '/write',
     component: Layout,
     title: '发布文章',
+    meta: {
+      requireAuth: false
+    },
     children: [
       {
         path: '',
@@ -71,9 +83,18 @@ const constantRoutes = [
       }
     ]
   },
-  { path: '*', redirect: '/404' },
+  {
+    path: '*',
+    meta: {
+      requireAuth: false
+    },
+    redirect: '/404'
+  },
   {
     path: '/404',
+    meta: {
+      requireAuth: false
+    },
     component: () => import('@/views/error-page/404.vue')
   }
 ]

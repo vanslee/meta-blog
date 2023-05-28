@@ -7,52 +7,29 @@ import { userInfoApi } from '@/apis/user/'
 // import { useUserStore } from '@/stores/user'
 // import pinia from '@/stores'
 
-const whiteList = ['/login', '/articles'] // no redirect whitelist
+// const whiteList = ['/login', '/articles', '/article/'] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
-  // const store = useUserStore(pinia)
-  // console.log('store', store)
-  start()
   document.title = getPageTitle(to.meta.title)
-  console.log('isLogin', isLogin())
-  if (isLogin()) {
-    if (to.path === '/login') {
-      next({ path: from.fullPath })
-      close()
-    } else {
-      const name = getUserInfo()['name']
-      if (name) {
+  start()
+  if (to.meta.requireAuth) {
+    const hasLogin = isLogin()
+    const name = getUserInfo()['username']
+    if (hasLogin) {
+      if (typeof name === 'string' && name.length > 0) {
         next()
       } else {
-        try {
-          // get user info
-          const { data, code } = await userInfoApi()
-          if (code === 200) {
-            data['avatarImgUrl'] = process.env.VUE_APP_WEBSITE_CDN + data['avatarImgUrl']
-            setUserInfo(data)
-          } else {
-            console.log('asda')
-            next(`/login?redirect=${to.path}`)
-          }
+        const { data, code } = await userInfoApi()
+        if (code === 200) {
+          setUserInfo(data)
           next()
-        } catch (error) {
-          // remove token and go to login page to re-login
-          // await store.logout()
-          // Message.error(error || 'Has Error')
-          next(`/login`)
-          close()
         }
       }
+    } else {
+      next(`/login?redirect=${to.path}`)
     }
   } else {
-    /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) {
-      next()
-    } else {
-      // other pages that do not have permission to access are redirected to the login page.
-      next(`/login?redirect=${to.path}`)
-      close()
-    }
+    next()
   }
 })
 

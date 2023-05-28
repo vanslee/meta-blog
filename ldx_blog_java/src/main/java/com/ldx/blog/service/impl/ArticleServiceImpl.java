@@ -47,7 +47,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     public Result<IPage<Article>> getArticlePage(Integer current, Integer size) {
         LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(Article::getIsDelete, 0).orderByDesc(Article::getPublishDate);
+        lqw.orderByDesc(Article::getPublishDate);
         IPage<Article> iPage = new Page<>(current, size);
         page(iPage, lqw);
         iPage.getRecords().forEach(article -> {

@@ -42,6 +42,8 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/article/list",
                         "/article/details/**",
                         "/comment/comment_brief",
-                        "/website/**");
+                        "/website/**",
+                        "/version"
+                        );
     }
 }

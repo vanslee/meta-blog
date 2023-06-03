@@ -1,6 +1,6 @@
 /ldx_blog_vue/node_modules/
 /ldx_blog_vue/package-lock.json
-/ldx_blog_vue/.env.development
+/ldx_blog_vue/.env.*
 /ldx_blog_java/.idea
 /ldx_blog_java/target
 /ldx_blog_java/files

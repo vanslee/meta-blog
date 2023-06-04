@@ -10,10 +10,10 @@ import org.springframework.cache.annotation.EnableCaching;
 /**
  * @author Uaena
  */
-@SpringBootApplication
-@EnableCaching
-@MapperScan(basePackages = "com.ldx.blog.mapper")
 @Slf4j
+@EnableCaching
+@SpringBootApplication
+@MapperScan(basePackages = "com.ldx.blog.mapper")
 public class LdxBlogJavaApplication {
     public static void main(String[] args) {
         SpringApplication.run(LdxBlogJavaApplication.class, args);

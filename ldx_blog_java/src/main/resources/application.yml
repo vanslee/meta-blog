@@ -48,10 +48,8 @@ spring:
       max-request-size: 100MB
   mail:
     password: bmvjdypxyzgmbgfj
-  profiles:
-    active: dev
 files:
-  path: /home/users/workspace/files/
+  path: //workspace//files//
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -62,7 +60,6 @@ mybatis-plus:
       logic-not-delete-value: 0
       logic-delete-value: 1
       id-type: auto
-
 logging:
   level:
     com.ldx.blog: debug
@@ -102,7 +99,8 @@ phone:
   VALIDATE_CODE: SMS_159620392
   ORDER_NOTICE: SMS_159771588
   DEFAULT_NOTICE: SMS_257771439
-
+cache:
+  ttl: '{"user":60,"dept":30}'  #自定义某些缓存空间的过期时间
 oauth:
   gitee:
     client_id: ea08e466485f68ea7158209c9c69202d9ef99ce012b47f446d6d5221654b4c77

@@ -50,7 +50,8 @@ spring:
     password: bmvjdypxyzgmbgfj
   profiles:
     active: dev
-
+files:
+  path: /home/users/workspace/files/
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -28,6 +27,8 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
     private static final int QUEUE_CAPACITY = 100;
     private static final Long KEEP_ALIVE_TIME = 1L;
     private static final ArrayBlockingQueue ARRAY_BLOCKING_QUEUE = new ArrayBlockingQueue(QUEUE_CAPACITY);
+    @Value("${files.path}")
+    private String FILE_PATH;
 
     @Value("${website.config.cdn}")
     public String qiniuyun;
@@ -36,14 +37,6 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
     public Result<Object> saveFileToQiNiu(MultipartFile file) {
         if (Objects.isNull(file)) {
             return Result.fail(ResultCodeEnum.UPLOAD_FILE_ERROR);
-        }
-        // 获取路径
-        File tempFile = new File("");
-        String pathInProject = null;
-        try {
-            pathInProject = tempFile.getCanonicalPath();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         // 文件名
         String originalFilename = file.getOriginalFilename();
@@ -54,7 +47,7 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
             //如果没有后缀则为""
             suffixName = originalFilename.substring(i);
         }
-        File uploadFile = FileUtil.multipartFileToFile(file, pathInProject + "\\files\\", originalFilename);
+        File uploadFile = FileUtil.multipartFileToFile(file, FILE_PATH, originalFilename);
         // 文件全路径名
         String urlInQiniu = qiniuyun + QiNiuYunOssUtil.uploadFile2OSS(uploadFile);
         Map<String, String> returnFileName = new HashMap<>(3);

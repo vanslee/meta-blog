@@ -12,7 +12,8 @@
           <router-view name="main" />
         </el-main>
         <el-aside width="15%">
-          <BlogRightAside />
+          <router-view name="right_aside" />
+          <!-- <BlogRightAside /> -->
         </el-aside>
       </el-container>
       <el-footer><BlogFooter /></el-footer>
@@ -22,13 +23,12 @@
 <script>
 import BlogFooter from '@/layout/components/Footers/BlogFooter.vue'
 import BlogHeader from '@/layout/components/Headers/BlogHeader.vue'
-import BlogRightAside from '@/layout/components/Sidebar/BlogRightAside.vue'
+// import BlogRightAside from '@/layout/components/Sidebar/BlogRightAside.vue'
 export default {
   name: 'LayoutIndex',
   components: {
     BlogFooter,
-    BlogHeader,
-    BlogRightAside
+    BlogHeader
   },
   data() {
     return {}

@@ -31,14 +31,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  vertical-align: top;
   height: 100vh;
   overflow: hidden;
-}
-
-img {
-  width: 100vh;
-  height: 200px;
-  object-fit: cover;
-  object-position: center;
 }
 </style>

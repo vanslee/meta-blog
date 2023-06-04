@@ -3,9 +3,11 @@ export function loginApi(params) {
   return request.post('user/login', params)
 }
 export function userInfoApi() {
-  console.log('asdas')
   return request.get('user/info')
 }
 export function logoutApi() {
   return request.get(`user/logout`)
+}
+export function registryApi(params) {
+  return request.post('user/registry', params)
 }

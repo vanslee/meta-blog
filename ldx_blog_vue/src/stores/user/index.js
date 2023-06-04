@@ -7,13 +7,7 @@ import { resetRouter } from '@/router'
 export const useUserStore = defineStore('user', {
   // other options...
   state: () => ({
-    local: {
-      isLogin: false,
-      roles: [],
-      name: '',
-      avatar: '',
-      introduction: ''
-    }
+    local: {}
   }),
   getters: {},
   actions: {

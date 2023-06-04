@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         implements ArticleService {
     private String QINIU_CDN;
-    private  final Integer CONTENT_LENGTH = 50;
+    private final Integer CONTENT_LENGTH = 50;
     @Value("${website.config.cdn}")
     private String CDN_WEBSITE;
     @Resource
@@ -55,10 +55,11 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             Long userId = article.getUserId();
             Long articleId = article.getId();
             LambdaQueryWrapper<User> lqw3 = new LambdaQueryWrapper<>();
-            lqw3.eq(User::getId, userId).select(User::getAvatarImgUrl, User::getUsername);
+            lqw3.eq(User::getId, userId).select(User::getAvatarImgUrl, User::getUsername, User::getPersonalBrief);
             User user = userMapper.selectOne(lqw3);
             article.setAuthorAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
             article.setAuthorName(user.getUsername());
+            article.setPersonalBrief(user.getPersonalBrief());
             LambdaQueryWrapper<ArticleCategory> lqw1 = new LambdaQueryWrapper<>();
             LambdaQueryWrapper<ArticleTag> lqw2 = new LambdaQueryWrapper<>();
             lqw1.eq(ArticleCategory::getArticleId, articleId);
@@ -81,12 +82,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         try {
             String omission;
             if (article.getArticleContent().length() > CONTENT_LENGTH) {
-                 omission = article.getArticleContent().substring(0, CONTENT_LENGTH);
-            }else {
-                 omission = article.getArticleContent();
+                omission = article.getArticleContent().substring(0, CONTENT_LENGTH);
+            } else {
+                omission = article.getArticleContent();
             }
             article.setArticleOmission(omission);
-            article.setImgUrl(article.getImgUrl().replaceAll(CDN_WEBSITE,"")) ;
+            article.setImgUrl(article.getImgUrl().replaceAll(CDN_WEBSITE, ""));
             articleMapper.insert(article);
             Long articleId = article.getId();
             articleDetailsMapper.insert(new ArticleDetails(article.getId(), article.getArticleContent()));
@@ -105,12 +106,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                         tagsMapper.insert(newTag);
                         articleTagMapper.insert(new ArticleTag(articleId, newTag.getId()));
                     }
-                 index.incrementAndGet();
+                    index.incrementAndGet();
                 }
             });
             index.set(0);
             articleCategories.stream().forEach(item -> {
-                if (index.get() == categories.size()){
+                if (index.get() == categories.size()) {
                     return;
                 }
                 if (!categories.contains(item.getCategoryName())) {
@@ -127,6 +128,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Result<Article> getArticleById(long articleId) {
+        Article article = articleMapper.selectById(articleId);
+        LambdaQueryWrapper<Article> lqw1 = new LambdaQueryWrapper<>();
+        lqw1.eq(Article::getUserId, article.getUserId());
+        Long articleCount = articleMapper.selectCount(lqw1);
+        // 作者文章数量
+        Long userId = article.getUserId();
+        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+        lqw.select(User::getUsername, User::getFans,User::getAvatarImgUrl).eq(User::getId, userId);
+        // 作者的用户名粉丝数
+        User user = userMapper.selectOne(lqw);
+        user.setArticleCount(articleCount);
+        ArticleDetails articleDetails = articleDetailsMapper.selectById(articleId);
+        article.setArticleContent(articleDetails.getContent());
+        article.setUser(user);
+        return Result.success(article);
     }
 }
 

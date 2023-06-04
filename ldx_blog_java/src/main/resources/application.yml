@@ -1,3 +1,4 @@
+
 project:
   version: 1.0.0
 # 应用服务 WEB 访问端口
@@ -27,7 +28,6 @@ spring:
       # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
       max-lifetime: 1800000
       # 数据库连接超时时间,默认30秒，即30000
-      connection-timeout: 30000
       connection-test-query: SELECT 1
   redis:
     port: 6379
@@ -48,10 +48,9 @@ spring:
       max-request-size: 100MB
   mail:
     password: bmvjdypxyzgmbgfj
+  profiles:
+    active: dev
 
-
-cache:
-  ttl: '{"user":60,"dept":30}'  #自定义某些缓存空间的过期时间
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -61,6 +60,7 @@ mybatis-plus:
       logic-delete-field: "isDelete"
       logic-not-delete-value: 0
       logic-delete-value: 1
+      id-type: auto
 
 logging:
   level:
@@ -101,3 +101,9 @@ phone:
   VALIDATE_CODE: SMS_159620392
   ORDER_NOTICE: SMS_159771588
   DEFAULT_NOTICE: SMS_257771439
+
+oauth:
+  gitee:
+    client_id: ea08e466485f68ea7158209c9c69202d9ef99ce012b47f446d6d5221654b4c77
+    client_secret: 552f4c3a170997e7da3a2182cef43700e5c41f69b33b9595ff2ffa05b703a01b
+    redirect_uri: https%3A%2F%2Fwww.lidengxiang.top%2Foauth%2Fgitee%2Flogin

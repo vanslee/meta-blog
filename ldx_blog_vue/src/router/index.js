@@ -40,7 +40,7 @@ const constantRoutes = [
     meta: {
       requireAuth: false
     },
-    component: () => import('@/views/login/'),
+    component: () => import('@/views/login1/'),
     hidden: true
   },
   {
@@ -60,7 +60,8 @@ const constantRoutes = [
         name: 'Article',
         components: {
           main: () => import('@/layout/components/Mains/ArticleDetails.vue'),
-          left_aside: () => import('@/layout/components/Sidebar/DetailsLeftAside.vue')
+          left_aside: () => import('@/layout/components/Sidebar/DetailsLeftAside.vue'),
+          right_aside: () => import('@/layout/components/Sidebar/DetailsRightAside.vue')
         }
       }
     ]
@@ -69,13 +70,13 @@ const constantRoutes = [
     path: '/write',
     component: Layout,
     title: '发布文章',
-    meta: {
-      requireAuth: false
-    },
     children: [
       {
         path: '',
         name: 'Write',
+        meta: {
+          requireAuth: true
+        },
         components: {
           main: () => import('@/layout/components/Mains/ArticleWrite.vue'),
           left_aside: () => import('@/layout/components/Sidebar/WriteLeftAside.vue')

@@ -35,7 +35,8 @@
   </el-menu>
 </template>
 <script>
-import { getUserInfo, isLogin } from '@/utils/auth'
+import { getUserInfo, isLogin, removeToken, removeUserInfo } from '@/utils/auth'
+import { logoutApi } from '@/apis/user'
 export default {
   data() {
     const activeIndex = '1'
@@ -57,8 +58,12 @@ export default {
       console.log(key, keyPath)
     },
     async logout() {
-      await this.userStore.logout()
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      const { code } = await logoutApi()
+      if (code === 200) {
+        removeToken()
+        removeUserInfo()
+        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      }
     }
   }
 }

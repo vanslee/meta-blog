@@ -1,6 +1,5 @@
 package com.ldx.blog.pojo.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -11,6 +10,5 @@ import lombok.Data;
 public class CommentPage {
     private Integer current;
     private Integer size;
-    @JsonProperty("article_id")
     private Long articleId;
 }

@@ -17,7 +17,11 @@ public class FieldAutoComplete implements MetaObjectHandler {
       log.info("start insert auto complete field ...");
       this.setFieldValByName("publishDate",System.currentTimeMillis()/1000,metaObject);
       this.setFieldValByName("updateDate",System.currentTimeMillis()/1000,metaObject);
-      this.setFieldValByName("isDelete",0,metaObject);
+      this.setFieldValByName("isDelete",false,metaObject);
+      this.setFieldValByName("gender",false,metaObject);
+      this.setFieldValByName("recentlyLanded",System.currentTimeMillis()/1000,metaObject);
+      this.setFieldValByName("createTime",System.currentTimeMillis()/1000,metaObject);
+      this.setFieldValByName("updateTime",System.currentTimeMillis()/1000,metaObject);
 
     }
 
@@ -25,5 +29,7 @@ public class FieldAutoComplete implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("start update auto complete field ...");
         this.setFieldValByName("updateDate",System.currentTimeMillis()/1000,metaObject);
+        this.setFieldValByName("recentlyLanded",System.currentTimeMillis()/1000,metaObject);
+        this.setFieldValByName("updateTime",System.currentTimeMillis()/1000,metaObject);
     }
 }

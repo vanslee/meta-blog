@@ -3,7 +3,7 @@ import { close, start } from '@/utils/nprogress'
 import { MessageBox, Message } from 'element-ui'
 import { throttle } from 'lodash'
 // import { useUserStore } from '@/stores/user'
-import { getToken } from '@/utils/auth'
+import { getToken, removeUserInfo } from '@/utils/auth'
 import { removeToken } from '@/utils/auth'
 // create an axios instance
 const service = axios.create({
@@ -17,7 +17,6 @@ service.interceptors.request.use(
   config => {
     start()
     config.headers['litubao_authentication'] = getToken()
-    console.log('token', getToken())
     return config
   },
   error => {
@@ -69,12 +68,9 @@ service.interceptors.response.use(
     // }
   },
   error => {
-    // Message({
-    //   message: error.msg,
-    //   type: 'error',
-    //   duration: 5 * 1000
-    // })
     removeToken()
+    removeUserInfo()
+    // location.reload()
     console.log(error)
     // return { code: 500, data: {} }
     return Promise.reject()

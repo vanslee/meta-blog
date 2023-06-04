@@ -86,11 +86,9 @@ export default {
   },
   watch: {
     articleContent: debounce(function (newValue) {
-      // 发送搜索请求，获取搜索结果
-      // 这里只是一个示例，具体的实现方式根据业务需求而定
-      // this.searchResults = getSearchResults(newValue);
-      // console.log(newValue)
-      setStorage('content', newValue)
+      if (newValue !== 'null') {
+        setStorage('content', newValue)
+      }
     }, 3000)
   },
   mounted() {

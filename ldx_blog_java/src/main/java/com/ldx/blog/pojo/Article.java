@@ -21,6 +21,7 @@ public class Article implements Serializable {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+    private Integer collects;
     /**
      *
      */
@@ -54,17 +55,17 @@ public class Article implements Serializable {
     /**
      *
      */
-    private Object views;
+    private Integer views;
     /**
      *
      */
-    private Object likes;
+    private Integer likes;
     /**
      *
      */
-    private Object comments;
+    private Integer comments;
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Integer isDelete;
+    private boolean isDelete;
     @TableField(exist = false)
     private String authorAvatar;
     @TableField(exist = false)
@@ -75,6 +76,9 @@ public class Article implements Serializable {
     private List<String> tags;
     @TableField(exist = false)
     private String articleContent;
-
+    @TableField(exist = false)
+    private String personalBrief;
+    @TableField(exist = false)
+    private User user;
 
 }

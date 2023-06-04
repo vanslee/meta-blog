@@ -12,4 +12,12 @@ class LdxBlogJavaApplicationTests {
         System.out.println(hashpw);
     }
 
+    @Test
+    void test(){
+        String hashpw = BCrypt.hashpw("zhou2001.");
+        System.out.println(hashpw);
+        boolean checkpw = BCrypt.checkpw("zhou2001.", hashpw);
+        System.out.println(checkpw);
+    }
+
 }

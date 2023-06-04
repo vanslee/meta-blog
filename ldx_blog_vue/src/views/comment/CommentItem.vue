@@ -1,56 +1,9 @@
 <template>
   <div>
-    <el-row type="flex" justify="space-between">
-      <el-col :span="2">
-        <el-image
-          v-if="isLogin"
-          src="https://lidengxiang.top/Chat/2023-03-23_21-55-27.PNG"
-          class="user-avatar"
-        ></el-image>
-        <el-image
-          v-else
-          src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
-          class="user-avatar"
-        ></el-image>
-      </el-col>
-      <el-col :span="17">
-        <el-input
-          type="textarea"
-          :rows="3"
-          placeholder="机会是留给有准备的人"
-          v-model="params.root_content"
-          :disabled="!isLogin"
-        />
-      </el-col>
-      <el-col :span="4">
-        <el-button v-if="isLogin" style="height: 75px" type="primary" @click="submitComment('root')">
-          发表评论
-        </el-button>
-        <el-button v-else style="height: 75px" type="primary" disabled>请先登录</el-button>
-      </el-col>
-    </el-row>
-    <el-row :gutter="10" type="flex" justify="space-between">
-      <el-col :span="2">&nbsp;</el-col>
-      <el-col :span="17">
-        <el-tooltip v-model="emojiRootVisible">
-          <div slot="content">
-            <VEmojiPicker @select="selectRootEmoji" />
-          </div>
-          <el-button size="mini">
-            <i class="el-icon-wind-power"></i>
-            表情
-          </el-button>
-        </el-tooltip>
-      </el-col>
-      <el-col :span="4">&nbsp;</el-col>
-    </el-row>
     <el-divider />
     <el-row>
-      <el-col :span="3">
-        <el-image
-          src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
-          class="user-avatar"
-        ></el-image>
+      <el-col :span="2">
+        <el-image :src="`${cdn}${comment.userAvatar}`" class="user-avatar" />
       </el-col>
       <el-col :span="20">
         <el-row>
@@ -60,10 +13,11 @@
           </el-row>
           <el-row>{{ comment.content }}</el-row>
           <el-row>
-            {{ formatTime(comment.createTime) }} 湖南 &emsp; &emsp;
-            <i class="el-icon-arrow-up">&nbsp;{{ comment.commentLikes }}</i>
+            {{ formatTime(comment.createTime) }} {{ comment.location }} &emsp; &emsp;
+            <i class="iconfont">&#xe717;</i>
+            {{ comment.likes }}
             &nbsp;
-            <i class="el-icon-arrow-down">&nbsp;210</i>
+            <i class="iconfont">&#xe716;</i>
             &emsp; &emsp;
             <i @click="showCommmentInput(comment.id, comment.id, comment.userNick)">回复</i>
           </el-row>
@@ -72,26 +26,27 @@
           style="margin-top: 15px"
           type="flex"
           align="middle"
-          v-for="children in comment.childrens.records"
+          v-for="children in comment.childrens"
           :key="children.id"
         >
           <el-col :span="2">
             <el-image
               :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
-              src="https://lidengxiang.top/Chat/2023-03-23_21-55-27.PNG"
-            ></el-image>
+              :src="`${cdn}${children.userAvatar}`"
+            />
           </el-col>
           <el-col :span="22">
             <el-row>
               <el-row>
                 <i>{{ children.userNick }}</i>
-                : {{ children.content }}
+                回复 {{ children.content }}
               </el-row>
               <el-row>
-                {{ formatTime(children.createTime) }} 湖南 &emsp; &emsp;
-                <i class="el-icon-arrow-up">&nbsp;{{ children.commentLikes }}</i>
+                {{ formatTime(children.createTime) }} {{ children.location }} &emsp; &emsp;
+                <i class="iconfont">&#xe717;</i>
+                {{ children.likes }}
                 &nbsp;
-                <i class="el-icon-arrow-down">&nbsp;210</i>
+                <i class="iconfont">&#xe716;</i>
                 &emsp; &emsp;
                 <i @click="showCommmentInput(comment.id, children.id, children.userNick)">回复</i>
               </el-row>
@@ -102,16 +57,14 @@
     </el-row>
     <el-drawer
       size="30%"
-      :modal="false"
       title="发表评论"
       direction="btt"
       :show-close="false"
-      :wrapper-closable="true"
       style="width: 50%; margin: 0 auto"
       :visible.sync="commentInputVisible"
     >
       <el-row>
-        <el-input type="textarea" :rows="3" placeholder="机会是留给有准备的人" v-model="params.reply_content" />
+        <el-input type="textarea" :rows="3" placeholder="机会是留给有准备的人" v-model="params.content" />
       </el-row>
       <el-tooltip placement="top" v-model="emojiReplyVisible">
         <div slot="content">
@@ -122,7 +75,12 @@
           表情
         </el-button>
       </el-tooltip>
-      <el-button type="primary" style="position: absolute; right: 10px; bottom: 20px" @click="submitComment('reply')">
+      <el-button
+        type="primary"
+        :loading="isLoading"
+        @click="submitComment('reply')"
+        style="position: absolute; right: 10px; bottom: 20px"
+      >
         发表评论
       </el-button>
     </el-drawer>
@@ -132,6 +90,8 @@
 import { VEmojiPicker } from 'v-emoji-picker'
 import { formatTime } from '@/utils/time'
 import { useUserStore } from '@/stores/user'
+import { getUserInfo, isLogin } from '@/utils/auth'
+import { publishCommentApi } from '@/apis/comment'
 export default {
   components: { VEmojiPicker },
   props: {
@@ -147,26 +107,34 @@ export default {
   data() {
     const params = {
       content: '',
-      root_content: '',
-      reply_content: '',
-      article_id: this.article_id,
-      user_nick: '李登祥',
-      user_id: '112312',
-      user_avatar: 'https://lidengxiang.top/user/avatar/495234450/1669648257.jpeg',
+      user_nick: '',
+      user_id: '',
+      user_avatar: '',
       root_comment_id: '',
-      reply_comment_id: ''
+      reply_comment_id: '',
+      article_id: this.article_id
     }
     return {
       params,
       emoji: '',
       formatTime,
       userStore: {},
+      isLoading: false,
       emojiRootVisible: false,
       emojiReplyVisible: false,
-      commentInputVisible: false
+      commentInputVisible: false,
+      cdn: process.env.VUE_APP_WEBSITE_CDN
     }
   },
-  created() {},
+  created() {
+    if (isLogin()) {
+      const user = getUserInfo()
+      this.params.user_id = user.id
+      this.params.user_nick = user.username
+      this.params.user_avatar = user.avatarImgUrl.replace(process.env.VUE_APP_WEBSITE_CDN, '')
+      // this.params.user_avatar = user.
+    }
+  },
   mounted() {
     this.userStore = useUserStore()
   },
@@ -177,38 +145,38 @@ export default {
     }
   },
   methods: {
-    // closeCommentInput() {
-    //   this.commentInputVisible = false
-    // },
-    selectRootEmoji(emoji) {
-      this.emojiRootVisible = false
-      this.params.root_content = `${this.params.root_content}${emoji['data']}`
-    },
     selectReplyEmoji(emoji) {
       this.emojiReplyVisible = false
-      this.params.reply_content = `${this.params.reply_content}${emoji['data']}`
+      this.params.content = `${this.params.content}${emoji['data']}`
     },
     showCommmentInput(root_comment_id, reply_comment_id, nick) {
-      this.params.root_comment_id = root_comment_id
-      this.params.reply_comment_id = reply_comment_id
-      this.params.reply_content = `@${nick}: `
-      this.commentInputVisible = true
-    },
-    submitComment(flag) {
-      if (flag === 'reply') {
-        this.params.content = this.params.reply_content
+      if (isLogin()) {
+        this.params.root_comment_id = root_comment_id
+        this.params.reply_comment_id = reply_comment_id
+        this.params.content = `@${nick}: `
+        this.commentInputVisible = true
       } else {
-        this.params.content = this.params.root_content
+        this.$message.error('请先登录')
       }
+    },
+    async submitComment() {
+      this.isLoading = true
+      const { code } = await publishCommentApi(this.params)
+      if (code === 200) {
+        this.$message.success('发送成功')
+        this.$emit('fetch-data')
+      } else {
+        this.$message.error('发送失败')
+      }
+      this.params.content = ''
+      this.isLoading = false
     }
   }
 }
 </script>
 <style scoped>
 i {
-  color: gray;
   cursor: pointer;
-  font-size: 0.8rem;
 }
 .user-avatar {
   width: 80px;

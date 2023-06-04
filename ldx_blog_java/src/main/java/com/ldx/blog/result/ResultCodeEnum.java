@@ -32,7 +32,7 @@ public enum ResultCodeEnum{
     LOGIN_PARAM_NULL(500, "缺少用户名或密码"),
     LOGIN_ERROR(500, "用户名或密码错误"),
     LOGIN_SUCCESS(200,"登录成功" ), LOGOUT_SUCCESS(200, "退出成功"),
-    TOKEN_INVALID(500, "身份已过期" );
+    TOKEN_INVALID(500, "身份已过期" ), USER_HAS_EXIST(503,"用户已存在,去登录" ), REGISTRY_SUCCESS(200,"注册成功" ), REGISTRY_ERROR(504, "注册失败");
 
 
     /**

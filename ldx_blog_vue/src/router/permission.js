@@ -10,21 +10,22 @@ import { userInfoApi } from '@/apis/user/'
 // const whiteList = ['/login', '/articles', '/article/'] // no redirect whitelist
 
 router.beforeEach(async (to, from, next) => {
-  document.title = getPageTitle(to.meta.title)
   start()
+  document.title = getPageTitle(to.meta.title)
+  if (isLogin() && !getUserInfo()) {
+    const { data, code } = await userInfoApi()
+    if (code === 200) {
+      data['avatarImgUrl'] = process.env.VUE_APP_WEBSITE_CDN + data['avatarImgUrl']
+      setUserInfo(data)
+    }
+  }
+  if (to.name === 'login' && isLogin()) {
+    next(from.path)
+  }
   if (to.meta.requireAuth) {
     const hasLogin = isLogin()
-    const name = getUserInfo()['username']
     if (hasLogin) {
-      if (typeof name === 'string' && name.length > 0) {
-        next()
-      } else {
-        const { data, code } = await userInfoApi()
-        if (code === 200) {
-          setUserInfo(data)
-          next()
-        }
-      }
+      next()
     } else {
       next(`/login?redirect=${to.path}`)
     }

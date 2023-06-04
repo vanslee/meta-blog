@@ -1,10 +1,13 @@
 package com.ldx.blog.pojo;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
 * @author Uaena
@@ -16,6 +19,7 @@ public class ArticleComment implements Serializable {
     /**
     * 评论id
     */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
     /**
     * 评论的文章id
@@ -28,19 +32,21 @@ public class ArticleComment implements Serializable {
     /**
     * 评论时间
     */
+    @TableField(fill = FieldFill.INSERT)
     private Long createTime;
     /**
     * 是否删除
     */
-    private Integer isDelete;
+    @TableField(fill =FieldFill.INSERT)
+    private Boolean isDelete;
     /**
     * 用户id
     */
-    private Long userid;
+    private Long userId;
     /**
     * 评论点赞数
     */
-    private Object commentLikes;
+    private Integer likes;
     /**
     * 根评论ID
     */
@@ -50,9 +56,14 @@ public class ArticleComment implements Serializable {
     */
     private Long replyCommentId;
     /**
+     * 属地
+     */
+    private String location;
+    /**
     * 评论修改时间
     */
-    private Integer updateTime;
+    @TableField(fill =FieldFill.INSERT_UPDATE)
+    private Long updateTime;
     /**
     * 是否置顶
     */
@@ -69,7 +80,7 @@ public class ArticleComment implements Serializable {
      * 子评论列表
      */
     @TableField(exist = false)
-    private IPage<ArticleComment> childrens;
+    private List<ArticleComment> childrens;
 
 
 }

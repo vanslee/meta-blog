@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldx.blog.mapper.UserMapper;
 import com.ldx.blog.pojo.User;
+import com.ldx.blog.pojo.oath.gitee.GiteeUser;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.UserService;
@@ -29,14 +30,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
-    public Result<Object> doLogin(Map<String, String> loginForm, String ip) {
+    public Result<SaTokenInfo> doLogin(Map<String, String> loginForm, String ip) {
         if (Objects.isNull(loginForm)) {
             log.error("登录用户信息为空");
             return Result.fail(ResultCodeEnum.LOGIN_PARAM_NULL);
         }
         String username = loginForm.get("username");
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(User::getUsername, username).eq(User::getIsDelete, 0);
+        lqw.eq(User::getUsername, username);
         User user = userMapper.selectOne(lqw);
         if (Objects.isNull(user)) {
             return Result.fail(ResultCodeEnum.LOGIN_ERROR);
@@ -45,7 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (BCrypt.checkpw(password, user.getPassword())) {
             StpUtil.login(user.getId());
             user.setIp(ip);
-            user.setRecentlyLanded(System.currentTimeMillis()/1000);
+            user.setRecentlyLanded(System.currentTimeMillis() / 1000);
             userMapper.updateById(user);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             tokenInfo.setTag(username);
@@ -59,6 +60,65 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String userId = (String) StpUtil.getLoginId();
         User user = userMapper.selectById(userId).setPassword("********").setPhone("131********");
         return Result.success(user);
+    }
+
+    public Result<SaTokenInfo> oauthLogin(Object userInfo, String ip) {
+        if (userInfo instanceof GiteeUser) {
+            GiteeUser giteeUser = (GiteeUser) userInfo;
+            // Gitee登录
+            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(User::getUnionId, giteeUser.getId());
+            User user = userMapper.selectOne(lqw);
+            if (Objects.isNull(user)) {
+                // 如果用户不存在
+                User newUser = new  User().setIp(ip)
+                        .setUnionId(giteeUser.getId())
+                        .setUsername(giteeUser.getLogin())
+                        .setTrueName(giteeUser.getName())
+                        .setAvatarImgUrl(giteeUser.getAvatarUrl())
+                        .setEmail(giteeUser.getEmail())
+                        .setRecentlyLanded(System.currentTimeMillis() / 1000);
+                userMapper.insert(newUser);
+                try {
+                    StpUtil.login(user.getId());
+                    return Result.success(StpUtil.getTokenInfo());
+                } catch (RuntimeException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
+                try {
+                    userMapper.updateById(user);
+                    StpUtil.login(user.getId());
+                    return Result.success(StpUtil.getTokenInfo());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+
+                }
+            }
+        }
+        return Result.fail(ResultCodeEnum.LOGIN_ERROR);
+    }
+
+    public Result<ResultCodeEnum> doRegistry(User params, String ip) {
+        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(User::getUsername, params.getUsername());
+        User user = userMapper.selectOne(lqw);
+        if (!Objects.isNull(user)) {
+            return Result.fail(ResultCodeEnum.USER_HAS_EXIST);
+        }
+        String hashpw = BCrypt.hashpw(params.getPassword());
+        User newUser = new User()
+                .setIp(ip)
+                .setPassword(hashpw)
+                .setUsername(params.getUsername())
+                .setAvatarImgUrl("blog-litubao/th.jpg");
+        int effectRows = userMapper.insert(newUser);
+        if (effectRows > 0) {
+            return Result.success(ResultCodeEnum.REGISTRY_SUCCESS);
+        } else {
+            return Result.fail(ResultCodeEnum.REGISTRY_ERROR);
+        }
     }
 }
 

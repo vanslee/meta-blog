@@ -9,7 +9,7 @@
               <el-input style="width: 50%" v-model="articleVO.articleTitle" placeholder="请输入文章标题" />
             </h1>
           </el-col>
-          <el-col>
+          <el-col style="margin-top: 20px">
             <el-radio-group v-model="articleVO.articleType">
               <el-radio label="原创" value="原创">原创:</el-radio>
               <el-radio label="转载" value="转载">转载:</el-radio>
@@ -27,15 +27,19 @@
 
             <el-divider />
           </el-col>
-          <el-col :span="6">
-            <el-image :src="user.avatarImgUrl" style="border-radius: 50%; width: 60px; height: 60px" />
+          <el-col :span="3">
+            <el-image :src="avatar" style="border-radius: 50%; width: 60px; height: 60px" />
           </el-col>
           <el-col :span="10">
             <h1>作者: {{ articleVO.author }}</h1>
           </el-col>
-          <el-col>
+          <el-col :span="24">
+            <h1>文章内容</h1>
+            <el-divider />
             <v-md-preview :text="articleVO.articleContent" />
+            <el-divider />
           </el-col>
+
           <el-col>
             <el-tag
               v-for="(tag, index) in articleVO.tags"
@@ -113,12 +117,12 @@
           :action="UPLOAD_SERVER_URL"
         >
           <img v-if="articleVO.imgUrl" :src="articleVO.imgUrl" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          <i v-else class="el-icon-plus"></i>
         </el-upload>
       </el-col>
     </el-row>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
+      <el-button @click=";(visible = false), (loading = false)">取消</el-button>
       <el-button type="primary" @click="submit" :loading="loading">发布</el-button>
     </span>
   </el-dialog>
@@ -130,6 +134,7 @@ export default {
   components: {},
   data() {
     const user = getUserInfo()
+    const avatar = user.avatarImgUrl
     const articleVO = {
       imgUrl: '',
       tags: [],
@@ -142,8 +147,8 @@ export default {
     }
     return {
       url: '',
-      user,
       rules: {},
+      avatar,
       visible: false,
       articleVO,
       uploadImg: '',
@@ -231,8 +236,25 @@ export default {
   }
 }
 </script>
-<style>
-.avatar-uploader .el-upload {
+<style scoped>
+/deep/ .el-upload {
+  width: 100%;
+}
+/deep/ .el-upload .el-upload-dragger {
+  width: 100%;
+}
+img {
+  object-fit: contain;
+  object-position: center;
+}
+.el-icon-plus {
+  font-size: 28px;
+  color: #8c939d;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+/* .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;
   cursor: pointer;
@@ -245,16 +267,10 @@ export default {
 .avatar-uploader .el-upload:hover {
   border-color: #409eff;
 }
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
+
 .avatar {
   width: 178px;
   height: 178px;
   display: block;
-}
+} */
 </style>

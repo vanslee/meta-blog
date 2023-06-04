@@ -1,64 +1,50 @@
 <template>
-  <el-row :gutter="20" type="flex" justify="space-between">
+  <el-row type="flex" justify="space-around">
     <el-col :span="16">
-      <el-row>
-        <el-col>
-          <el-col :span="8">
-            <el-row type="flex" justify="center">
-              <el-image :src="article.authorAvatar" fit="fill" style="widht: 4vw; height: 4vw; border-radius: 50%" />
-            </el-row>
-            <el-row type="flex" justify="center">
-              <h3 :span="4">{{ article.authorName }}</h3>
-            </el-row>
-          </el-col>
-          <el-col :span="10" :offset="4">
-            <h1 style="font-size: 2rem; color: gray">{{ article.articleTitle }}</h1>
-          </el-col>
+      <el-row type="flex" align="middle">
+        <el-col :span="3">
+          <el-image
+            :src="article.authorAvatar"
+            fit="fill"
+            style="widht: 4vw; height: 4vw; border-radius: 50%"
+          ></el-image>
         </el-col>
-        <el-col>
-          <div @click="jumpToArticleDetails" style="cursor: pointer">
-            <v-md-preview :text="article.articleOmission" />
-          </div>
+        <el-col :span="20">
+          <el-row>
+            <el-col>
+              <span style="font-size: 1.25rem">{{ article.articleTitle }}</span>
+            </el-col>
+            <el-col>
+              <el-link type="info" v-for="tag in article.tags" :key="tag">{{ tag }} &nbsp;</el-link>
+              <el-link type="info" v-for="category in article.categories" :key="category">
+                {{ category }} &nbsp;
+              </el-link>
+            </el-col>
+          </el-row>
         </el-col>
-        <el-col>
-          <div v-if="article.tags.length">
-            <el-divider content-position="left">
-              <i class="el-icon-collection-tag" />
-              文章标签
-            </el-divider>
-            <el-tag v-for="(tag, index) in article.tags" :key="tag + index" style="margin: 0 5px 0 0">
-              <i class="el-icon-collection-tag" />
-              {{ tag }}
-            </el-tag>
-          </div>
-          <div v-if="article.categories.length">
-            <el-divider content-position="left">
-              <i class="el-icon-collection-tag" />
-              文章分类
-            </el-divider>
-            <el-tag
-              v-for="(category, index) in article.categories"
-              :key="category + index"
-              style="margin: 0 5px 0 0"
-              type="danger"
-            >
-              <i class="el-icon-s-management"></i>
-              {{ category }}
-            </el-tag>
-            <el-divider />
-          </div>
-        </el-col>
-        <el-col style="font-size: 1.25rem">
-          <i><span class="el-icon-view"></span></i>
-          {{ article.views }} |
-          <i><span class="el-icon-trophy"></span></i>
-          {{ article.likes }} |
-          <i><span class="el-icon-chat-dot-round"></span></i>
+      </el-row>
+
+      <el-row style="cursor: pointer">
+        <div @click="jumpToArticleDetails">
+          <v-md-preview :text="article.articleOmission" />
+        </div>
+      </el-row>
+      <el-row :gutter="10">
+        <el-col :span="2">
+          <i class="iconfont icon-shoucang"></i>
           {{ article.comments }}
+        </el-col>
+        <el-col :span="2">
+          <i class="iconfont icon-icon"></i>
+          {{ article.views }}
+        </el-col>
+        <el-col :span="2">
+          <i class="iconfont icon-liuyan"></i>
+          {{ article.likes }}
         </el-col>
       </el-row>
     </el-col>
-    <el-col :span="8" style="padding: 15px 10px 10px 0">
+    <el-col :span="4" style="padding: 15px 10px 10px 0">
       <img :src="article.imgUrl" style="width: 200px; height: 200px" />
     </el-col>
   </el-row>

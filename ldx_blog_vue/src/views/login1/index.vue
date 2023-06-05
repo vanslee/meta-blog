@@ -68,7 +68,7 @@
           <el-button class="btn" @click="registry" :loading="isLoading">立即注册</el-button>
           <p class="social-text">通过其他方式</p>
           <div class="social-media">
-            <a href="qq_redirect_uri" class="social-icon">
+            <a :href="qq_redirect_uri" class="social-icon">
               <i class="iconfont fab icon-qq"></i>
             </a>
             <a href="#" class="social-icon">

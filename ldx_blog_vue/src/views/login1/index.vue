@@ -21,7 +21,7 @@
           <el-button @click="login" class="btn solid" :loading="isLoading">立即登录</el-button>
           <p class="social-text">通过其他方式</p>
           <div class="social-media">
-            <a href="qq_redirect_uri" class="social-icon">
+            <a :href="qq_redirect_uri" class="social-icon">
               <i class="iconfont fab icon-qq"></i>
             </a>
             <a href="#" class="social-icon">

@@ -21,13 +21,13 @@
           <el-button @click="login" class="btn solid" :loading="isLoading">立即登录</el-button>
           <p class="social-text">通过其他方式</p>
           <div class="social-media">
-            <a href="#" class="social-icon">
+            <a href="qq_redirect_uri" class="social-icon">
               <i class="iconfont fab icon-qq"></i>
             </a>
             <a href="#" class="social-icon">
               <i class="fab iconfont icon-wechat"></i>
             </a>
-            <a :href="git_redirect_uri" class="social-icon">
+            <a :href="gitee_redirect_uri" class="social-icon">
               <i class="fab iconfont icon-gitee"></i>
             </a>
             <a href="#" class="social-icon">
@@ -68,14 +68,14 @@
           <el-button class="btn" @click="registry" :loading="isLoading">立即注册</el-button>
           <p class="social-text">通过其他方式</p>
           <div class="social-media">
-            <a href="#" class="social-icon">
+            <a href="qq_redirect_uri" class="social-icon">
               <i class="iconfont fab icon-qq"></i>
             </a>
             <a href="#" class="social-icon">
-              <i class="fab fa-weixin"></i>
+              <i class="fab iconfont icon-wechat"></i>
             </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-weibo"></i>
+            <a :href="gitee_redirect_uri" class="social-icon">
+              <i class="fab iconfont icon-gitee"></i>
             </a>
             <a href="#" class="social-icon">
               <i class="fab fa-alipay"></i>
@@ -119,8 +119,9 @@ export default {
       password: '',
       confirm_password: ''
     }
-    const git_redirect_uri = `https://gitee.com/oauth/authorize?client_id=${process.env.VUE_APP_GITEE_CLIENTID}&redirect_uri=${process.env.VUE_APP_GITEE_REDIRECTURI}&response_type=code`
-    return { params, userStore, isLoading: false, git_redirect_uri }
+    const gitee_redirect_uri = `https://gitee.com/oauth/authorize?client_id=${process.env.VUE_APP_GITEE_CLIENTID}&redirect_uri=${process.env.VUE_APP_GITEE_REDIRECTURI}&response_type=code`
+    const qq_redirect_uri = `https://graph.qq.com/oauth2.0/show?which=Login&display=pc&response_type=code&client_id=${process.env.VUE_APP_QQ_CLIENTID}&redirect_uri=${process.env.VUE_APP_QQ_REDIRECTURI}&state=litubao`
+    return { params, userStore, isLoading: false, gitee_redirect_uri,qq_redirect_uri }
   },
   created() {},
   computed: {},

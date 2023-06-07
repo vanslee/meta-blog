@@ -1,12 +1,12 @@
 <template>
-  <el-menu :router="true" class="header-menu" :default-active="activeIndex" mode="horizontal" @select="handleSelect">
-    <el-menu-item index="/">首页</el-menu-item>
+  <el-menu :router="false" class="header-menu" :default-active="activeIndex" mode="horizontal">
+    <el-menu-item @click="$router.push({ name: 'Index' })">首页</el-menu-item>
     <el-menu-item index="2">友链</el-menu-item>
     <el-menu-item index="3">文章分类</el-menu-item>
     <el-menu-item index="4">文章标签</el-menu-item>
     <el-menu-item index="5">照片墙</el-menu-item>
     <el-menu-item index="6">捐赠</el-menu-item>
-    <el-menu-item index="7" v-if="!isLogin" @click="$router.push({ name: 'login' })">登录</el-menu-item>
+    <el-menu-item index="7" v-if="!userStore.hasLogin" @click="$router.push({ name: 'Login' })">登录</el-menu-item>
     <el-submenu v-else index="8">
       <template slot="title">
         <el-image
@@ -17,8 +17,8 @@
           {{ user.username }}
         </span>
       </template>
-      <div v-show="isLogin">
-        <el-menu-item index="/write">
+      <div v-show="userStore.hasLogin">
+        <el-menu-item @click="$router.push({ name: 'Write' })">
           <i class="el-icon-edit-outline" />
           写博客
         </el-menu-item>
@@ -35,33 +35,26 @@
   </el-menu>
 </template>
 <script>
-import { getUserInfo, isLogin, removeToken, removeUserInfo } from '@/utils/auth'
-import { logoutApi } from '@/apis/user'
+// import { logoutApi } from '@/apis/user'
+import { useUserStore } from '@/stores/user'
+import { mapState } from 'pinia'
 export default {
   data() {
     const activeIndex = '1'
+    const userStore = useUserStore()
     return {
-      user: getUserInfo(),
+      userStore,
       activeIndex
     }
   },
-  created() {
-    console.log(isLogin())
-  },
+  created() {},
   computed: {
-    isLogin() {
-      return isLogin()
-    }
+    ...mapState(useUserStore, ['user'])
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    async logout() {
-      const { code } = await logoutApi()
-      if (code === 200) {
-        removeToken()
-        removeUserInfo()
+    logout() {
+      const sucess = this.userStore.logout()
+      if (sucess) {
         this.$router.push(`/login?redirect=${this.$route.fullPath}`)
       }
     }

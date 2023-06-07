@@ -1,58 +1,45 @@
 import { defineStore } from 'pinia'
 import { loginApi, userInfoApi, logoutApi } from '@/apis/user'
-import { setToken, removeToken, setUserInfo } from '@/utils/auth'
-import { resetRouter } from '@/router'
-// useStore 可以是 useUser、useCart 之类的任何东西
-// 第一个参数是应用程序中 store 的唯一 id
 export const useUserStore = defineStore('user', {
-  // other options...
+  // 开启持久化
+  persist: true,
+  // 定义state
   state: () => ({
-    local: {}
+    user: {},
+    token: '',
+    hasLogin: false
   }),
   getters: {},
   actions: {
-    async getInfo() {
-      const { data, code } = await userInfoApi()
-      if (code === 200) {
-        data['avatarImgUrl'] = process.env.VUE_APP_WEBSITE_CDN + data['avatarImgUrl']
-        setUserInfo(data)
-      }
-    },
+    // 用户登录获取token
     async login(params) {
-      const { username, password } = params
-      const { data, code } = await loginApi({ username: username.trim(), password: password })
-      console.log(data, code)
-      if (code === 200) {
-        setToken(data['tokenValue'])
-        return { code: 200 }
-      } else {
-        return { code: 500 }
-      }
+      loginApi(params).then(async res => {
+        if (res.code === 200) {
+          this.token = res.data['tokenValue']
+          this.hasLogin = true
+          // 获取token成功后获取用户信息
+          const { data, code } = await userInfoApi()
+          if (code === 200) {
+            // 获取用户信息
+            data['avatarImgUrl'] = process.env.VUE_APP_WEBSITE_CDN + data['avatarImgUrl']
+            this.user = data
+            return true
+          } else {
+            return false
+          }
+        } else {
+          return false
+        }
+      })
     },
     async logout() {
+      console.log('this', this)
       const { code } = await logoutApi()
       if (code === 200) {
-        this.local = {}
-        removeToken()
-        resetRouter()
+        this.$reset()
+        return true
       }
+      return false
     }
-
-    // dynamically modify permissions
-    // async changeRoles(role, userId) {
-    //   const token = role + '-token'
-    //   setToken(token)
-    //   const { roles } = await this.getInfo(userId)
-
-    //   resetRouter()
-
-    //   // generate accessible routes map based on roles
-    //   const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
-    //   // dynamically add accessible routes
-    //   router.addRoutes(accessRoutes)
-
-    //   // reset visited views and cached views
-    //   dispatch('tagsView/delAllViews', null, { root: true })
-    // }
   }
 })

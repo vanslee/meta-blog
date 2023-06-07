@@ -21,7 +21,7 @@
       </el-row>
 
       <el-row style="margin-top: 20px">
-        <el-col><i class="iconfont">&#xe744;</i></el-col>
+        <el-col><i class="iconfont" @click="scrollToEnd">&#xe744;</i></el-col>
         <el-col>1</el-col>
       </el-row>
       <el-row style="margin-top: 20px">
@@ -41,10 +41,17 @@ export default {
   },
   created() {},
   computed: {},
-  methods: {}
+  methods: {
+    scrollToEnd() {
+      this.$bus.$emit('scroll-to-end')
+    }
+  }
 }
 </script>
 <style scoped>
+i {
+  cursor: pointer;
+}
 .right-box {
   position: relative;
   left: 50px;

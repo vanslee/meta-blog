@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" justify="space-between" align="middle">
       <el-col :span="2">
-        <el-image v-if="isLogin()" :src="`${cdn}${commentParam.user_avatar}`" class="user-avatar" />
+        <el-image v-if="hasLogin" :src="user.avatarImgUrl" class="user-avatar" />
         <el-image
           v-else
           src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
@@ -15,11 +15,11 @@
           :rows="3"
           placeholder="机会是留给有准备的人"
           v-model="commentParam.content"
-          :disabled="!isLogin()"
+          :disabled="!hasLogin"
         />
       </el-col>
       <el-col :span="4">
-        <el-button v-if="isLogin()" style="height: 75px" type="primary" @click="submitComment" :loading="isLoading">
+        <el-button v-if="hasLogin" style="height: 75px" type="primary" @click="submit" :loading="isLoading">
           发表评论
         </el-button>
         <el-button v-else style="height: 75px" type="primary" disabled>请先登录</el-button>
@@ -43,14 +43,23 @@
     <template v-for="comment in comments">
       <comment-item-vue :comment="comment" :article_id="article_id" :key="comment.id" @fetch-data="fetchData" />
     </template>
+    <el-pagination
+      :total="total"
+      style="text-align: center"
+      layout="prev, pager, next"
+      :page-size="params.size"
+      @current-change="handleChangePage"
+      :current-page.sync="params.current"
+    ></el-pagination>
   </div>
 </template>
 <script>
 import CommentItemVue from './CommentItem.vue'
-import { getCommentBriefApi } from '@/apis/comment'
-import { getUserInfo, isLogin } from '@/utils/auth'
 import { VEmojiPicker } from 'v-emoji-picker'
-import { publishCommentApi } from '@/apis/comment'
+import { mapActions, mapState } from 'pinia'
+import { useUserStore } from '@/stores/user'
+import { useCommentStore } from '@/stores/comments'
+
 export default {
   name: 'CommentIndex',
   components: {
@@ -63,62 +72,60 @@ export default {
       default: -1
     }
   },
+  computed: {
+    ...mapState(useUserStore, ['user', 'hasLogin']),
+    ...mapState(useCommentStore, ['comments', 'total'])
+  },
   data() {
+    const userStore = useUserStore()
+    const commentStore = useCommentStore()
     const params = {
-      current: 1,
       size: 5,
+      current: 1,
       article_id: this.article_id
     }
     const commentParam = {
       content: '',
-      user_id: '',
-      user_nick: '',
+      user_id: userStore.user.id,
       article_id: this.article_id,
-      user_avatar: ''
+      user_nick: userStore.user.username,
+      user_avatar: userStore.user.avatarImgUrl
     }
     return {
       params,
-      user: {},
-      comments: [],
+      userStore,
+      commentStore,
       commentParam,
       isLoading: false,
-      emojiRootVisible: false,
-      cdn: process.env.VUE_APP_WEBSITE_CDN
+      emojiRootVisible: false
     }
   },
-  created() {
-    if (isLogin()) {
-      const user = getUserInfo()
-      this.commentParam.user_id = user.id
-      this.commentParam.user_nick = user.username
-      this.commentParam.user_avatar = user.avatarImgUrl.replace(process.env.VUE_APP_WEBSITE_CDN, '')
-    }
-  },
+  created() {},
   mounted() {
-    this.fetchData()
+    this.fetchData(this.params)
   },
   methods: {
     selectRootEmoji(emoji) {
       this.emojiRootVisible = false
       this.commentParam.content = `${this.commentParam.content}${emoji['data']}`
     },
-    async submitComment() {
+    submit() {
       this.isLoading = true
-      const { code } = await publishCommentApi(this.commentParam)
-      if (code === 200) {
+      const success = this.submitComment(this.commentParam)
+      if (success) {
         this.$message.success('发送成功')
-        this.fetchData()
+        this.fetchData(this.params)
       } else {
         this.$message.error('发送失败')
       }
       this.commentParam.content = ''
       this.isLoading = false
     },
-    async fetchData() {
-      const { data } = await getCommentBriefApi(this.params)
-      this.comments = data
+    handleChangePage(page) {
+      this.params.current = page
+      this.fetchData(this.params)
     },
-    isLogin: isLogin
+    ...mapActions(useCommentStore, ['fetchData', 'submitComment'])
   }
 }
 </script>

@@ -4,17 +4,6 @@ import Layout from '@/layout'
 Vue.use(VueRouter)
 const constantRoutes = [
   {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/')
-      }
-    ]
-  },
-  {
     path: '/',
     redirect: '/articles',
     title: '文章列表',
@@ -25,7 +14,7 @@ const constantRoutes = [
     children: [
       {
         path: 'articles',
-        name: 'articles',
+        name: 'Index',
         components: {
           main: () => import('@/layout/components/Mains/ArticleListCard.vue'),
           left_aside: () => import('@/layout/components/Sidebar/BlogRightAside.vue')
@@ -35,17 +24,13 @@ const constantRoutes = [
   },
   {
     path: '/login',
-    name: 'login',
-    title: 'name',
+    name: 'Login',
+    title: '登录',
     meta: {
       requireAuth: false
     },
-    component: () => import('@/views/login1/'),
+    component: () => import('@/views/login/'),
     hidden: true
-  },
-  {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect')
   },
   {
     path: '/article/:id',
@@ -89,13 +74,6 @@ const constantRoutes = [
     meta: {
       requireAuth: false
     },
-    redirect: '/404'
-  },
-  {
-    path: '/404',
-    meta: {
-      requireAuth: false
-    },
     component: () => import('@/views/error-page/404.vue')
   }
 ]
@@ -107,21 +85,4 @@ const createRouter = () =>
   })
 const router = createRouter()
 
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
-}
-// router.beforeEach((to, from, next) => {
-//   start()
-//   if (to.name === 'login') {
-//     if (getStorage('LITUBAO_user')['isLogin']) {
-//       next(from.fullPath)
-//     }
-//   }
-//   next()
-// })
-
-// router.afterEach(() => {
-//   close()
-// })
 export default router

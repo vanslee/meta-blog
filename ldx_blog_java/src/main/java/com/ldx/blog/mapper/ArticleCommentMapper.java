@@ -33,6 +33,14 @@ public interface ArticleCommentMapper extends BaseMapper<ArticleComment> {
      */
     @Select("SELECT * FROM article_comment where articleId = #{articleId} and isDelete = 0 and rootCommentId =#{rootId} order by likes desc limit 0,3 ")
     List<ArticleComment> getChildrenComments(@Param("articleId") Long articleId, @Param("rootId") Long rootId);
+
+    /**
+     * 获取根评论有多少条,方便翻页
+     * @param articleId
+     * @return
+     */
+    @Select("SELECT count(1) FROM article_comment where rootCommentId = 0 and replyCommentId = 0 and articleId = #{articleId} and isDelete = 0 ")
+    Long getRootCommentsCount(@Param("articleId") Long articleId);
 }
 
 

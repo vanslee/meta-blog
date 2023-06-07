@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ldx
@@ -24,14 +26,18 @@ public class ArticleCommentServiceImpl extends ServiceImpl<ArticleCommentMapper,
     @Resource
     private ArticleCommentMapper articleCommentMapper;
 
-    public Result<List<ArticleComment>> getCommentBriefService(CommentPage commentPage) {
+    public Result<Map<String,Object>> getCommentBriefService(CommentPage commentPage) {
         Integer page = (commentPage.getCurrent() - 1) * commentPage.getSize();
+        Long rootCommentsCount = articleCommentMapper.getRootCommentsCount(commentPage.getArticleId());
         List<ArticleComment> rootComments = articleCommentMapper.getRootComments(commentPage.getArticleId(), page, commentPage.getSize());
         rootComments.forEach(root -> {
             List<ArticleComment> childrenComments = articleCommentMapper.getChildrenComments(commentPage.getArticleId(), root.getId());
             root.setChildrens(childrenComments);
         });
-        return Result.success(rootComments);
+        Map resJson = new HashMap(2);
+        resJson.put("data",rootComments);
+        resJson.put("total",rootCommentsCount);
+        return Result.success(resJson);
     }
 }
 

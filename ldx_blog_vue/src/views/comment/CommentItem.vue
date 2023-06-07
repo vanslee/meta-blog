@@ -78,7 +78,7 @@
       <el-button
         type="primary"
         :loading="isLoading"
-        @click="submitComment('reply')"
+        @click="submit"
         style="position: absolute; right: 10px; bottom: 20px"
       >
         发表评论
@@ -90,8 +90,9 @@
 import { VEmojiPicker } from 'v-emoji-picker'
 import { formatTime } from '@/utils/time'
 import { useUserStore } from '@/stores/user'
-import { getUserInfo, isLogin } from '@/utils/auth'
-import { publishCommentApi } from '@/apis/comment'
+import { mapState, mapActions } from 'pinia'
+import { useCommentStore } from '@/stores/comments'
+import { isLogin } from '@/utils/auth'
 export default {
   components: { VEmojiPicker },
   props: {
@@ -104,15 +105,19 @@ export default {
       default: -1
     }
   },
+  computed: {
+    ...mapState(useUserStore, ['user', 'hasLogin'])
+  },
   data() {
+    const userStore = useUserStore()
     const params = {
       content: '',
-      user_nick: '',
-      user_id: '',
-      user_avatar: '',
       root_comment_id: '',
       reply_comment_id: '',
-      article_id: this.article_id
+      user_id: userStore.user.id,
+      article_id: this.article_id,
+      user_nick: userStore.user.username,
+      user_avatar: userStore.user.avatarImgUrl
     }
     return {
       params,
@@ -126,23 +131,9 @@ export default {
       cdn: process.env.VUE_APP_WEBSITE_CDN
     }
   },
-  created() {
-    if (isLogin()) {
-      const user = getUserInfo()
-      this.params.user_id = user.id
-      this.params.user_nick = user.username
-      this.params.user_avatar = user.avatarImgUrl.replace(process.env.VUE_APP_WEBSITE_CDN, '')
-      // this.params.user_avatar = user.
-    }
-  },
+  created() {},
   mounted() {
     this.userStore = useUserStore()
-  },
-
-  computed: {
-    isLogin() {
-      return this.userStore.isLogin
-    }
   },
   methods: {
     selectReplyEmoji(emoji) {
@@ -159,18 +150,19 @@ export default {
         this.$message.error('请先登录')
       }
     },
-    async submitComment() {
+    submit() {
       this.isLoading = true
-      const { code } = await publishCommentApi(this.params)
-      if (code === 200) {
+      const success = this.submitComment(this.params)
+      if (success) {
         this.$message.success('发送成功')
-        this.$emit('fetch-data')
+        this.fetchData()
       } else {
         this.$message.error('发送失败')
       }
-      this.params.content = ''
+      this.commentParam.content = ''
       this.isLoading = false
-    }
+    },
+    ...mapActions(useCommentStore, ['fetchData', 'submitComment'])
   }
 }
 </script>

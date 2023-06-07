@@ -87,7 +87,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 omission = article.getArticleContent();
             }
             article.setArticleOmission(omission);
-            article.setImgUrl(article.getImgUrl().replaceAll(CDN_WEBSITE, ""));
+            article.setImgUrl(article.getImgUrl());
             articleMapper.insert(article);
             Long articleId = article.getId();
             articleDetailsMapper.insert(new ArticleDetails(article.getId(), article.getArticleContent()));

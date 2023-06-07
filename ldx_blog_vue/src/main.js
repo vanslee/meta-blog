@@ -1,16 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
+import '@/router/permission'
+import pinia from '@/stores'
 import router from './router'
+import 'default-passive-events'
+import { PiniaVuePlugin } from 'pinia'
 import '@/assets/iconfont/iconfont.css'
 import ElementUI, { Table } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
-import 'default-passive-events'
-import '@/router/permission'
-import { PiniaVuePlugin } from 'pinia'
-import pinia from '@/stores'
-Vue.use(PiniaVuePlugin)
 
+Vue.use(PiniaVuePlugin)
 /**
  * ----------------------------
  */

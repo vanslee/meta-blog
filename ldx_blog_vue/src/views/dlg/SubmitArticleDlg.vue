@@ -28,7 +28,7 @@
             <el-divider />
           </el-col>
           <el-col :span="3">
-            <el-image :src="avatar" style="border-radius: 50%; width: 60px; height: 60px" />
+            <el-image :src="user.avatarImgUrl" style="border-radius: 50%; width: 60px; height: 60px" />
           </el-col>
           <el-col :span="10">
             <h1>作者: {{ articleVO.author }}</h1>
@@ -128,29 +128,29 @@
   </el-dialog>
 </template>
 <script>
-import { getStorage, getUserInfo, removeStorage } from '@/utils/auth'
-import { publishArticleApi } from '@/apis/article'
+import { useUserStore } from '@/stores/user'
+import { useArticleStore } from '@/stores/article'
+import { mapState, mapActions } from 'pinia'
 export default {
   components: {},
   data() {
-    const user = getUserInfo()
-    const avatar = user.avatarImgUrl
+    const userStore = useUserStore()
     const articleVO = {
       imgUrl: '',
       tags: [],
       categories: [],
-      userId: user.id,
       articleTitle: '',
       articleContent: '',
       articleType: '原创',
-      author: user.username
+      userId: userStore.user.id,
+      author: userStore.user.username
     }
     return {
       url: '',
       rules: {},
-      avatar,
       visible: false,
       articleVO,
+      userStore,
       uploadImg: '',
       loading: false,
       formItemLayout: {},
@@ -161,9 +161,14 @@ export default {
       UPLOAD_SERVER_URL: process.env.VUE_APP_UPLOAD_SERVER
     }
   },
-  created() {},
-  computed: {},
+
+  computed: {
+    ...mapState(useUserStore, ['user'])
+    // 给方法起别名
+    // ...mapActions(useArticleStore,{alias:'setTitles'})
+  },
   methods: {
+    ...mapActions(useArticleStore, ['publishArticle']),
     onFinishFailed() {},
     beforeUpload() {},
     showInput(flag) {
@@ -181,15 +186,16 @@ export default {
         })
       }
     },
-    async submit() {
+    submit() {
+      // 发布文章
       this.loading = true
-      const { code } = await publishArticleApi(this.articleVO)
-      if (code === 200) {
-        removeStorage('content')
-        this.visible = false
-        this.articleVO = {}
-      }
+      const success = this.publishArticle(this.articleVO)
       this.loading = false
+      if (success) {
+        this.visible = false
+        localStorage.removeItem('articleContent')
+        this.$router.push({ name: 'Index' })
+      }
     },
     handleAvatarSuccess(res) {
       const { data, code } = res
@@ -197,8 +203,8 @@ export default {
         this.articleVO.imgUrl = data['url']
       }
     },
-    showDlg() {
-      this.articleVO.articleContent = getStorage('content')
+    showDlg(content) {
+      this.articleVO.articleContent = content
       this.visible = true
     },
     handleInputConfirm(flag) {
@@ -237,10 +243,10 @@ export default {
 }
 </script>
 <style scoped>
-/deep/ .el-upload {
+::v-deep .el-upload {
   width: 100%;
 }
-/deep/ .el-upload .el-upload-dragger {
+::v-deep .el-upload .el-upload-dragger {
   width: 100%;
 }
 img {

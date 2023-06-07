@@ -25,23 +25,27 @@
 import { formatTimeStamp } from '@/utils/time'
 import { getArticleListApi } from '@/apis/article'
 import ArticleCard from '@/layout/components/Mains/ArticieCard.vue'
+import { useUserStore } from '@/stores/user'
 export default {
   components: {
     ArticleCard
   },
   data() {
+    const userStore = useUserStore()
     const params = {
       current: 0,
       size: 3
     }
     return {
       total: 0,
-      articles: [],
       params,
+      userStore,
+      articles: [],
       formatTimeStamp
     }
   },
   created() {
+    console.log(this.userStore.token)
     this.fetchData()
   },
   computed: {},

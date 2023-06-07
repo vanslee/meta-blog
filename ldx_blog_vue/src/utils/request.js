@@ -1,36 +1,92 @@
 import axios from 'axios'
-import { close, start } from '@/utils/nprogress'
-import { MessageBox, Message } from 'element-ui'
 import { throttle } from 'lodash'
-// import { useUserStore } from '@/stores/user'
-import { getToken, removeUserInfo } from '@/utils/auth'
-import { removeToken } from '@/utils/auth'
-// create an axios instance
+import { close, start } from '@/utils/nprogress'
+import { Message } from 'element-ui'
+import { getToken } from '@/utils/auth'
+const http = {}
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 18000000 // request timeout
+  baseURL: '/apis',
+  timeout: 18000000
 })
-
-// request interceptor
 service.interceptors.request.use(
   config => {
     start()
-    config.headers['litubao_authentication'] = getToken()
+    if (getToken()) {
+      // 请求添加Token
+      config.headers['litubao_authentication'] = getToken()
+    }
     return config
   },
   error => {
-    // do something with request error
-    console.log(error) // for debug
-    return { code: 500, data: {} }
-    // return Promise.reject(error)
+    return Promise.reject(error)
   }
 )
-const tipError = res => {
+
+service.interceptors.response.use(
+  response => {
+    close()
+    return response.data
+  },
+  error => {
+    throttled('服务器异常')
+    return Promise.reject(error)
+  }
+)
+http.get = function (url, options) {
+  return new Promise((resolve, reject) => {
+    service
+      .get(url, options)
+      .then(response => {
+        if (response.code === 200) {
+          resolve(response)
+        } else {
+          throttled(response.message)
+          reject(response.message)
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  })
+}
+http.post = function (url, data, options) {
+  return new Promise((resolve, reject) => {
+    service
+      .post(url, data, options)
+      .then(response => {
+        if (response.code === 200) {
+          resolve(response)
+        } else {
+          throttled(response.message)
+          reject(response.message)
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  })
+}
+http.put = function (url, data, options) {
+  return new Promise((resolve, reject) => {
+    service
+      .put(url, data, options)
+      .then(response => {
+        if (response.code === 200) {
+          resolve(response)
+        } else {
+          throttled(response.message)
+          reject(response.message)
+        }
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  })
+}
+const tipError = message => {
   // console.log(res)
-  Message({
-    message: res.msg || '未知错误',
-    type: 'error',
+  Message.error({
+    message: message,
     duration: 5 * 1000
   })
 }
@@ -38,43 +94,4 @@ const throttled = throttle(tipError, 1000, {
   leading: true, // 在开始时立即执行函数
   trailing: false // 在结束时不执行函数
 })
-// response interceptor
-service.interceptors.response.use(
-  response => {
-    close()
-    const res = response.data
-    if (res.code !== 200) {
-      throttled(res)
-      removeToken()
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm(
-          'You have been logged out, you can cancel to stay on this page, or log in again',
-          'Confirm logout',
-          {
-            confirmButtonText: 'Re-Login',
-            cancelButtonText: 'Cancel',
-            type: 'warning'
-          }
-        ).then(() => {
-          //清空用户信息和缓存并刷新页面
-          location.reload()
-        })
-      }
-      // return Promise.reject(new Error(res.msg || '未知错误'))
-    }
-    return res
-    // }
-  },
-  error => {
-    removeToken()
-    removeUserInfo()
-    // location.reload()
-    console.log(error)
-    // return { code: 500, data: {} }
-    return Promise.reject()
-  }
-)
-
-export default service
+export default http

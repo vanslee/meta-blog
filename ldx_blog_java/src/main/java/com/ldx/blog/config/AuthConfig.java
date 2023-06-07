@@ -37,6 +37,7 @@ public class AuthConfig implements WebMvcConfigurer {
                         "/**/login",
                         "/**/registry",
                         "/**/logout",
+                        "/oauth/**",
                         "/upload/**",
                         "/article/list",
                         "/article/details/**",

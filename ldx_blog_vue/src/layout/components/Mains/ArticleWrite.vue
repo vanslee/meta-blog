@@ -20,7 +20,6 @@ import { useClipboard } from '@vueuse/core'
 import { Notification } from 'element-ui'
 import SubmitArticleDlg from '@/views/dlg/SubmitArticleDlg.vue'
 import { debounce, throttle } from 'lodash'
-import { getStorage, setStorage } from '@/utils/auth'
 export default {
   components: {
     SubmitArticleDlg
@@ -79,20 +78,18 @@ export default {
     }
   },
 
-  computed: {
-    // article_content() {
-    //   return this.store.local
-    // }
+  mounted() {
+    const content = localStorage.getItem('articleContent')
+    if (content) {
+      this.articleContent = localStorage.getItem('articleContent')
+    }
   },
   watch: {
     articleContent: debounce(function (newValue) {
-      if (newValue !== 'null') {
-        setStorage('content', newValue)
+      if (newValue) {
+        localStorage.setItem('articleContent', newValue)
       }
     }, 3000)
-  },
-  mounted() {
-    this.articleContent = getStorage('content')
   },
   methods: {
     /**
@@ -135,8 +132,7 @@ export default {
       })
     },
     saveData() {
-      setStorage('content', this.articleContent)
-      // setStorage('LITUBAO_article', this.articleContent)
+      localStorage.setItem('articleContent', this.articleContent)
       this.$notify({
         title: '提示',
         message: '内容已保存',
@@ -150,7 +146,7 @@ export default {
      * 发布文章
      */
     submitArticle() {
-      this.$refs['submitArticleRef'].showDlg()
+      this.$refs['submitArticleRef'].showDlg(this.articleContent)
     }
   }
 }

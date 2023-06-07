@@ -48,6 +48,8 @@ spring:
       max-request-size: 100MB
   mail:
     password: bmvjdypxyzgmbgfj
+  profiles:
+    active: dev
 files:
   path: //workspace//files//
 mybatis-plus:

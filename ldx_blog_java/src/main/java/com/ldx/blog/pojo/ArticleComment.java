@@ -75,6 +75,7 @@ public class ArticleComment implements Serializable {
     /**
      * 评论人头像
      */
+    @TableField(fill = FieldFill.INSERT)
     private String userAvatar;
     /**
      * 子评论列表

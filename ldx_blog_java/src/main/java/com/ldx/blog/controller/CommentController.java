@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author Uaena
@@ -25,7 +25,7 @@ public class CommentController {
     private ArticleCommentServiceImpl articleCommentService;
 
     @PostMapping("/comment_brief")
-    public Result<List<ArticleComment>> commentBriefApi(@RequestBody CommentPage commentPage) {
+    public Result<Map<String,Object>> commentBriefApi(@RequestBody CommentPage commentPage) {
         log.debug("查询简易评论:{}", commentPage);
         return articleCommentService.getCommentBriefService(commentPage);
     }

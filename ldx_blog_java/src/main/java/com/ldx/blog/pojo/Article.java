@@ -51,6 +51,7 @@ public class Article implements Serializable {
     /**
      *
      */
+    @TableField(fill = FieldFill.INSERT)
     private String imgUrl;
     /**
      *

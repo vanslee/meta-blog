@@ -120,8 +120,8 @@ export default {
       confirm_password: ''
     }
     const qq_redirect_uri = `https://graph.qq.com/oauth2.0/show?which=Login&display=pc&response_type=code&client_id=${process.env.VUE_APP_QQ_CLIENTID}&redirect_uri=${process.env.VUE_APP_QQ_REDIRECTURI}&state=litubao`
-    const git_redirect_uri = `https://gitee.com/oauth/authorize?client_id=${process.env.VUE_APP_GITEE_CLIENTID}&redirect_uri=${process.env.VUE_APP_GITEE_REDIRECTURI}&response_type=code`
-    return { params, userStore, isLoading: false, git_redirect_uri, qq_redirect_uri }
+    const gitee_redirect_uri = `https://gitee.com/oauth/authorize?client_id=${process.env.VUE_APP_GITEE_CLIENTID}&redirect_uri=${process.env.VUE_APP_GITEE_REDIRECTURI}&response_type=code`
+    return { params, userStore, isLoading: false, gitee_redirect_uri, qq_redirect_uri }
   },
   created() {
     // console.log(JSON.parse(localStorage.getItem('user')))

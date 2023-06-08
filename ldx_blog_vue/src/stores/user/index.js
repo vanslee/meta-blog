@@ -11,6 +11,18 @@ export const useUserStore = defineStore('user', {
   }),
   getters: {},
   actions: {
+    // 获取用户信息
+    async getUserInfo() {
+      const { code, data } = await userInfoApi()
+      if (code === 200) {
+        // 获取用户信息
+        data['avatarImgUrl'] = process.env.VUE_APP_WEBSITE_CDN + data['avatarImgUrl']
+        this.user = data
+        return true
+      } else {
+        return false
+      }
+    },
     // 用户登录获取token
     async login(params) {
       loginApi(params).then(async res => {

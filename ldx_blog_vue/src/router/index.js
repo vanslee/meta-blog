@@ -52,6 +52,17 @@ const constantRoutes = [
     ]
   },
   {
+    path: '/loading',
+    name: 'Loading',
+    title: '加载',
+    meta: {
+      requireAuth: false
+    },
+    component: () => import('@/views/error-page/loading.vue'),
+    hidden: true,
+    props: route => ({ query: route.query.tk })
+  },
+  {
     path: '/write',
     component: Layout,
     title: '发布文章',

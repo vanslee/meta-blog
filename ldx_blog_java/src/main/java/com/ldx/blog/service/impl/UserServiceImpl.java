@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 userMapper.insert(newUser);
                 try {
                     StpUtil.login(user.getId());
-                    return Result.success(StpUtil.getTokenInfo());
+                    return Result.success(ResultCodeEnum.OAUTH_SUCCESS,StpUtil.getTokenInfo());
                 } catch (RuntimeException e) {
                     throw new RuntimeException(e);
                 }

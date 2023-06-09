@@ -108,3 +108,7 @@ oauth:
     client_id: 102024615
     app_key: OeleJjvsZ6PVN1Qa
     redirect_uri: https%3A%2F%2Fwww.lidengxiang.top%2Foauth%2Fqq%2Flogin
+  github:
+    client_id: acec6bb3d04321c409fe
+    client_secret: e23bdd3a580bd39e688d02f9f4e61c6bf032ad86
+    redirect_uri: https%3A%2F%2Fwww.lidengxiang.top%2Foauth%2Fgithub%2Flogin

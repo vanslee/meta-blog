@@ -30,8 +30,8 @@
             <a :href="gitee_redirect_uri" class="social-icon">
               <i class="fab iconfont icon-gitee"></i>
             </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-alipay"></i>
+            <a :href="github_redirect_uri" class="social-icon">
+              <i class="fab iconfont">&#xe628;</i>
             </a>
           </div>
         </form>
@@ -77,8 +77,8 @@
             <a :href="gitee_redirect_uri" class="social-icon">
               <i class="fab iconfont icon-gitee"></i>
             </a>
-            <a href="#" class="social-icon">
-              <i class="fab fa-alipay"></i>
+            <a :href="github_redirect_uri" class="social-icon">
+              <i class="fab iconfont">&#xe628;</i>
             </a>
           </div>
         </form>
@@ -121,7 +121,8 @@ export default {
     }
     const qq_redirect_uri = `https://graph.qq.com/oauth2.0/show?which=Login&display=pc&response_type=code&client_id=${process.env.VUE_APP_QQ_CLIENTID}&redirect_uri=${process.env.VUE_APP_QQ_REDIRECTURI}&state=litubao`
     const gitee_redirect_uri = `https://gitee.com/oauth/authorize?client_id=${process.env.VUE_APP_GITEE_CLIENTID}&redirect_uri=${process.env.VUE_APP_GITEE_REDIRECTURI}&response_type=code`
-    return { params, userStore, isLoading: false, gitee_redirect_uri, qq_redirect_uri }
+    const github_redirect_uri = `https://github.com/login/oauth/authorize?client_id=${process.env.VUE_APP_GITHUB_CLIENTID}&redirect_uri=${process.env.VUE_APP_GITHUB_REDIRECTURI}&state=litubao`
+    return { params, userStore, isLoading: false, gitee_redirect_uri, qq_redirect_uri, github_redirect_uri }
   },
   created() {
     // console.log(JSON.parse(localStorage.getItem('user')))

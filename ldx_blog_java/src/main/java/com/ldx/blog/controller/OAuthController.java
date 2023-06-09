@@ -2,12 +2,15 @@ package com.ldx.blog.controller;
 
 import com.ldx.blog.pojo.oath.GiteeAccessToken;
 import com.ldx.blog.pojo.oath.gitee.GiteeUser;
+import com.ldx.blog.pojo.oath.github.GithubAccessToken;
+import com.ldx.blog.pojo.oath.github.GithubUser;
 import com.ldx.blog.pojo.oath.qq.QQAccessToken;
 import com.ldx.blog.pojo.oath.qq.QQOpenid;
 import com.ldx.blog.pojo.oath.qq.QQUserInfo;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.service.impl.UserServiceImpl;
 import com.ldx.blog.utils.HttpUtil;
+import com.ldx.blog.utils.IPUtil;
 import com.ldx.blog.utils.RestTemplateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +54,14 @@ public class OAuthController {
     private String GITEE_REDIRECT_URI;
     @Value("${oauth.qq.redirect_uri}")
     private String QQ_REDIRECT_URI;
+    @Value("${oauth.github.client_id}")
+    private String GITHUB_CLIENT_ID;
+    @Value("${oauth.github.client_secret}")
+    private String GITHUB_CLIENT_SECRET;
+    @Value("${oauth.github.redirect_uri}")
+    private String GITHUB_REDIRECT_URI;
     private final String GITEE_TOKEN_URI = "https://gitee.com/oauth/token?grant_type=authorization_code&code=";
+    private final String GITHUB_TOKEN_URI = "https://github.com/login/oauth/access_token?client_id=%s&client_secret=%s&code=%s&redirect_uri=%s";
     private final String QQ_TOKEN_URL = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&fmt=json&client_id=%s&client_secret=%s&code=%s&redirect_uri=%s";
     private final String QQ_OPENID_URL = "https://graph.qq.com/oauth2.0/me?access_token=%s&fmt=json";
     private final String QQ_USERINFO_URL = "https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s";
@@ -59,7 +69,7 @@ public class OAuthController {
     @GetMapping("/qq/login")
     public void qqLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam String code) throws IOException {
         log.debug("获取到的Code信息:{}", code);
-        String ip = request.getRemoteAddr();
+        String ip = IPUtil.ip(request);
         String ak_url = String.format(QQ_TOKEN_URL,QQ_CLIENT_ID, QQ_APP_SECRET, code,QQ_REDIRECT_URI);
         QQAccessToken tkVo = HttpUtil.getAccessToken(ak_url, QQAccessToken.class,"get");
         String openid_url = String.format(QQ_OPENID_URL, tkVo.getAccessToken());
@@ -76,11 +86,32 @@ public class OAuthController {
     public Result<String> wechatLogin() {
         return Result.success("success");
     }
+    @GetMapping("/github/login")
+    public void githubLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam String code) throws IOException {
+        log.debug("获取到的Code信息:{}", code);
+        String ip = IPUtil.ip(request);
+        // 获取Token
+        String access_token = String.format(GITHUB_TOKEN_URI,GITHUB_CLIENT_ID,GITHUB_CLIENT_SECRET,code,GITHUB_REDIRECT_URI);
+        GithubAccessToken akVo = HttpUtil.getAccessToken(access_token, GithubAccessToken.class,"post");
+        if (Objects.isNull(akVo) ||Objects.isNull(akVo.getAccessToken()) ) {
+            log.error("gitee登录获取AccessToken失败");
+            response.sendRedirect(ERROR_PAGE);
+        }
+        log.debug("获取到的AK信息:{}", akVo.getAccessToken());
+        String user_info_url = "https://api.github.com/user";
+        GithubUser githubUser = HttpUtil.getGithubUser(user_info_url, akVo.getAccessToken());
+        if (Objects.isNull(githubUser)){
+            response.sendRedirect(ERROR_PAGE);
+            return ;
+        }
+        userService.oauthLogin(githubUser, ip, response);
+
+    }
 
     @GetMapping("/gitee/login")
     public void giteeLogin(HttpServletRequest request, HttpServletResponse response, @RequestParam String code) throws IOException {
         log.debug("获取到的Code信息:{}", code);
-        String ip = request.getRemoteAddr();
+        String ip = IPUtil.ip(request);
         // 获取Token
         String access_token = GITEE_TOKEN_URI + code + "&client_id=" + GITEE_CLIENT_ID + "&redirect_uri=" + GITEE_REDIRECT_URI + "&client_secret=" + GITEE_CLIENT_SECRET;
         GiteeAccessToken accessToken = HttpUtil.getAccessToken(access_token, GiteeAccessToken.class,"post");

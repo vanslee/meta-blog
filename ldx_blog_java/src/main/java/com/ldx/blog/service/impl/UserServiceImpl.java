@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldx.blog.mapper.UserMapper;
 import com.ldx.blog.pojo.User;
 import com.ldx.blog.pojo.oath.gitee.GiteeUser;
+import com.ldx.blog.pojo.oath.github.GithubUser;
 import com.ldx.blog.pojo.oath.qq.QQUserInfo;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.result.ResultCodeEnum;
@@ -114,8 +115,36 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         .setUnionId(qqUserInfo.getOpenid())
                         .setUsername(qqUserInfo.getNickname())
                         .setPassword(password)
-                        .setTrueName(qqUserInfo.getNickname())
                         .setAvatarImgUrl("default.jpg")
+                        .setRecentlyLanded(ts);
+                userMapper.insert(newUser);
+                StpUtil.login(newUser.getId());
+                response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
+            } else {
+                user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
+                userMapper.updateById(user);
+                StpUtil.login(user.getId());
+                response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
+            }
+            return;
+        }
+        // GitHub登录
+        if (userInfo instanceof GithubUser) {
+            GithubUser githubUserInfo = (GithubUser) userInfo;
+            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(User::getUnionId, githubUserInfo.getId());
+            User user = userMapper.selectOne(lqw);
+            if (Objects.isNull(user)) {
+                long ts = System.currentTimeMillis() / 1000;
+                String password = BCrypt.hashpw(String.valueOf(ts));
+                // 如果用户不存在
+                User newUser = new User().setIp(ip)
+                        .setUnionId(String.valueOf(githubUserInfo.getId()))
+                        .setUsername(githubUserInfo.getName())
+                        .setPassword(password)
+                        .setAvatarImgUrl("default.jpg")
+                        .setEmail(githubUserInfo.getEmail())
+                        .setPersonalBrief(githubUserInfo.getBio())
                         .setRecentlyLanded(ts);
                 userMapper.insert(newUser);
                 StpUtil.login(newUser.getId());

@@ -83,7 +83,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         .setRecentlyLanded(ts);
                 userMapper.insert(newUser);
                 try {
-                    StpUtil.login(user.getId());
+                    StpUtil.login(newUser.getId());
                     return Result.success(ResultCodeEnum.OAUTH_SUCCESS,StpUtil.getTokenInfo());
                 } catch (RuntimeException e) {
                     throw new RuntimeException(e);

@@ -27,7 +27,7 @@ class HttpUtilTest {
     void getAccessToken() {
         String code = "f2dea59820928cfb51f9534f52368e74e91c36d435e098b14dd1ae0ade0fe7e1";
         String url = "https://gitee.com/oauth/token?grant_type=authorization_code&code="+code+"&client_id="+GITEE_CLIENT_ID+"&redirect_uri="+GITEE_REDIRECT_URI+"&client_secret="+GITEE_CLIENT_SECRET;
-        GiteeAccessToken accessToken = HttpUtil.getAccessToken(url, GiteeAccessToken.class);
+        GiteeAccessToken accessToken = HttpUtil.getAccessToken(url, GiteeAccessToken.class,"post");
         System.out.println(accessToken);
     }
     @Test

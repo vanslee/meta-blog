@@ -40,7 +40,7 @@ public class OAuthController {
     private String GITEE_CLIENT_SECRET;
     @Value("${oauth.gitee.redirect_uri}")
     private String GITEE_REDIRECT_URI;
-    private final String GITEE_TOKEN_URI = "https://gitee.com/oauth/token?grant_type=authorization_code&";
+    private final String GITEE_TOKEN_URI = "https://gitee.com/oauth/token?grant_type=authorization_code&code=";
 
     @GetMapping("/qq/login")
     public Result<String> qqLogin() {
@@ -59,8 +59,8 @@ public class OAuthController {
         // 获取Token
         String access_token = GITEE_TOKEN_URI+code+"&client_id="+GITEE_CLIENT_ID+"&redirect_uri="+GITEE_REDIRECT_URI+"&client_secret="+GITEE_CLIENT_SECRET;
         GiteeAccessToken accessToken = HttpUtil.getAccessToken(access_token, GiteeAccessToken.class);
-        String user_info = "https://gitee.com/api/v5/user?access_token?"+accessToken.getAccessToken();
-        String email_info = "https://gitee.com/api/v5/emails?access_token?"+accessToken.getAccessToken();
+        String user_info = "https://gitee.com/api/v5/user?access_token="+accessToken.getAccessToken();
+        String email_info = "https://gitee.com/api/v5/emails?access_token="+accessToken.getAccessToken();
         GiteeUser giteeUser = null;
         String email = null;
         try {

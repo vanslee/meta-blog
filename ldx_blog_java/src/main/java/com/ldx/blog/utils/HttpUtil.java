@@ -27,7 +27,6 @@ public class HttpUtil {
 
     public static  <T> T getAccessToken(String url, Class<T> type){
         log.info("========请求路径:{}",url);
-        log.info("========转换结果:{}",type);
         RequestBody body = RequestBody.create(MediaType.get("application/json; charset=utf-8"), "");
         Request request = new Request.Builder()
                 .url(url)

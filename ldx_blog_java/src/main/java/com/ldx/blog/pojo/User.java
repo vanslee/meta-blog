@@ -37,6 +37,7 @@ public class User implements Serializable {
     private String personalBrief;
     @TableField(exist = false)
     private Long articleCount;
+    @TableField(fill = FieldFill.INSERT)
     private String avatarImgUrl;
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private long recentlyLanded;

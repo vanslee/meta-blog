@@ -70,14 +70,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             lqw.eq(User::getUnionId, giteeUser.getId());
             User user = userMapper.selectOne(lqw);
             if (Objects.isNull(user)) {
+                long ts = System.currentTimeMillis() / 1000;
+                String password = BCrypt.hashpw(String.valueOf(ts));
                 // 如果用户不存在
                 User newUser = new  User().setIp(ip)
                         .setUnionId(giteeUser.getId())
                         .setUsername(giteeUser.getLogin())
+                        .setPassword(password)
                         .setTrueName(giteeUser.getName())
-                        .setAvatarImgUrl(giteeUser.getAvatarUrl())
+                        .setAvatarImgUrl("default.jpg")
                         .setEmail(giteeUser.getEmail())
-                        .setRecentlyLanded(System.currentTimeMillis() / 1000);
+                        .setRecentlyLanded(ts);
                 userMapper.insert(newUser);
                 try {
                     StpUtil.login(user.getId());

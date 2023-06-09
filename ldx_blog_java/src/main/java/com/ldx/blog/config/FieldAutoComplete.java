@@ -3,6 +3,7 @@ package com.ldx.blog.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.ldx.blog.pojo.Article;
 import com.ldx.blog.pojo.ArticleComment;
+import com.ldx.blog.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,9 +29,15 @@ public class FieldAutoComplete implements MetaObjectHandler {
         this.setFieldValByName("recentlyLanded", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("createTime", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("updateTime", System.currentTimeMillis() / 1000, metaObject);
-        this.setFieldValByName("avatarImgUrl", metaObject.getOriginalObject().toString().replace(CDN, ""), metaObject);
-        this.setFieldValByName("userAvatar", ((ArticleComment) metaObject.getOriginalObject()).getUserAvatar().replace(CDN,""), metaObject);
-        this.setFieldValByName("imgUrl", ((Article) metaObject.getOriginalObject()).getImgUrl().replace(CDN,""), metaObject);
+        if (metaObject.getOriginalObject() instanceof User) {
+            this.setFieldValByName("avatarImgUrl", (((User) metaObject.getOriginalObject()).getAvatarImgUrl().replace(CDN, "")), metaObject);
+        }
+        if (metaObject.getOriginalObject() instanceof ArticleComment) {
+            this.setFieldValByName("userAvatar", ((ArticleComment) metaObject.getOriginalObject()).getUserAvatar().replace(CDN, ""), metaObject);
+        }
+        if (metaObject.getOriginalObject() instanceof Article) {
+            this.setFieldValByName("imgUrl", ((Article) metaObject.getOriginalObject()).getImgUrl().replace(CDN, ""), metaObject);
+        }
 
     }
 

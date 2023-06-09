@@ -10,14 +10,14 @@ export default {
     return {}
   },
   mounted() {
+    const token = this.$route.params.tk
     const loading = this.$loading({
       lock: true,
       text: 'Loading',
       spinner: 'el-icon-loading',
       background: 'rgba(0, 0, 0, 0.7)'
     })
-    const userStore = useUserStore()
-    userStore.token = this.$route.query.tk
+    this.setToken(token)
     const success = this.getUserInfo()
     loading.close()
     if (success) {
@@ -31,7 +31,7 @@ export default {
     ...mapState(useUserStore, ['user'])
   },
   methods: {
-    ...mapActions(useUserStore, ['login', 'getUserInfo'])
+    ...mapActions(useUserStore, ['setToken', 'getUserInfo'])
   }
 }
 </script>

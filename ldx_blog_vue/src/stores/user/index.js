@@ -23,6 +23,10 @@ export const useUserStore = defineStore('user', {
         return false
       }
     },
+    async setToken(token) {
+      this.hasLogin = true
+      this.token = token
+    },
     // 用户登录获取token
     async login(params) {
       loginApi(params).then(async res => {

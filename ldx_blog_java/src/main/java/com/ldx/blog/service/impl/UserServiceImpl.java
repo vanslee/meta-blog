@@ -12,9 +12,12 @@ import com.ldx.blog.result.Result;
 import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,6 +30,10 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
+    @Value("${redirect.url}")
+    private String REDIRECT_URL;
+    @Value("${redirect.error-page}")
+    private String ERROR_PAGE;
     @Resource
     private UserMapper userMapper;
 
@@ -62,7 +69,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return Result.success(user);
     }
 
-    public Result<SaTokenInfo> oauthLogin(Object userInfo, String ip) {
+    public void oauthLogin(Object userInfo, String ip, HttpServletResponse response) throws IOException {
         if (userInfo instanceof GiteeUser) {
             GiteeUser giteeUser = (GiteeUser) userInfo;
             // Gitee登录
@@ -73,7 +80,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 long ts = System.currentTimeMillis() / 1000;
                 String password = BCrypt.hashpw(String.valueOf(ts));
                 // 如果用户不存在
-                User newUser = new  User().setIp(ip)
+                User newUser = new User().setIp(ip)
                         .setUnionId(giteeUser.getId())
                         .setUsername(giteeUser.getLogin())
                         .setPassword(password)
@@ -82,25 +89,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         .setEmail(giteeUser.getEmail())
                         .setRecentlyLanded(ts);
                 userMapper.insert(newUser);
-                try {
-                    StpUtil.login(newUser.getId());
-                    return Result.success(ResultCodeEnum.OAUTH_SUCCESS,StpUtil.getTokenInfo());
-                } catch (RuntimeException e) {
-                    throw new RuntimeException(e);
-                }
+                StpUtil.login(newUser.getId());
+                response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
             } else {
                 user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
-                try {
-                    userMapper.updateById(user);
-                    StpUtil.login(user.getId());
-                    return Result.success(StpUtil.getTokenInfo());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-
-                }
+                userMapper.updateById(user);
+                StpUtil.login(user.getId());
+                response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
             }
         }
-        return Result.fail(ResultCodeEnum.LOGIN_ERROR);
+        log.error("gitee登录失败");
+        response.sendRedirect(ERROR_PAGE);
     }
 
     public Result<ResultCodeEnum> doRegistry(User params, String ip) {

@@ -28,12 +28,13 @@ public class UserController {
     @PostMapping("login")
     public Result<SaTokenInfo> doLoginApi(HttpServletRequest request, @RequestBody Map<String, String> loginForm) {
         String ip = IPUtil.ip(request);
-        return userService.doLogin(loginForm,ip);
+        return userService.doLogin(loginForm, ip);
     }
+
     @PostMapping("registry")
-    public Result<ResultCodeEnum> doRegistryApi(HttpServletRequest request,  @RequestBody @Valid User user) {
+    public Result<ResultCodeEnum> doRegistryApi(HttpServletRequest request, @RequestBody @Valid User user) {
         String ip = IPUtil.ip(request);
-        return userService.doRegistry(user,ip);
+        return userService.doRegistry(user, ip);
     }
 
     @GetMapping("logout")

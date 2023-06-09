@@ -52,7 +52,7 @@ const constantRoutes = [
     ]
   },
   {
-    path: '/loading',
+    path: '/loading/:tk',
     name: 'Loading',
     title: '加载',
     meta: {

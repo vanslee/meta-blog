@@ -3,7 +3,6 @@ import { throttle } from 'lodash'
 import { close, start } from '@/utils/nprogress'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
-import router from '@/router'
 const http = {}
 const service = axios.create({
   baseURL: '/apis',
@@ -26,6 +25,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     close()
+    console.log('response', response)
     return response.data
   },
   error => {
@@ -39,12 +39,6 @@ http.get = function (url, options) {
       .get(url, options)
       .then(response => {
         if (response.code === 200) {
-          resolve(response)
-        } else if (response.code === 211) {
-          const {
-            data: { tokenValue }
-          } = response
-          router.push({ name: 'Loading', query: { tk: tokenValue } })
           resolve(response)
         } else {
           throttled(response.message)

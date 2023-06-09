@@ -54,6 +54,7 @@ public class OAuthController {
 
     @GetMapping("/gitee/login")
     public Result<SaTokenInfo> giteeLogin(HttpServletRequest request, @RequestParam String code) {
+        log.debug("获取到的code信息:{}",code);
         String ip = request.getRemoteAddr();
         // 获取Token
         String access_token = GITEE_TOKEN_URI+code+"&client_id="+GITEE_CLIENT_ID+"&redirect_uri="+GITEE_REDIRECT_URI+"&client_secret="+GITEE_CLIENT_SECRET;

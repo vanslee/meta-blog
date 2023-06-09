@@ -79,7 +79,5 @@ public class Article implements Serializable {
     private String articleContent;
     @TableField(exist = false)
     private String personalBrief;
-    @TableField(exist = false)
-    private User user;
 
 }

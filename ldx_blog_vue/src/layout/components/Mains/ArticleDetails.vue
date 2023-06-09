@@ -11,12 +11,12 @@
     </el-row>
     <el-row type="flex" align="middle">
       <el-col :span="2">
-        <el-image v-if="user.avatarImgUrl" :src="user.avatarImgUrl" class="user-avatar" />
+        <el-image v-if="author.avatarImgUrl" :src="author.avatarImgUrl" class="user-avatar" />
       </el-col>
       <el-col :span="18">
-        <el-col>{{ user.username }}</el-col>
+        <el-col>{{ author.username }}</el-col>
         <el-col>
-          <span style="color: gray; font-size: 0.75rem">粉丝: {{ user.fans }} 文章: {{ user.articleCount }}</span>
+          <span style="color: gray; font-size: 0.75rem">粉丝: {{ author.fans }} 文章: {{ author.articleCount }}</span>
         </el-col>
       </el-col>
       <el-col :span="3"><el-button style="width: 100%" type="primary">关注</el-button></el-col>
@@ -34,7 +34,6 @@
 <script>
 import Comment from '@/views/comment'
 import { formatTime } from '@/utils/time'
-import { useUserStore } from '@/stores/user'
 import { mapActions, mapState } from 'pinia'
 import { useArticleStore } from '@/stores/article'
 export default {
@@ -42,8 +41,7 @@ export default {
     Comment
   },
   computed: {
-    ...mapState(useArticleStore, ['titles', 'article']),
-    ...mapState(useUserStore, ['user']),
+    ...mapState(useArticleStore, ['titles', 'article', 'author']),
     article_id() {
       return parseInt(this.$route.params.id)
     }

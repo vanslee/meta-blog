@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldx.blog.mapper.UserMapper;
 import com.ldx.blog.pojo.User;
 import com.ldx.blog.pojo.oath.gitee.GiteeUser;
+import com.ldx.blog.pojo.oath.qq.QQUserInfo;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.UserService;
@@ -70,9 +71,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     public void oauthLogin(Object userInfo, String ip, HttpServletResponse response) throws IOException {
+        // Gitee登录
         if (userInfo instanceof GiteeUser) {
             GiteeUser giteeUser = (GiteeUser) userInfo;
-            // Gitee登录
             LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
             lqw.eq(User::getUnionId, giteeUser.getId());
             User user = userMapper.selectOne(lqw);
@@ -97,8 +98,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                 StpUtil.login(user.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
             }
+            return;
         }
-        log.error("gitee登录失败");
+        // QQ登录
+        if (userInfo instanceof QQUserInfo) {
+            QQUserInfo qqUserInfo = (QQUserInfo) userInfo;
+            LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(User::getUnionId, qqUserInfo.getOpenid());
+            User user = userMapper.selectOne(lqw);
+            if (Objects.isNull(user)) {
+                long ts = System.currentTimeMillis() / 1000;
+                String password = BCrypt.hashpw(String.valueOf(ts));
+                // 如果用户不存在
+                User newUser = new User().setIp(ip)
+                        .setUnionId(qqUserInfo.getOpenid())
+                        .setUsername(qqUserInfo.getNickname())
+                        .setPassword(password)
+                        .setTrueName(qqUserInfo.getNickname())
+                        .setAvatarImgUrl("default.jpg")
+                        .setRecentlyLanded(ts);
+                userMapper.insert(newUser);
+                StpUtil.login(newUser.getId());
+                response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
+            } else {
+                user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
+                userMapper.updateById(user);
+                StpUtil.login(user.getId());
+                response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
+            }
+            return;
+        }
+        log.error("第三方登录失败");
         response.sendRedirect(ERROR_PAGE);
     }
 

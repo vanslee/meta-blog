@@ -104,3 +104,7 @@ oauth:
     client_id: ea08e466485f68ea7158209c9c69202d9ef99ce012b47f446d6d5221654b4c77
     client_secret: 552f4c3a170997e7da3a2182cef43700e5c41f69b33b9595ff2ffa05b703a01b
     redirect_uri: https%3A%2F%2Fwww.lidengxiang.top%2Foauth%2Fgitee%2Flogin
+  qq:
+    client_id: 102024615
+    app_key: OeleJjvsZ6PVN1Qa
+    redirect_uri: https%3A%2F%2Fwww.lidengxiang.top%2Foauth%2Fqq%2Flogin

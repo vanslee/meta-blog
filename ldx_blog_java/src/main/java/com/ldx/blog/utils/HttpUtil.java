@@ -25,13 +25,22 @@ public class HttpUtil {
     }
 
 
-    public static  <T> T getAccessToken(String url, Class<T> type){
+    public static  <T> T getAccessToken(String url, Class<T> type,String method){
         log.info("========请求路径:{}",url);
         RequestBody body = RequestBody.create(MediaType.get("application/json; charset=utf-8"), "");
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
+        Request request = null;
+        if (method.equals("post")){
+            request = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .build();
+        }
+        if(method.equals("get")){
+            request = new Request.Builder()
+                    .url(url)
+                    .get()
+                    .build();
+        }
         try (Response response = client.newCall(request).execute()) {
             if (response.code() == HttpStatus.OK.value()){
                return JSON.parseObject(response.body().bytes(), type);

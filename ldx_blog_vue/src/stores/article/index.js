@@ -6,7 +6,8 @@ import { defineStore } from 'pinia'
 export const useArticleStore = defineStore('article', {
   // other options...
   state: () => ({
-    article: '',
+    article: {},
+    author: {},
     titles: []
   }),
   getters: {
@@ -30,8 +31,10 @@ export const useArticleStore = defineStore('article', {
     async getArticleDetails(articleId) {
       const { code, data } = await getArticleDetailsApi(articleId)
       if (code === 200) {
-        this.article = data
+        this.author = data['author']
+        this.article = data['article']
         this.article.imgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.imgUrl}`
+        this.author.avatarImgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.author.avatarImgUrl}`
         return true
       } else {
         return false

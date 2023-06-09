@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -130,7 +132,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
     }
 
-    public Result<Article> getArticleById(long articleId) {
+    public Result<Map<String,Object>> getArticleById(long articleId) {
+        Map<String,Object> resultMap = new HashMap<>(2);
         Article article = articleMapper.selectById(articleId);
         LambdaQueryWrapper<Article> lqw1 = new LambdaQueryWrapper<>();
         lqw1.eq(Article::getUserId, article.getUserId());
@@ -144,8 +147,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         user.setArticleCount(articleCount);
         ArticleDetails articleDetails = articleDetailsMapper.selectById(articleId);
         article.setArticleContent(articleDetails.getContent());
-        article.setUser(user);
-        return Result.success(article);
+        resultMap.put("article",article);
+        resultMap.put("author",user);
+        return Result.success(resultMap);
     }
 }
 

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -43,7 +44,7 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/details/{article_id}")
-    public Result<Article> getArticleDetailsByIdApi(@PathVariable("article_id") long articleId) {
+    public Result<Map<String,Object>> getArticleDetailsByIdApi(@PathVariable("article_id") long articleId) {
         log.debug("用户查询文章详情: {}", articleId);
         String articleViewsKey = RedisKey.ARTICLE_VIEW.concat(String.valueOf(articleId));
         Integer views = (Integer) redisService.get(articleViewsKey);

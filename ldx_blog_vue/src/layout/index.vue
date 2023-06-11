@@ -5,13 +5,13 @@
         <BlogHeader />
       </el-header>
       <el-container>
-        <el-aside width="15%">
+        <el-aside width="15%" class="hidden-xs-only">
           <router-view name="left_aside" />
         </el-aside>
         <el-main>
           <router-view name="main" />
         </el-main>
-        <el-aside width="15%">
+        <el-aside width="15%" class="hidden-xs-only">
           <router-view name="right_aside" />
           <!-- <BlogRightAside /> -->
         </el-aside>

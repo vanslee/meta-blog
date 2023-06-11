@@ -10,7 +10,10 @@
       </span>
     </el-row>
     <el-row type="flex" align="middle">
-      <el-col :span="2">
+      <el-col :span="2" class="hidden-xs-only">
+        <el-image v-if="author.avatarImgUrl" :src="author.avatarImgUrl" class="user-avatar" />
+      </el-col>
+      <el-col :span="5" class="hidden-sm-and-up">
         <el-image v-if="author.avatarImgUrl" :src="author.avatarImgUrl" class="user-avatar" />
       </el-col>
       <el-col :span="18">
@@ -19,7 +22,8 @@
           <span style="color: gray; font-size: 0.75rem">粉丝: {{ author.fans }} 文章: {{ author.articleCount }}</span>
         </el-col>
       </el-col>
-      <el-col :span="3"><el-button style="width: 100%" type="primary">关注</el-button></el-col>
+      <el-col :span="3" class="hidden-xs-only"><el-button style="width: 100%" type="primary">关注</el-button></el-col>
+      <el-col :span="5" class="hidden-sm-and-up"><el-button style="width: 100%" type="primary">关注</el-button></el-col>
     </el-row>
     <el-image
       v-if="article.imgUrl"

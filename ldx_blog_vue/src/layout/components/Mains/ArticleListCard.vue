@@ -1,6 +1,6 @@
 <template>
   <div class="scorll-wrapper">
-    <el-timeline>
+    <el-timeline style="padding: 0">
       <el-timeline-item
         v-for="article in articles"
         :key="article.id"
@@ -8,7 +8,8 @@
         placement="top"
       >
         <el-card>
-          <ArticleCard :article="article" />
+          <ArticleCard class="hidden-xs-only" :article="article" />
+          <ArticleMobile class="hidden-sm-and-up" :article="article" />
         </el-card>
       </el-timeline-item>
     </el-timeline>
@@ -25,10 +26,12 @@
 import { formatTimeStamp } from '@/utils/time'
 import { getArticleListApi } from '@/apis/article'
 import ArticleCard from '@/layout/components/Mains/ArticieCard.vue'
+import ArticleMobile from '@/layout/components/Mains/ArticleMobile.vue'
 import { useUserStore } from '@/stores/user'
 export default {
   components: {
-    ArticleCard
+    ArticleCard,
+    ArticleMobile
   },
   data() {
     const userStore = useUserStore()
@@ -63,6 +66,9 @@ export default {
 }
 </script>
 <style scoped>
+::v-deep .el-timeline-item__wrapper {
+  padding-left: 18px;
+}
 .article_box {
   height: 100%;
 }

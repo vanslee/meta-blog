@@ -1,19 +1,28 @@
 <template>
   <el-menu :router="false" class="header-menu" :default-active="activeIndex" mode="horizontal">
-    <el-menu-item @click="$router.push({ name: 'Index' })">首页</el-menu-item>
-    <el-menu-item index="2">友链</el-menu-item>
+    <el-menu-item index="1" @click="$router.push({ name: 'Index' })">首页</el-menu-item>
+    <el-menu-item index="2" class="hidden-xs-only">友链</el-menu-item>
     <el-menu-item index="3">文章分类</el-menu-item>
     <el-menu-item index="4">文章标签</el-menu-item>
-    <el-menu-item index="5">照片墙</el-menu-item>
-    <el-menu-item index="6">捐赠</el-menu-item>
+    <el-menu-item index="5" class="hidden-xs-only">照片墙</el-menu-item>
+    <el-menu-item index="6" class="hidden-xs-only">捐赠</el-menu-item>
     <el-menu-item index="7" v-if="!userStore.hasLogin" @click="$router.push({ name: 'Login' })">登录</el-menu-item>
     <el-submenu v-else index="8">
       <template slot="title">
         <el-image
+          class="hidden-xs-only"
           style="border-radius: 50%; width: 40px; height: 40px; margin-right: 10px"
           :src="user.avatarImgUrl"
         ></el-image>
-        <span>
+        <el-image
+          class="hidden-sm-and-up"
+          style="border-radius: 50%; width: 8vw; height: 8vw; border: 1px solid red"
+          :src="user.avatarImgUrl"
+        ></el-image>
+        <span class="hidden-xs-only">
+          {{ user.username }}
+        </span>
+        <span class="hidden-sm-and-up" style="font-size: 0.75rem">
           {{ user.username }}
         </span>
       </template>
@@ -62,6 +71,13 @@ export default {
 }
 </script>
 <style scoped>
+::v-deep .el-menu--horizontal > .el-submenu .el-submenu__icon-arrow {
+  margin-left: 0;
+}
+* {
+  padding: 0;
+  margin: 0;
+}
 .header-menu {
   display: flex;
   justify-content: space-between;

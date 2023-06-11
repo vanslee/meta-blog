@@ -9,7 +9,8 @@ import '@/assets/iconfont/iconfont.css'
 import ElementUI, { Table } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
-
+import VMdPreviewHtml from '@kangc/v-md-editor/lib/preview-html'
+import '@kangc/v-md-editor/lib/style/preview-html.css'
 Vue.use(PiniaVuePlugin)
 /**
  * ----------------------------
@@ -33,6 +34,7 @@ VMdEditor.use(githubTheme, {
   Hljs: hljs
 })
 VMdEditor.use(createCopyCodePlugin())
+Vue.use(VMdPreviewHtml)
 Vue.use(VMdPreview)
 Vue.use(VMdEditor)
 /**

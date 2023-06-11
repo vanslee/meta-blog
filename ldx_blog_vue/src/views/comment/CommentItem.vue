@@ -2,10 +2,62 @@
   <div>
     <el-divider />
     <el-row>
-      <el-col :span="2">
+      <el-col :span="2" class="hidden-xs-only">
         <el-image :src="`${cdn}${comment.userAvatar}`" class="user-avatar" />
       </el-col>
-      <el-col :span="20">
+      <el-col :span="4" class="hidden-sm-and-up">
+        <el-image style="width: 12vw" :src="`${cdn}${comment.userAvatar}`" />
+      </el-col>
+      <el-col :span="16" class="hidden-sm-and-up">
+        <el-row>
+          <el-row>
+            {{ comment.userNick }}
+            <i style="color: red">[作者]</i>
+          </el-row>
+          <el-row>{{ comment.content }}</el-row>
+          <el-row>
+            {{ formatTime(comment.createTime) }} {{ comment.location }} &emsp; &emsp;
+            <i class="iconfont">&#xe717;</i>
+            {{ comment.likes }}
+            &nbsp;
+            <i class="iconfont">&#xe716;</i>
+            &emsp; &emsp;
+            <i @click="showCommmentInput(comment.id, comment.id, comment.userNick)">回复</i>
+          </el-row>
+        </el-row>
+        <el-row
+          style="margin-top: 15px"
+          type="flex"
+          align="middle"
+          v-for="children in comment.childrens"
+          :key="children.id"
+        >
+          <el-col :span="2">
+            <el-image
+              :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
+              :src="`${cdn}${children.userAvatar}`"
+            />
+          </el-col>
+          <el-col :span="22">
+            <el-row>
+              <el-row>
+                <i>{{ children.userNick }}</i>
+                回复 {{ children.content }}
+              </el-row>
+              <el-row>
+                {{ formatTime(children.createTime) }} {{ children.location }} &emsp; &emsp;
+                <i class="iconfont">&#xe717;</i>
+                {{ children.likes }}
+                &nbsp;
+                <i class="iconfont">&#xe716;</i>
+                &emsp; &emsp;
+                <i @click="showCommmentInput(comment.id, children.id, children.userNick)">回复</i>
+              </el-row>
+            </el-row>
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="20" class="hidden-xs-only">
         <el-row>
           <el-row>
             {{ comment.userNick }}
@@ -62,6 +114,7 @@
       :show-close="false"
       style="width: 50%; margin: 0 auto"
       :visible.sync="commentInputVisible"
+      class="hidden-xs-only"
     >
       <el-row>
         <el-input type="textarea" :rows="3" placeholder="机会是留给有准备的人" v-model="params.content" />
@@ -80,6 +133,30 @@
         :loading="isLoading"
         @click="submit"
         style="position: absolute; right: 10px; bottom: 20px"
+      >
+        发表评论
+      </el-button>
+    </el-drawer>
+    <el-drawer
+      title="发表评论"
+      direction="btt"
+      :show-close="false"
+      :visible.sync="commentInputVisible"
+      class="hidden-sm-and-up"
+    >
+      <el-input style="width: 90vw" placeholder="机会是留给有准备的人" v-model="params.content">
+        <el-popover trigger="click" slot="append">
+          <VEmojiPicker @select="selectReplyEmoji" />
+          <el-button slot="reference">
+            <i class="el-icon-wind-power"></i>
+          </el-button>
+        </el-popover>
+      </el-input>
+      <el-button
+        type="primary"
+        :loading="isLoading"
+        @click="submit"
+        style="position: absolute; right: 16vw; bottom: 20px"
       >
         发表评论
       </el-button>

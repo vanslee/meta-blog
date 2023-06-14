@@ -1,10 +1,12 @@
 package com.ldx.blog.utils;
 
-import com.ldx.blog.result.OssClientConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 /**
@@ -14,23 +16,19 @@ import java.util.Base64;
 @Slf4j
 public class FileUtil {
     /**
-     * 上传文件到七牛云OSS
-     *
-     * @param file 文件流
-     * @return 返回文件URL
+     * 将文本内容变成md文件
      */
-    public String uploadFile(File file, String subCatalog) {
-        log.info("FileUtil uploadFile filePath:[{}],fileName:[{}]", file.getPath(), file.getName());
-        //上传至七牛云OSS
-        String fileName = QiNiuYunOssUtil.uploadFile2OSS(file);
-        String picUrl = "https://" + OssClientConstants.ENDPOINT + "/" + fileName;
-
-        //删除临时生成的文件
-        File deleteFile = new File(file.toURI());
-        deleteFile.delete();
-
-        return picUrl;
-
+    public static File generateMarkdown(String fileName, String content) {
+        try {
+            Path path = Paths.get(System.getProperty("user.dir"), "file", fileName.concat(".md"));
+            Files.createDirectories(path.getParent());
+            try (FileWriter writer = new FileWriter(path.toFile(), true)) {
+                writer.write(content);
+                return path.toFile();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -119,7 +117,7 @@ public class FileUtil {
             dir.mkdirs();
         }
         if (StringUtil.isEmpty(multipartFile.getName()) || multipartFile.getSize() <= 0) {
-           log.error("用户上传了空文件:{}",System.currentTimeMillis());
+            log.error("用户上传了空文件:{}", System.currentTimeMillis());
         } else {
             try {
                 InputStream ins = multipartFile.getInputStream();

@@ -1,5 +1,6 @@
 package com.ldx.blog.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -8,10 +9,13 @@ import com.ldx.blog.mapper.*;
 import com.ldx.blog.pojo.*;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.service.ArticleService;
+import com.ldx.blog.utils.FileUtil;
+import com.ldx.blog.utils.QiNiuYunOssUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         implements ArticleService {
     private String QINIU_CDN;
-    private final Integer CONTENT_LENGTH = 50;
+    private final Integer CONTENT_LENGTH = 20;
     @Value("${website.config.cdn}")
     private String CDN_WEBSITE;
     @Resource
@@ -46,6 +50,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private ArticleTagMapper articleTagMapper;
     @Resource
     private ArticleDetailsMapper articleDetailsMapper;
+    @Resource
+    private QiNiuYunOssUtil ossUtil;
 
     public Result<IPage<Article>> getArticlePage(Integer current, Integer size) {
         LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
@@ -82,17 +88,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     public boolean publishArticle(Article article) {
         try {
-            String omission;
-            if (article.getArticleContent().length() > CONTENT_LENGTH) {
-                omission = article.getArticleContent().substring(0, CONTENT_LENGTH);
-            } else {
-                omission = article.getArticleContent();
-            }
-            article.setArticleOmission(omission);
             article.setImgUrl(article.getImgUrl());
+            File file = FileUtil.generateMarkdown(article.getArticleTitle(), article.getArticleContent());
+            String url = ossUtil.uploadMarkdown(file, StpUtil.getLoginId() + "/");
+            article.setMdUrl(url);
             articleMapper.insert(article);
             Long articleId = article.getId();
-            articleDetailsMapper.insert(new ArticleDetails(article.getId(), article.getArticleContent()));
             List<String> categories = article.getCategories();
             List<String> tags = article.getTags();
             List<Categories> articleCategories = categoriesMapper.selectList(null);
@@ -145,8 +146,6 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 作者的用户名粉丝数
         User user = userMapper.selectOne(lqw);
         user.setArticleCount(articleCount);
-        ArticleDetails articleDetails = articleDetailsMapper.selectById(articleId);
-        article.setArticleContent(articleDetails.getContent());
         resultMap.put("article",article);
         resultMap.put("author",user);
         return Result.success(resultMap);

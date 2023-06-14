@@ -15,8 +15,8 @@
               <span style="font-size: 1.25rem">{{ article.articleTitle }}</span>
             </el-col>
             <el-col>
-              <el-link type="info" v-for="tag in article.tags" :key="tag">{{ tag }} &nbsp;</el-link>
-              <el-link type="info" v-for="category in article.categories" :key="category">
+              <el-link type="info" v-for="(tag, index) in article.tags" :key="'tag' + index">{{ tag }} &nbsp;</el-link>
+              <el-link type="info" v-for="(category, index) in article.categories" :key="'category' + index">
                 {{ category }} &nbsp;
               </el-link>
             </el-col>

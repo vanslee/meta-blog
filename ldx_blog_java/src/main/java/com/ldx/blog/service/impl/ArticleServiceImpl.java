@@ -59,6 +59,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         IPage<Article> iPage = new Page<>(current, size);
         page(iPage, lqw);
         iPage.getRecords().forEach(article -> {
+            article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
             article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
             Long userId = article.getUserId();
             Long articleId = article.getId();

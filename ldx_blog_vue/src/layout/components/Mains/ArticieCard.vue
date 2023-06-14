@@ -26,7 +26,7 @@
 
       <el-row style="cursor: pointer">
         <div @click="jumpToArticleDetails">
-          <v-md-preview :text="article.articleOmission" />
+          <v-md-preview :text="content" />
         </div>
       </el-row>
       <el-row :gutter="10">
@@ -50,6 +50,7 @@
   </el-row>
 </template>
 <script>
+import { getMarkdownTextApi } from '@/apis/article'
 export default {
   props: {
     article: {
@@ -59,14 +60,22 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      content: ''
+    }
   },
   created() {},
   computed: {},
-  mounted() {},
+  mounted() {
+    this.fetchData()
+  },
   methods: {
     jumpToArticleDetails() {
       this.$router.push({ name: `Article`, params: { id: this.article.id } })
+    },
+    async fetchData() {
+      const { text } = await getMarkdownTextApi(this.article.mdUrl)
+      this.content = text
     }
   }
 }

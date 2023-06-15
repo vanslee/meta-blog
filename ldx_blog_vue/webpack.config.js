@@ -1,7 +1,9 @@
 // webpack.config.js
 const path = require('path')
 const { VueLoaderPlugin } = require('vue-loader')
-const StyleLintPlugin = require('stylelint-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
 /**
  * @type {import('webpack').Configuration}
  */
@@ -20,47 +22,86 @@ const config = {
     mode: 'development',
     module: {
         rules: [
-            //eslint
-            // {
-            //     enforce: 'pre',
-            //     test: /\.(js|vue)$/,
-            //     loader: 'eslint-loader',
-            //     exclude: /node_modules/
-            // },
-            // vue规则
             {
                 test: /\.vue$/,
                 loader: 'vue-loader'
             },
-            // 处理js
             {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                exclude: file => (
-                    /node_modules/.test(file) &&
-                    !/\.vue\.js/.test(file)
-                )
-            },
-            // 处理css
-            {
-                test: /\.css$/,
-                use: [
-                    'vue-style-loader',
+                oneOf: [
+
+                    // 处理css
                     {
-                        loader: 'css-loader',
-                        options: { importLoaders: 1 }
+                        test: /\.css$/, // 正则匹配需要处理的文件后缀名
+                        // loader: 'style-loader' // 使用loader字段时,可以只传入一个loader,而使用use,则需要多个
+                        use: [
+                            // 'style-loader',
+                            MiniCssExtractPlugin.loader,
+                            'css-loader',
+                            {
+                                loader: 'postcss-loader',
+                                options: {
+                                    postcssOptions: {
+                                        plugins: ['postcss-preset-env']
+                                    }
+                                }
+                            }
+                        ] // 处理样式资源 style-loader和css-loader缺一不可
                     },
+                    {
+                        test: /\.scss$/,
+                        use: [
+                            'vue-style-loader',
+                            'css-loader',
+                            'sass-loader'
+                        ]
+                    },
+                    {
+                        test: /\.sass$/, // postcss识别不了sass语法
+                        use: ['style-loader', 'css-loader', 'sass-loader'] // 处理sass需要这三个,缺一不可
+                    },
+                    {
+                        test: /\.(png|jpe?g|gif|svg|webp)$/,
+                        type: 'asset/resource',
+                        parser: {
+                            dataUrlCondition: {
+                                maxSize: 200 * 1024
+                            }
+                        },
+                        generator: {
+                            filename: 'static/imgs/[hash][ext][query]' // target/static/imgs/....
+                        }
+                    },
+                    {
+                        test: /\.(ttf|woff|woff2)$/,
+                        type: 'asset/resource',
+                        generator: {
+                            filename: 'static/fonts/[hash][ext][query]'
+                        }
+                    },
+                    {
+                        test: /\.js$/,
+                        // exclude: /node_modules/,
+                        include: path.resolve(__dirname, './src'), // 只转换src目录下的代码
+                        // use: ['babel-loader'],
+                        loader: 'babel-loader', // 开启缓存就需要注释use: ['babel-loader'],并且缓存文件在 node_modules/.bin
+                        options: {
+                            cacheDirectory: true,
+                            cacheCompression: false
+                        }
+                    }
                 ]
             }
         ]
     },
     plugins: [
-        // vue-loader
         new VueLoaderPlugin(),
-        new StyleLintPlugin({
-            files: ['**/*.{vue,htm,html,css,sss,less,scss,sass}'],
-        })
+        new MiniCssExtractPlugin({
+            filename: 'static/css/index.css'
+        }),
+        new HtmlWebpackPlugin(),
+        new CssMinimizerPlugin(),
     ],
+    devtool: 'source-map'
 }
 config.devServer = {
     port: 8080,

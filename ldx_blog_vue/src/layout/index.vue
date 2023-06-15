@@ -21,22 +21,22 @@
   </div>
 </template>
 <script>
-import BlogFooter from '@/layout/components/Footers/BlogFooter.vue'
-import BlogHeader from '@/layout/components/Headers/BlogHeader.vue'
+import BlogFooter from "@/layout/components/Footers/BlogFooter.vue";
+import BlogHeader from "@/layout/components/Headers/BlogHeader.vue";
 // import BlogRightAside from '@/layout/components/Sidebar/BlogRightAside.vue'
 export default {
-  name: 'LayoutIndex',
+  name: "LayoutIndex",
   components: {
     BlogFooter,
-    BlogHeader
+    BlogHeader,
   },
   data() {
-    return {}
+    return {};
   },
   created() {},
   computed: {},
-  methods: {}
-}
+  methods: {},
+};
 </script>
 <style scoped>
 .article_box {

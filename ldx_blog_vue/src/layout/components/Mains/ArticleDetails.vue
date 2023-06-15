@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-import Comment from '@/views/comment'
+import Comment from '@/views/comment/index.vue'
 import { formatTime } from '@/utils/time'
 import { mapActions, mapState } from 'pinia'
 import { useArticleStore } from '@/stores/article'

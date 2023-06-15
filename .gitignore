@@ -1,3 +1,8 @@
+/ldx_blog_admin/.vscode/
+/ldx_blog_admin/.github/
+/ldx_blog_vue/.vscode/
+/ldx_blog_vue/target
+/ldx_blog_vue/.env.development.local
 /ldx_blog_vue/node_modules/
 /ldx_blog_vue/package-lock.json
 /ldx_blog_vue/.env.*
@@ -5,8 +10,5 @@
 /ldx_blog_java/target
 /ldx_blog_java/files
 /ldx_blog_java/ldx_blog_java.iml
-/ldx_blog_vue/.vscode/
-/ldx_blog_vue/target
-/ldx_blog_vue/.env.development.local
 /ldx_blog_java/src/main/resources/application-dev.yml
 /ldx_blog_java/src/main/resources/application-test.yml

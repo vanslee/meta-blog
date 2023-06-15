@@ -36,7 +36,7 @@
           <el-col :span="24">
             <h1>文章内容</h1>
             <el-divider />
-            <v-md-preview :text="articleVO.articleContent" />
+            <!-- <v-md-preview :text="articleVO.articleContent" /> -->
             <el-divider />
           </el-col>
 

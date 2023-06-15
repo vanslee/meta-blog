@@ -11,7 +11,6 @@ import getPageTitle from '@/utils/get-page-title'
 router.beforeEach(async (to, from, next) => {
   start()
   document.title = getPageTitle(to.meta.title)
-  console.log(from.fullPath)
   next()
   // if (!isLogin()) {
   //   // 未登录

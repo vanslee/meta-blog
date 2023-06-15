@@ -13,7 +13,8 @@ service.interceptors.request.use(
     start()
     if (getToken()) {
       // 请求添加Token
-      config.headers['litubao_authentication'] = getToken()
+      // console.log(getToken())
+      // config.headers['litubao_authentication'] = getToken()
     }
     return config
   },
@@ -25,11 +26,11 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     close()
-    console.log('response', response)
     return response.data
   },
   error => {
-    throttled('服务器异常')
+    const msg = error?.response?.data?.msg ?? '未知错误'
+    throttled(msg)
     return Promise.reject(error)
   }
 )

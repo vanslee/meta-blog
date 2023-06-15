@@ -1,5 +1,6 @@
 package com.ldx.blog.config;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.result.ResultCodeEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,9 @@ public class GlobalException {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Result<ResultCodeEnum> exception(Exception e) {
+        if (e instanceof NotLoginException) {
+            return Result.fail(ResultCodeEnum.TOKEN_INVALID);
+        }
         log.error("全局异常信息 ex={}", e.getMessage(), e);
         return Result.fail(ResultCodeEnum.FAIL);
     }

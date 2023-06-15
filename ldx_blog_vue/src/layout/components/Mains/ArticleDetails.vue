@@ -11,10 +11,10 @@
     </el-row>
     <el-row type="flex" align="middle">
       <el-col :span="2" class="hidden-xs-only">
-        <el-image v-if="author.avatarImgUrl" :src="author.avatarImgUrl" class="user-avatar" />
+        <img v-lazy="author.avatarImgUrl ?? ''" class="user-avatar" />
       </el-col>
       <el-col :span="5" class="hidden-sm-and-up">
-        <el-image v-if="author.avatarImgUrl" :src="author.avatarImgUrl" class="user-avatar" />
+        <img v-lazy="author.avatarImgUrl ?? ''" class="user-avatar" />
       </el-col>
       <el-col :span="18">
         <el-col>{{ author.username }}</el-col>
@@ -25,13 +25,12 @@
       <el-col :span="3" class="hidden-xs-only"><el-button style="width: 100%" type="primary">关注</el-button></el-col>
       <el-col :span="5" class="hidden-sm-and-up"><el-button style="width: 100%" type="primary">关注</el-button></el-col>
     </el-row>
-    <el-image
-      v-if="article.imgUrl"
-      :src="article.imgUrl"
+    <img
+      v-lazy="article.imgUrl"
       style="width: 95%; height: 300px; border-radius: 4px; margin: 20px 0; border: 1px solid gray"
     />
     <el-divider />
-    <v-md-preview :text="article.articleContent" ref="preview" />
+    <mark-down-cpt :md-url="article.mdUrl" />
     <comment :article_id="article_id" />
   </div>
 </template>
@@ -40,9 +39,11 @@ import Comment from '@/views/comment/index.vue'
 import { formatTime } from '@/utils/time'
 import { mapActions, mapState } from 'pinia'
 import { useArticleStore } from '@/stores/article'
+import MarkDownCpt from '@/components/MarkDownCpt.vue'
 export default {
   components: {
-    Comment
+    Comment,
+    MarkDownCpt
   },
   computed: {
     ...mapState(useArticleStore, ['titles', 'article', 'author']),
@@ -55,9 +56,7 @@ export default {
       formatTime
     }
   },
-  created() {
-    console.log('article,t', this.article)
-  },
+  created() {},
   mounted() {
     this.fetchData()
     this.$bus.$on('directory-navigation', anchor => {

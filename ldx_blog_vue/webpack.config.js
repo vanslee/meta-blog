@@ -1,112 +1,94 @@
 // webpack.config.js
 const path = require('path')
+/**
+ * 加载配置文件 env
+ */
+const dotenv = require('dotenv')
 const { VueLoaderPlugin } = require('vue-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const { ProvidePlugin, DefinePlugin } = require('webpack')
 /**
  * @type {import('webpack').Configuration}
  */
+const envFile = `.env.${process.env.NODE_ENV}`
+const envFilePath = path.resolve(process.cwd(), envFile)
+dotenv.config({ path: envFilePath })
 const config = {
-    context: path.resolve(__dirname, 'src'),
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, 'src')
+  name: '李图报日记',
+  //   context: path.resolve(__dirname, 'src'),
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
+  entry: './src/main.js',
+  output: {
+    path: path.resolve(__dirname, 'target'),
+    filename: 'index.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      },
+      {
+        test: /\.scss$/,
+        use: ['vue-style-loader', 'css-loader', 'sass-loader']
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        loader: 'url-loader',
+        options: {
+          limit: 8192,
+          name: '[name].[ext]',
+          outputPath: 'images'
         }
-    },
-    entry: './main.js',
-    output: {
-        path: path.resolve(__dirname, 'target'),
-        filename: 'index.js'
-    },
-    mode: 'development',
-    module: {
-        rules: [
-            {
-                test: /\.vue$/,
-                loader: 'vue-loader'
-            },
-            {
-                oneOf: [
-
-                    // 处理css
-                    {
-                        test: /\.css$/, // 正则匹配需要处理的文件后缀名
-                        // loader: 'style-loader' // 使用loader字段时,可以只传入一个loader,而使用use,则需要多个
-                        use: [
-                            // 'style-loader',
-                            MiniCssExtractPlugin.loader,
-                            'css-loader',
-                            {
-                                loader: 'postcss-loader',
-                                options: {
-                                    postcssOptions: {
-                                        plugins: ['postcss-preset-env']
-                                    }
-                                }
-                            }
-                        ] // 处理样式资源 style-loader和css-loader缺一不可
-                    },
-                    {
-                        test: /\.scss$/,
-                        use: [
-                            'vue-style-loader',
-                            'css-loader',
-                            'sass-loader'
-                        ]
-                    },
-                    {
-                        test: /\.sass$/, // postcss识别不了sass语法
-                        use: ['style-loader', 'css-loader', 'sass-loader'] // 处理sass需要这三个,缺一不可
-                    },
-                    {
-                        test: /\.(png|jpe?g|gif|svg|webp)$/,
-                        type: 'asset/resource',
-                        parser: {
-                            dataUrlCondition: {
-                                maxSize: 200 * 1024
-                            }
-                        },
-                        generator: {
-                            filename: 'static/imgs/[hash][ext][query]' // target/static/imgs/....
-                        }
-                    },
-                    {
-                        test: /\.(ttf|woff|woff2)$/,
-                        type: 'asset/resource',
-                        generator: {
-                            filename: 'static/fonts/[hash][ext][query]'
-                        }
-                    },
-                    {
-                        test: /\.js$/,
-                        // exclude: /node_modules/,
-                        include: path.resolve(__dirname, './src'), // 只转换src目录下的代码
-                        // use: ['babel-loader'],
-                        loader: 'babel-loader', // 开启缓存就需要注释use: ['babel-loader'],并且缓存文件在 node_modules/.bin
-                        options: {
-                            cacheDirectory: true,
-                            cacheCompression: false
-                        }
-                    }
-                ]
-            }
-        ]
-    },
-    plugins: [
-        new VueLoaderPlugin(),
-        new MiniCssExtractPlugin({
-            filename: 'static/css/index.css'
-        }),
-        new HtmlWebpackPlugin(),
-        new CssMinimizerPlugin(),
-    ],
-    devtool: 'source-map'
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[hash][ext][query]'
+        }
+      }
+    ]
+  },
+  plugins: [
+    new VueLoaderPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'static/css/index.css'
+    }),
+    new HtmlWebpackPlugin({ title: '李图报日记', template: path.resolve(__dirname, './public/index.html') }),
+    new CssMinimizerPlugin(),
+    new CleanWebpackPlugin(),
+    new DefinePlugin({
+      'process.env': JSON.stringify(process.env)
+    })
+  ]
 }
-config.devServer = {
+const ENVIROMENT = process.env.NODE_ENV
+config.mode = ENVIROMENT
+console.log('ENVIROMENT', process.env.VUE_APP_WEBSITE_CDN)
+if (ENVIROMENT === 'development') {
+  config.devServer = {
     port: 8080,
     open: false,
-    host: '192.168.97.18',
-
+    host: '0.0.0.0',
+    proxy: {
+      '/apis': 'http://localhost:8000'
+    }
+  }
+  config.devtool = 'eval-source-map'
+} else {
+  config.devtool = 'nosources-source-map'
 }
+
 module.exports = config

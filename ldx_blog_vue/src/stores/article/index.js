@@ -6,7 +6,9 @@ export const useArticleStore = defineStore('article', {
   // other options...
   state: () => ({
     article: {},
-    author: {},
+    author: {
+      // avatarImgUrl: ''
+    },
     titles: []
   }),
   getters: {
@@ -32,7 +34,6 @@ export const useArticleStore = defineStore('article', {
       if (code === 200) {
         this.author = data['author']
         this.article = data['article']
-        this.article.imgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.imgUrl}`
         this.article.imgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.imgUrl}`
         this.article.mdUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.mdUrl}`
         const { text } = await getMarkdownTextApi(this.article.mdUrl)

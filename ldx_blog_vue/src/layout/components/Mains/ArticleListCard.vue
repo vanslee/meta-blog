@@ -48,7 +48,6 @@ export default {
     }
   },
   created() {
-    console.log(this.userStore.token)
     this.fetchData()
   },
   computed: {},

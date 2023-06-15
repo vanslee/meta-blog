@@ -9,34 +9,31 @@ import '@/assets/iconfont/iconfont.css'
 import ElementUI, { Table } from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
-import VMdPreviewHtml from '@kangc/v-md-editor/lib/preview-html'
-import '@kangc/v-md-editor/lib/style/preview-html.css'
-Vue.use(PiniaVuePlugin)
+import VueLazyload from 'vue-lazyload'
+
 /**
- * ----------------------------
+ * v-md-editor
  */
-import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
-import hljs from 'highlight.js'
-// editor
+// --------------------------------
 import VMdEditor from '@kangc/v-md-editor'
-import createCopyCodePlugin from '@kangc/v-md-editor/lib/plugins/copy-code/index'
-import '@kangc/v-md-editor/lib/plugins/copy-code/copy-code.css'
 import '@kangc/v-md-editor/lib/style/base-editor.css'
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js'
 import '@kangc/v-md-editor/lib/theme/style/github.css'
-// preview
-import VMdPreview from '@kangc/v-md-editor/lib/preview'
-import '@kangc/v-md-editor/lib/style/preview.css'
-import '@kangc/v-md-editor/lib/theme/style/github.css'
-VMdPreview.use(githubTheme, {
-  Hljs: hljs
-})
+import hljs from 'highlight.js'
 VMdEditor.use(githubTheme, {
   Hljs: hljs
 })
-VMdEditor.use(createCopyCodePlugin())
-Vue.use(VMdPreviewHtml)
-Vue.use(VMdPreview)
 Vue.use(VMdEditor)
+// --------------------------------
+
+// preview
+Vue.use(PiniaVuePlugin)
+/**
+ * 懒加载
+ */
+Vue.use(VueLazyload, {
+  loading: 'https://lidengxiang.top/default.jpg'
+})
 /**
  * 事件总线
  */

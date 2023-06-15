@@ -23,10 +23,9 @@
           </el-row>
         </el-col>
       </el-row>
-
       <el-row style="cursor: pointer">
         <div @click="jumpToArticleDetails">
-          <v-md-preview :text="content" />
+          <mark-down-cpt :md-url="article.mdUrl" />
         </div>
       </el-row>
       <el-row :gutter="10">
@@ -50,7 +49,7 @@
   </el-row>
 </template>
 <script>
-import { getMarkdownTextApi } from '@/apis/article'
+import MarkDownCpt from '@/components/MarkDownCpt.vue'
 export default {
   props: {
     article: {
@@ -59,6 +58,9 @@ export default {
       default: () => {}
     }
   },
+  components: {
+    MarkDownCpt
+  },
   data() {
     return {
       content: ''
@@ -66,16 +68,10 @@ export default {
   },
   created() {},
   computed: {},
-  mounted() {
-    this.fetchData()
-  },
+  mounted() {},
   methods: {
     jumpToArticleDetails() {
       this.$router.push({ name: `Article`, params: { id: this.article.id } })
-    },
-    async fetchData() {
-      const { text } = await getMarkdownTextApi(this.article.mdUrl)
-      this.content = text
     }
   }
 }

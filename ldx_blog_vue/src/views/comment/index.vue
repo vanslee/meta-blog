@@ -2,11 +2,11 @@
   <div>
     <el-row type="flex" justify="space-between" align="middle">
       <el-col :span="2" class="hidden-xs-only">
-        <el-image v-if="hasLogin" :src="user.avatarImgUrl" class="user-avatar" />
+        <img v-if="hasLogin" v-lazy="user.avatarImgUrl" class="user-avatar" />
         <el-image v-else src="https://lidengxiang.top/default.jpg" class="user-avatar"></el-image>
       </el-col>
       <el-col :span="3" class="hidden-sm-and-up">
-        <el-image v-if="hasLogin" :src="user.avatarImgUrl" style="width: 12vw" />
+        <img v-if="hasLogin" v-lazy="user.avatarImgUrl" style="width: 12vw" />
         <el-image v-else src="https://lidengxiang.top/default.jpg" style="width: 12vw; border-radius: 50%" />
       </el-col>
       <el-col :span="17" class="hidden-xs-only">

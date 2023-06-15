@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Layout from '@/layout'
+import Layout from '@/layout/index.vue'
 Vue.use(VueRouter)
 const constantRoutes = [
   {
@@ -29,7 +29,7 @@ const constantRoutes = [
     meta: {
       requireAuth: false
     },
-    component: () => import('@/views/login/'),
+    component: () => import('@/views/login/index.vue'),
     hidden: true
   },
   {

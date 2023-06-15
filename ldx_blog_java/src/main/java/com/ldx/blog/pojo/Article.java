@@ -27,6 +27,10 @@ public class Article implements Serializable {
      */
     private Long userId;
     /**
+     * markdown文件
+     */
+    private String mdUrl;
+    /**
      *
      */
     private String originalUrl;
@@ -44,10 +48,6 @@ public class Article implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateDate;
-    /**
-     *
-     */
-    private String articleOmission;
     /**
      *
      */

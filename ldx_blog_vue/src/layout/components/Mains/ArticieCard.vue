@@ -15,8 +15,8 @@
               <span style="font-size: 1.25rem">{{ article.articleTitle }}</span>
             </el-col>
             <el-col>
-              <el-link type="info" v-for="tag in article.tags" :key="tag">{{ tag }} &nbsp;</el-link>
-              <el-link type="info" v-for="category in article.categories" :key="category">
+              <el-link type="info" v-for="(tag, index) in article.tags" :key="'tag' + index">{{ tag }} &nbsp;</el-link>
+              <el-link type="info" v-for="(category, index) in article.categories" :key="'category' + index">
                 {{ category }} &nbsp;
               </el-link>
             </el-col>
@@ -26,7 +26,7 @@
 
       <el-row style="cursor: pointer">
         <div @click="jumpToArticleDetails">
-          <v-md-preview :text="article.articleOmission" />
+          <v-md-preview :text="content" />
         </div>
       </el-row>
       <el-row :gutter="10">
@@ -50,6 +50,7 @@
   </el-row>
 </template>
 <script>
+import { getMarkdownTextApi } from '@/apis/article'
 export default {
   props: {
     article: {
@@ -59,14 +60,22 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      content: ''
+    }
   },
   created() {},
   computed: {},
-  mounted() {},
+  mounted() {
+    this.fetchData()
+  },
   methods: {
     jumpToArticleDetails() {
       this.$router.push({ name: `Article`, params: { id: this.article.id } })
+    },
+    async fetchData() {
+      const { text } = await getMarkdownTextApi(this.article.mdUrl)
+      this.content = text
     }
   }
 }

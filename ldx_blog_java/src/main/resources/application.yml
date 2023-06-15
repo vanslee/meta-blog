@@ -49,7 +49,7 @@ spring:
   mail:
     password: bmvjdypxyzgmbgfj
   profiles:
-    active: prod
+    active: dev
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -82,9 +82,6 @@ website:
     url: https://www.lidengxiang.top/
     cdn: https://lidengxiang.top/
 ### 七牛云
-qiniuyun:
-  accessKeyId: FRMyr6yfm88JgtXwjILNam_uomMzbWOk7WrDWzjh
-  secret: P8rPFTvtJ-RJrQDD5ORMLFdO0j9xw7gOGpeo4dib
 qq:
   client_id: 102024615
   client_secret: OeleJjvsZ6PVN1Qa
@@ -112,3 +109,13 @@ oauth:
     client_id: acec6bb3d04321c409fe
     client_secret: e23bdd3a580bd39e688d02f9f4e61c6bf032ad86
     redirect_uri: https%3A%2F%2Fwww.lidengxiang.top%2Foauth%2Fgithub%2Flogin
+qiniuyun:
+  end_point: lidengxiang.top
+  access_key: FRMyr6yfm88JgtXwjILNam_uomMzbWOk7WrDWzjh
+  secret: P8rPFTvtJ-RJrQDD5ORMLFdO0j9xw7gOGpeo4dib
+  bucket_name: "lidengxiang"
+  img_folder: "blog/img/"
+  file_folder: "blog/file/"
+  md_folder: "blog/md/"
+
+

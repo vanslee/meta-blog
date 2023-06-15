@@ -3,19 +3,11 @@
     <el-row type="flex" justify="space-between" align="middle">
       <el-col :span="2" class="hidden-xs-only">
         <el-image v-if="hasLogin" :src="user.avatarImgUrl" class="user-avatar" />
-        <el-image
-          v-else
-          src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
-          class="user-avatar"
-        ></el-image>
+        <el-image v-else src="https://lidengxiang.top/default.jpg" class="user-avatar"></el-image>
       </el-col>
       <el-col :span="3" class="hidden-sm-and-up">
         <el-image v-if="hasLogin" :src="user.avatarImgUrl" style="width: 12vw" />
-        <el-image
-          v-else
-          src="https://lidengxiang.top/%E7%94%A8%E6%88%B7%E9%BB%98%E8%AE%A4%E5%A4%B4%E5%83%8F.jpg"
-          class="user-avatar"
-        ></el-image>
+        <el-image v-else src="https://lidengxiang.top/default.jpg" style="width: 12vw; border-radius: 50%" />
       </el-col>
       <el-col :span="17" class="hidden-xs-only">
         <el-input
@@ -26,7 +18,7 @@
           :disabled="!hasLogin"
         />
       </el-col>
-      <el-col :span="16" class="hidden-sm-and-up">
+      <el-col :span="15" class="hidden-sm-and-up">
         <el-input placeholder="机会是留给有准备的人" v-model="commentParam.content" :disabled="!hasLogin">
           <el-popover trigger="click" slot="append">
             <VEmojiPicker @select="selectRootEmoji" />
@@ -42,11 +34,11 @@
         </el-button>
         <el-button v-else style="height: 75px" type="primary" disabled>请先登录</el-button>
       </el-col>
-      <el-col :span="4" class="hidden-sm-and-up">
+      <el-col :span="5" class="hidden-sm-and-up">
         <el-button v-if="hasLogin" style="height: 5vh" type="primary" size="mini" @click="submit" :loading="isLoading">
           发送
         </el-button>
-        <el-button v-else style="height: 5vh" type="primary" disabled>请先登录</el-button>
+        <el-button v-else style="height: 5vh" type="primary" disabled>登录</el-button>
       </el-col>
     </el-row>
     <el-row :gutter="10" type="flex" justify="space-between">

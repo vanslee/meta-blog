@@ -9,3 +9,8 @@ export function getArticleDetailsApi(article_id) {
 export function publishArticleApi(article) {
   return request.put('article/publish', article)
 }
+export async function getMarkdownTextApi(markdownUrl) {
+  const response = await fetch(markdownUrl)
+  const text = await response.text()
+  return { text }
+}

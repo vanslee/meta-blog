@@ -1,5 +1,4 @@
-/ldx_blog_admin/.vscode/
-/ldx_blog_admin/.github/
+/ldx_blog_admin/node_modules/
 /ldx_blog_vue/.vscode/
 /ldx_blog_vue/target
 /ldx_blog_vue/.env.development.local

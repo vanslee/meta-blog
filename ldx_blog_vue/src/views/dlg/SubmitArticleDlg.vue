@@ -1,126 +1,60 @@
 <template>
-  <el-dialog :visible.sync="visible" center title="发布文章">
-    <el-row :gutter="20" type="flex" justify="space-between">
-      <el-col :span="16" class="article_card_box">
-        <el-row>
-          <el-col>
-            <h1>
-              文章标题: &nbsp;
-              <el-input style="width: 50%" v-model="articleVO.articleTitle" placeholder="请输入文章标题" />
-            </h1>
-          </el-col>
-          <el-col style="margin-top: 20px">
-            <el-radio-group v-model="articleVO.articleType">
-              <el-radio label="原创" value="原创">原创:</el-radio>
-              <el-radio label="转载" value="转载">转载:</el-radio>
-            </el-radio-group>
-            <div v-show="articleVO.articleType === '转载'">
-              <div style="margin: 20px 0">
-                原文作者:
-                <el-input v-model="articleVO.author" style="width: 15vw" size="mini" />
-              </div>
-              <div>
-                原文链接:
-                <el-input v-model="articleVO.articleUrl" style="width: 15vw" size="mini" />
-              </div>
-            </div>
-
-            <el-divider />
-          </el-col>
-          <el-col :span="3">
-            <el-image :src="user.avatarImgUrl" style="border-radius: 50%; width: 60px; height: 60px" />
-          </el-col>
-          <el-col :span="10">
-            <h1>作者: {{ articleVO.author }}</h1>
-          </el-col>
-          <el-col :span="24">
-            <h1>文章内容</h1>
-            <el-divider />
-            <!-- <v-md-preview :text="articleVO.articleContent" /> -->
-            <el-divider />
-          </el-col>
-
-          <el-col>
-            <el-tag
-              v-for="(tag, index) in articleVO.tags"
-              :key="tag + index"
-              closable
-              style="margin: 5px"
-              @close="removeItem('tag', tag)"
-            >
-              <i class="el-icon-collection-tag" />
-              {{ tag }}
-            </el-tag>
-            <el-input
-              v-show="tagInputVisible"
-              ref="tagInputRef"
-              v-model="tagValue"
-              type="text"
-              style="width: 100px"
-              @keyup.enter="handleInputConfirm('tag')"
-              @blur="handleInputConfirm('tag')"
-            />
-            <el-tag
-              v-show="!tagInputVisible"
-              style="background: #fff; border-style: dashed; cursor: pointer"
-              @click="showInput('tag')"
-            >
-              新建标签
-              <i class="el-icon-collection-tag" />
-            </el-tag>
-            <el-divider />
-          </el-col>
-          <el-col>
-            <el-tag
-              v-for="(category, index) in articleVO.categories"
-              :key="category + index"
-              class="mx-1"
-              style="margin: 5px"
-              closable
-              type="danger"
-              @close="removeItem('category', category)"
-            >
-              <i class="el-icon-s-management"></i>
-              {{ category }}
-            </el-tag>
-            <el-input
-              v-show="categoryInputVisible"
-              ref="categoryInputRef"
-              v-model="categoryValue"
-              type="text"
-              style="width: 100px"
-              @keyup.enter="handleInputConfirm('category')"
-              @blur="handleInputConfirm('category')"
-            />
-            <el-tag
-              type="danger"
-              v-show="!categoryInputVisible"
-              style="background: #fff; border-style: dashed; cursor: pointer"
-              @click="showInput('category')"
-            >
-              新建分类
-              <i class="el-icon-s-management" />
-            </el-tag>
-            <el-divider />
-          </el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8" style="text-align: center">
-        <h2>文章封面</h2>
+  <el-dialog width="90%" :visible.sync="visible" center title="发布文章">
+    <div style="display: flex">
+      <div style="width: 80%">
+        <div style="display: flex; flex-direction: column; align-items: center">
+          <el-image :src="user.avatarImgUrl" style="border-radius: 50%; width: 5rem; height: 5rem" />
+          <h1 style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis">作者: {{ article.author }}</h1>
+          <div style="display: flex; align-items: center">
+            <span style="white-space: nowrap">标题:</span>
+            <el-input type="text" v-model="article.articleTitle" />
+          </div>
+        </div>
+        <!-- <div>
+          文章作者:
+          <el-input size="mini" type="text" style="width: 30vw" disabled />
+        </div> -->
+      </div>
+      <div style="flex-grow: 1; text-align: center">
+        <h1>封面</h1>
         <el-upload
           drag
           name="file"
           accept="image/*"
-          class="avatar-uploader"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :action="UPLOAD_SERVER_URL"
+          :headers="{ litubao_authentication: getToken() }"
         >
-          <img v-if="articleVO.imgUrl" :src="articleVO.imgUrl" class="avatar" />
-          <i v-else class="el-icon-plus"></i>
+          <img
+            class="hidden-sm-and-up"
+            v-lazy="article.imgUrl"
+            style="width: 9rem; height: 9rem; object-fit: fill; border-radius: 0"
+          />
+          <img
+            class="hidden-sm-and-down"
+            v-lazy="article.imgUrl"
+            style="width: 20rem; height: 20rem; object-fit: fill; border-radius: 0"
+          />
         </el-upload>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
+    <el-card style="" v-html="html" />
+    <div style="display: flex; align-items: center; justify-content: center">
+      <span>标签:</span>
+      <tag-input text="新建" @set-items="setTags" :data="article.tags" @rm-item="removeTag" icon="icon-tag-fill" />
+    </div>
+    <div style="display: flex; align-items: center; justify-content: center">
+      <span>分类:</span>
+      <tag-input
+        text="新建"
+        icon="icon-pushpin-fill"
+        @set-items="setCategories"
+        @rm-item="removeCategory"
+        :data="article.categories"
+        type="danger"
+      />
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click=";(visible = false), (loading = false)">取消</el-button>
       <el-button type="primary" @click="submit" :loading="loading">发布</el-button>
@@ -128,14 +62,19 @@
   </el-dialog>
 </template>
 <script>
+import MarkdownIt from 'markdown-it'
 import { useUserStore } from '@/stores/user'
 import { useArticleStore } from '@/stores/article'
 import { mapState, mapActions } from 'pinia'
+import TagInput from '@/components/TagInput.vue'
+import { getToken } from '@/utils/auth'
 export default {
-  components: {},
+  components: {
+    TagInput
+  },
   data() {
     const userStore = useUserStore()
-    const articleVO = {
+    const article = {
       imgUrl: '',
       tags: [],
       categories: [],
@@ -147,9 +86,10 @@ export default {
     }
     return {
       url: '',
+      html: '',
       rules: {},
       visible: false,
-      articleVO,
+      article,
       userStore,
       uploadImg: '',
       loading: false,
@@ -171,112 +111,57 @@ export default {
     ...mapActions(useArticleStore, ['publishArticle']),
     onFinishFailed() {},
     beforeUpload() {},
-    showInput(flag) {
-      if (flag === 'category') {
-        this.categoryInputVisible = true
-        this.$nextTick(() => {
-          this.$refs['categoryInputRef'].focus()
-          // this.$refs['categoryInputRef'].input.focus()
-        })
-      }
-      if (flag === 'tag') {
-        this.tagInputVisible = true
-        this.$nextTick(() => {
-          this.$refs['tagInputRef'].focus()
-        })
-      }
-    },
+
     submit() {
       // 发布文章
       this.loading = true
-      const success = this.publishArticle(this.articleVO)
+      console.log(this.article)
+      const success = this.publishArticle(this.article)
       this.loading = false
       if (success) {
         this.visible = false
-        localStorage.removeItem('articleContent')
+        localStorage.removeItem('content')
         this.$router.push({ name: 'Index' })
       }
     },
     handleAvatarSuccess(res) {
       const { data, code } = res
       if (code === 200) {
-        this.articleVO.imgUrl = data['url']
+        this.article.imgUrl = data['url']
       }
     },
     showDlg(content) {
-      this.articleVO.articleContent = content
+      this.article.articleContent = content
+      const md = new MarkdownIt()
+      this.html = md.render(content.slice(0, 20))
       this.visible = true
     },
-    handleInputConfirm(flag) {
-      if (flag == 'category') {
-        if (this.categoryValue) {
-          if (!Array.isArray(this.articleVO.categories)) {
-            this.articleVO.categories = []
-          }
-          this.articleVO.categories.push(this.categoryValue)
-        }
-        this.categoryValue = ''
-        this.categoryInputVisible = false
-      }
-      if (flag == 'tag') {
-        if (this.tagValue) {
-          if (!Array.isArray(this.articleVO.tags)) {
-            this.articleVO.tags = []
-          }
-          this.articleVO.tags.push(this.tagValue)
-        }
-        this.tagValue = ''
-        this.tagInputVisible = false
-      }
-      return
+    setCategories(category) {
+      this.article.categories.push(category)
     },
-    removeItem(flag, value) {
-      if (flag === 'category') {
-        this.articleVO.categories.splice(this.articleVO.categories.indexOf(value), 1)
-      }
-      if (flag === 'tag') {
-        this.articleVO.tags.splice(this.articleVO.tags.indexOf(value), 1)
-      }
-      return
-    }
+    setTags(tag) {
+      this.article.tags.push(tag)
+    },
+    removeTag(tag) {
+      this.article.tags.splice(this.article.tags.indexOf(tag), 1)
+    },
+    removeCategory(category) {
+      this.article.categories.splice(this.article.categories.indexOf(category), 1)
+    },
+    getToken
   }
 }
 </script>
 <style scoped>
+div {
+  margin: 5px;
+}
 ::v-deep .el-upload {
   width: 100%;
+  height: 100%;
 }
-::v-deep .el-upload .el-upload-dragger {
+::v-deep .el-upload-dragger {
   width: 100%;
+  height: 100%;
 }
-img {
-  object-fit: contain;
-  object-position: center;
-}
-.el-icon-plus {
-  font-size: 28px;
-  color: #8c939d;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-/* .avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-.el-upload-dragger {
-  width: 15vw;
-}
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-} */
 </style>

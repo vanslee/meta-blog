@@ -2,8 +2,10 @@
   <div v-html="html" />
 </template>
 <script>
-import showdown from 'showdown'
+import MarkdownIt from 'markdown-it'
 import { getMarkdownTextApi } from '@/apis/article'
+import { mapActions, mapState } from 'pinia'
+import { useArticleStore } from '@/stores/article'
 export default {
   name: 'MarkDownCpt',
   props: {
@@ -12,20 +14,26 @@ export default {
       default: ''
     }
   },
+  computed: {
+    ...mapState(useArticleStore, ['titles'])
+  },
   data() {
     return {
       html: ''
     }
   },
   mounted() {
-    this.fetchData()
+    setTimeout(() => {
+      this.fetchData()
+    }, 500)
   },
   computed: {},
   methods: {
+    ...mapActions(useArticleStore, ['setTitles']),
     async fetchData() {
       const { text } = await getMarkdownTextApi(this.mdUrl)
-      const converter = new showdown.Converter()
-      this.html = converter.makeHtml(text)
+      const md = new MarkdownIt()
+      this.html = md.render(text)
     }
   }
 }

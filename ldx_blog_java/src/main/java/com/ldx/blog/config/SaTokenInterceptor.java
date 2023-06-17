@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
  */
 public class SaTokenInterceptor extends SaInterceptor {
     public SaTokenInterceptor(SaParamFunction<Object> auth) {
-        super(auth);
+        super();
     }
 
     @Override

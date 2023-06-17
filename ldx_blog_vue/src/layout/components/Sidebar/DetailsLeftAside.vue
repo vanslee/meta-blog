@@ -1,5 +1,5 @@
 <template>
-  <el-card :body-style="{ border: 'solid red 10px' }">
+  <el-card :body-style="{ border: '2px solid  #909399' }">
     <div
       v-for="anchor in store.titles"
       :key="anchor.lineIndex"

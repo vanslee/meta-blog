@@ -55,7 +55,13 @@ public class QiNiuYunOssUtil {
     public  String uploadMarkdown(File file,String key) {
 
         //默认不指定key的情况下，以文件内容的hash值作为文件名
-        String uri = MD_FOLDER.concat(key).concat(file.getName());
+        String uri = FILE_FOLDER.concat(key).concat(file.getName());
+        return createUploadManager(file,  uri);
+    }
+    public  String uploadFile(File file,String key) {
+
+        //默认不指定key的情况下，以文件内容的hash值作为文件名
+        String uri = FILE_FOLDER.concat(key).concat(file.getName());
         return createUploadManager(file,  uri);
     }
     /**

@@ -153,12 +153,13 @@ export default {
     async login() {
       if (this.checkParams({ type: 'login' }) !== true) return
       this.isLoading = true
-      const success = this.userStore.login(this.params)
-      if (success) {
-        this.$router.push({ path: this.redirect || '/' })
-      }
-      this.isLoading = false
-      this.initParams()
+      await this.userStore.login(this.params)
+      console.log(success)
+      // if (success) {
+      //   this.$router.push({ path: this.redirect || '/' })
+      // }
+      // this.isLoading = false
+      // this.initParams()
     },
     toLogin() {
       this.$refs['containerRef'].classList.remove('sign-up-mode')

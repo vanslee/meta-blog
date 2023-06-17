@@ -110,31 +110,29 @@ public class FileUtil {
      *
      * @return File类型文件
      */
-    public static File multipartFileToFile(MultipartFile multipartFile, String filePath, String fileName) {
+    public static File multipartFileToFile(MultipartFile multipartFile) {
         File f = null;
-        File dir = new File(filePath);
-        if (!dir.exists() && !dir.isDirectory()) {
-            dir.mkdirs();
-        }
         if (StringUtil.isEmpty(multipartFile.getName()) || multipartFile.getSize() <= 0) {
             log.error("用户上传了空文件:{}", System.currentTimeMillis());
+            return null;
         } else {
             try {
-                InputStream ins = multipartFile.getInputStream();
-                f = new File(filePath + fileName);
-                OutputStream os = new FileOutputStream(f);
-                int bytesRead = 0;
-                byte[] buffer = new byte[8192];
-                while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
-                    os.write(buffer, 0, bytesRead);
-                }
-                os.close();
-                ins.close();
+                String fileName = multipartFile.getOriginalFilename();
+                Path path = Paths.get(System.getProperty("user.dir"), "files", fileName);
+                Files.createDirectories(path.getParent());
+                File file = convertMultipartFileToFile(multipartFile,path.toFile().getPath() );
+                return file;
             } catch (IOException e) {
                 e.printStackTrace();
+                return null;
             }
         }
-        return f;
+    }
+
+    public static File convertMultipartFileToFile(MultipartFile multipartFile, String fileName) throws IOException {
+        File file = new File(fileName);
+        multipartFile.transferTo(file);
+        return file;
     }
 
 }

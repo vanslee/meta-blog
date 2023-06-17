@@ -7,9 +7,8 @@
         :timestamp="formatTimeStamp(article.publishDate)"
         placement="top"
       >
-        <el-card>
-          <ArticleCard class="hidden-xs-only" :article="article" />
-          <ArticleMobile class="hidden-sm-and-up" :article="article" />
+        <el-card :body-style="{ padding: '10px' }">
+          <ArticleCard :article="article" />
         </el-card>
       </el-timeline-item>
     </el-timeline>
@@ -26,18 +25,16 @@
 import { formatTimeStamp } from '@/utils/time'
 import { getArticleListApi } from '@/apis/article'
 import ArticleCard from '@/layout/components/Mains/ArticieCard.vue'
-import ArticleMobile from '@/layout/components/Mains/ArticleMobile.vue'
 import { useUserStore } from '@/stores/user'
 export default {
   components: {
-    ArticleCard,
-    ArticleMobile
+    ArticleCard
   },
   data() {
     const userStore = useUserStore()
     const params = {
       current: 0,
-      size: 3
+      size: 5
     }
     return {
       total: 0,
@@ -76,7 +73,7 @@ export default {
   justify-content: center;
 }
 .scorll-wrapper {
-  height: 90vh;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
 }

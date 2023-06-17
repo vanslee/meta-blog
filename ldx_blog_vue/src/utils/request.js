@@ -13,8 +13,7 @@ service.interceptors.request.use(
     start()
     if (getToken()) {
       // 请求添加Token
-      // console.log(getToken())
-      // config.headers['litubao_authentication'] = getToken()
+      config.headers['litubao_authentication'] = getToken()
     }
     return config
   },

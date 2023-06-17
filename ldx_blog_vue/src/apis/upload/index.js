@@ -7,3 +7,7 @@ const configs = {
 export const uploadFilesApi = async formData => {
   return request.post('upload/upload_files', formData, configs)
 }
+// 上传文件
+export const uploadFileApi = async formData => {
+  return request.post('upload/upload_file', formData, configs)
+}

@@ -29,9 +29,10 @@ export const useUserStore = defineStore('user', {
     },
     // 用户登录获取token
     async login(params) {
-      loginApi(params).then(async res => {
-        if (res.code === 200) {
-          this.token = res.data['tokenValue']
+      return mew Promise((resolve, reject) => {
+        const { code, data } = await loginApi(params)
+        if (code === 200) {
+          this.token = data['tokenValue']
           this.hasLogin = true
           // 获取token成功后获取用户信息
           const { data, code } = await userInfoApi()
@@ -39,14 +40,14 @@ export const useUserStore = defineStore('user', {
             // 获取用户信息
             data['avatarImgUrl'] = process.env.VUE_APP_WEBSITE_CDN + data['avatarImgUrl']
             this.user = data
-            return true
+            resolve({ success: true })
           } else {
-            return false
+            resolve({ success: false })
           }
-        } else {
-          return false
         }
+        resolve({ success: false })
       })
+     
     },
     async logout() {
       console.log('this', this)

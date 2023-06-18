@@ -1,5 +1,5 @@
 <template>
-  <div v-html="html" />
+  <div v-html="html" style="cursor: pointer;" />
 </template>
 <script>
 import MarkdownIt from 'markdown-it'
@@ -17,22 +17,22 @@ export default {
   computed: {
     ...mapState(useArticleStore, ['titles'])
   },
-  data () {
+  data() {
     return {
       html: ''
     }
   },
-  mounted () {
+  mounted() {
     setTimeout(() => {
       this.fetchData()
     }, 500)
   },
   methods: {
     ...mapActions(useArticleStore, ['setTitles']),
-    async fetchData () {
+    async fetchData() {
       const { text } = await getMarkdownTextApi(this.mdUrl)
       const md = new MarkdownIt()
-      this.html = md.render(text)
+      this.html = md.render(text.slice(0, 120))
     }
   }
 }

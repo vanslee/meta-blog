@@ -1,9 +1,12 @@
 package com.ldx.blog.service.impl;
 
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ldx.blog.mapper.TagsMapper;
 import com.ldx.blog.pojo.Tags;
 import com.ldx.blog.service.TagsService;
-import com.ldx.blog.mapper.TagsMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +18,11 @@ import org.springframework.stereotype.Service;
 public class TagsServiceImpl extends ServiceImpl<TagsMapper, Tags>
     implements TagsService{
 
+    public IPage<Tags> getTagsPage(Integer current, Integer size) {
+        IPage<Tags> iPage = new Page<>(current,size);
+        page(iPage);
+        return iPage;
+    }
 }
 
 

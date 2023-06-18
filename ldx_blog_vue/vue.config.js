@@ -1,31 +1,26 @@
 // vue.config.js
-const path = require('path')
-const { defineConfig } = require('@vue/cli-service')
-function resolve (dir) {
-  return path.join(__dirname, dir)// path.join(__dirname)设置绝对路径
-}
-
-module.exports = defineConfig({
+const config = {
   publicPath: '/',
-  outputDir: 'target',
-  assetsDir: 'resources',
   lintOnSave: false,
   runtimeCompiler: true,
   // 选项
-  devServer: {
+  transpileDependencies: true
+}
+const flag = process.env.NODE_ENV
+console.log("=================================");
+console.log('正在使用的配置文件是: ', flag)
+console.log("=================================");
+if (flag === 'development') {
+  config.devServer = {
     client: {
       overlay: false
     },
     proxy: {
       '/apis': {
         changeOrigin: true,
-        target: 'http://localhost:8000'
+        target: process.env.VUE_APP_BASE_API
       }
     }
-  },
-  chainWebpack: config => {
-    config.resolve.alias.set('@', resolve('./src'))
-  },
-
-  transpileDependencies: true
-})
+  }
+}
+module.exports = config

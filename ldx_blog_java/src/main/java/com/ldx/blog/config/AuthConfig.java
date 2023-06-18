@@ -57,6 +57,8 @@ public class AuthConfig implements WebMvcConfigurer {
                                     "/article/details/**",
                                     "/comment/comment_brief",
                                     "/website/**",
+                                    "/category/**",
+                                    "/tag/**",
                                     "/upload/**")
                             .check(r-> StpUtil.checkLogin());
                     // 根据路由划分模块，不同模块不同鉴权

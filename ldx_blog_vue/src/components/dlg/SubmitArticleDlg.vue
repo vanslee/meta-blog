@@ -1,33 +1,20 @@
 <template>
-  <el-dialog
-    width="90%"
-    :visible.sync="visible"
-    center
-    title="发布文章"
-  >
+  <el-dialog width="90%" :visible.sync="visible" center title="发布文章">
     <div style="display: flex">
-      <div style="width: 80%">
-        <div style="display: flex; flex-direction: column; align-items: center">
-          <el-image
-            :src="user.avatarImgUrl"
-            style="border-radius: 50%; width: 5rem; height: 5rem"
-          />
-          <h1
-            style="
+      <div style="width: 50%">
+        <div style="display: flex;white-space: nowrap;overflow: hidden;; flex-direction: column; align-items: center">
+          <el-image :src="user.avatarImgUrl" style="border-radius: 50%; width: 5rem; height: 5rem" />
+          <h3 style="
               white-space: nowrap;
-              overflow: hidden;
               text-overflow: ellipsis;
-            "
-          >
+            ">
             作者: {{ article.author }}
-          </h1>
+          </h3>
           <div style="display: flex; align-items: center">
             <span style="white-space: nowrap">标题:</span>
-            <el-input
-              type="text"
-              v-model="article.articleTitle"
-            />
+            <el-input type="text" v-model="article.articleTitle" />
           </div>
+
         </div>
         <!-- <div>
           文章作者:
@@ -36,70 +23,40 @@
       </div>
       <div style="flex-grow: 1; text-align: center">
         <h1>封面</h1>
-        <el-upload
-          drag
-          name="file"
-          accept="image/*"
-          :show-file-list="false"
-          :on-success="handleAvatarSuccess"
-          :action="UPLOAD_SERVER_URL"
-          :headers="{ litubao_authentication: getToken() }"
-        >
-          <img
-            class="hidden-sm-and-up"
-            v-lazy="article.imgUrl"
-            style="
+        <el-upload drag name="file" accept="image/*" :show-file-list="false" :on-success="handleAvatarSuccess"
+          :action="UPLOAD_SERVER_URL" :headers="{ litubao_authentication: getToken() }">
+          <img class="hidden-sm-and-up" v-lazy="article.imgUrl" style="
               width: 9rem;
               height: 9rem;
               object-fit: fill;
               border-radius: 0;
-            "
-          >
-          <img
-            class="hidden-sm-and-down"
-            v-lazy="article.imgUrl"
-            style="
+            ">
+          <img class="hidden-sm-and-down" v-lazy="article.imgUrl" style="
               width: 20rem;
-              height: 20rem;
+              height: 10rem;
               object-fit: fill;
               border-radius: 0;
-            "
-          >
+            ">
         </el-upload>
       </div>
     </div>
+    <el-divider />
+    <h2 style="text-align: center;">文章预览</h2>
+    <div style="height: 20vh;width: 100%;overflow-x: hidden;overflow-y: scroll;" v-html="html" />
+    <el-divider />
     <!-- <el-card style="" v-html="html" /> -->
     <div style="display: flex; align-items: center; justify-content: center">
       <span>标签:</span>
-      <tag-input
-        text="新建"
-        @set-items="setTags"
-        :data="article.tags"
-        @rm-item="removeTag"
-        icon="icon-tag-fill"
-      />
+      <tag-input text="新建" @set-items="setTags" :data="article.tags" @rm-item="removeTag" icon="icon-tag-fill" />
     </div>
     <div style="display: flex; align-items: center; justify-content: center">
       <span>分类:</span>
-      <tag-input
-        text="新建"
-        icon="icon-pushpin-fill"
-        @set-items="setCategories"
-        @rm-item="removeCategory"
-        :data="article.categories"
-        type="danger"
-      />
+      <tag-input text="新建" icon="icon-pushpin-fill" @set-items="setCategories" @rm-item="removeCategory"
+        :data="article.categories" type="danger" />
     </div>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
+    <span slot="footer" class="dialog-footer">
       <el-button @click="(visible = false), (loading = false)">取消</el-button>
-      <el-button
-        type="primary"
-        @click="submit"
-        :loading="loading"
-      >发布</el-button>
+      <el-button type="primary" @click="submit" :loading="loading">发布</el-button>
     </span>
   </el-dialog>
 </template>
@@ -114,7 +71,7 @@ export default {
   components: {
     TagInput
   },
-  data () {
+  data() {
     const userStore = useUserStore()
     const article = {
       imgUrl: '',
@@ -151,14 +108,13 @@ export default {
   },
   methods: {
     ...mapActions(useArticleStore, ['publishArticle']),
-    onFinishFailed () {},
-    beforeUpload () {},
+    onFinishFailed() { },
+    beforeUpload() { },
 
-    submit () {
+    async submit() {
       // 发布文章
       this.loading = true
-      console.log(this.article)
-      const success = this.publishArticle(this.article)
+      const success = await this.publishArticle(this.article)
       this.loading = false
       if (success) {
         this.visible = false
@@ -166,28 +122,28 @@ export default {
         this.$router.push({ name: 'Index' })
       }
     },
-    handleAvatarSuccess (res) {
+    handleAvatarSuccess(res) {
       const { data, code } = res
       if (code === 200) {
         this.article.imgUrl = data.url
       }
     },
-    showDlg (content) {
+    showDlg(content) {
       this.article.articleContent = content
       const md = new MarkdownIt()
-      this.html = md.render(content.slice(0, 20))
+      this.html = md.render(content)
       this.visible = true
     },
-    setCategories (category) {
+    setCategories(category) {
       this.article.categories.push(category)
     },
-    setTags (tag) {
+    setTags(tag) {
       this.article.tags.push(tag)
     },
-    removeTag (tag) {
+    removeTag(tag) {
       this.article.tags.splice(this.article.tags.indexOf(tag), 1)
     },
-    removeCategory (category) {
+    removeCategory(category) {
       this.article.categories.splice(
         this.article.categories.indexOf(category),
         1
@@ -201,10 +157,12 @@ export default {
 div {
   margin: 5px;
 }
+
 ::v-deep .el-upload {
   width: 100%;
   height: 100%;
 }
+
 ::v-deep .el-upload-dragger {
   width: 100%;
   height: 100%;

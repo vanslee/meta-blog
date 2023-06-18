@@ -16,10 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -53,38 +50,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Resource
     private QiNiuYunOssUtil ossUtil;
 
-    public Result<IPage<Article>> getArticlePage(Integer current, Integer size) {
-        LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
-        lqw.orderByDesc(Article::getPublishDate);
-        IPage<Article> iPage = new Page<>(current, size);
-        page(iPage, lqw);
-        iPage.getRecords().forEach(article -> {
-            article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
-            article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
-            Long userId = article.getUserId();
-            Long articleId = article.getId();
-            LambdaQueryWrapper<User> lqw3 = new LambdaQueryWrapper<>();
-            lqw3.eq(User::getId, userId).select(User::getAvatarImgUrl, User::getUsername, User::getPersonalBrief);
-            User user = userMapper.selectOne(lqw3);
-            article.setAuthorAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
-            article.setAuthorName(user.getUsername());
-            article.setPersonalBrief(user.getPersonalBrief());
-            LambdaQueryWrapper<ArticleCategory> lqw1 = new LambdaQueryWrapper<>();
-            LambdaQueryWrapper<ArticleTag> lqw2 = new LambdaQueryWrapper<>();
-            lqw1.eq(ArticleCategory::getArticleId, articleId);
-            lqw2.eq(ArticleTag::getArticleId, articleId);
-            List<String> categories = new ArrayList<>(3);
-            List<String> tags = new ArrayList<>(3);
-            articleCategoryMapper.selectList(lqw1).forEach(category -> {
-                categories.add(categoriesMapper.selectById(category.getCategoryId()).getCategoryName());
+    public Result<IPage<Article>> getArticlePage(Integer current, Integer size,Object cid) {
+        if(Objects.isNull(cid)) {
+            LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
+            lqw.orderByDesc(Article::getPublishDate);
+            IPage<Article> iPage = new Page<>(current, size);
+            page(iPage, lqw);
+            iPage.getRecords().forEach(article -> {
+                article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
+                article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
+                Long userId = article.getUserId();
+                Long articleId = article.getId();
+                LambdaQueryWrapper<User> lqw3 = new LambdaQueryWrapper<>();
+                lqw3.eq(User::getId, userId).select(User::getAvatarImgUrl, User::getUsername, User::getPersonalBrief);
+                User user = userMapper.selectOne(lqw3);
+                article.setAuthorAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
+                article.setAuthorName(user.getUsername());
+                article.setPersonalBrief(user.getPersonalBrief());
+                LambdaQueryWrapper<ArticleCategory> lqw1 = new LambdaQueryWrapper<>();
+                LambdaQueryWrapper<ArticleTag> lqw2 = new LambdaQueryWrapper<>();
+                lqw1.eq(ArticleCategory::getArticleId, articleId);
+                lqw2.eq(ArticleTag::getArticleId, articleId);
+                List<String> categories = new ArrayList<>(3);
+                List<String> tags = new ArrayList<>(3);
+                articleCategoryMapper.selectList(lqw1).forEach(category -> {
+                    categories.add(categoriesMapper.selectById(category.getCategoryId()).getCategoryName());
+                });
+                articleTagMapper.selectList(lqw2).forEach(tag -> {
+                    tags.add(tagsMapper.selectById(tag.getTagId()).getTagName());
+                });
+                article.setTags(tags);
+                article.setCategories(categories);
             });
-            articleTagMapper.selectList(lqw2).forEach(tag -> {
-                tags.add(tagsMapper.selectById(tag.getTagId()).getTagName());
-            });
-            article.setTags(tags);
-            article.setCategories(categories);
-        });
-        return Result.success(iPage);
+            return Result.success(iPage);
+        }else {
+           return getArticlesByCid(Long.parseLong(cid.toString()),current,size);
+        }
     }
 
     public boolean publishArticle(Article article) {
@@ -120,7 +121,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 }
                 if (!categories.contains(item.getCategoryName())) {
                     synchronized (index) {
-                        Categories newCategory = new Categories(null, categories.get(index.get()));
+                        Categories newCategory = new Categories(categories.get(index.get()));
                         categoriesMapper.insert(newCategory);
                         articleCategoryMapper.insert(new ArticleCategory(articleId, newCategory.getId()));
                     }
@@ -134,8 +135,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
     }
 
-    public Result<Map<String,Object>> getArticleById(long articleId) {
-        Map<String,Object> resultMap = new HashMap<>(2);
+    public Result<Map<String, Object>> getArticleById(long articleId) {
+        Map<String, Object> resultMap = new HashMap<>(2);
         Article article = articleMapper.selectById(articleId);
         LambdaQueryWrapper<Article> lqw1 = new LambdaQueryWrapper<>();
         lqw1.eq(Article::getUserId, article.getUserId());
@@ -143,13 +144,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         // 作者文章数量
         Long userId = article.getUserId();
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-        lqw.select(User::getUsername, User::getFans,User::getAvatarImgUrl).eq(User::getId, userId);
+        lqw.select(User::getUsername, User::getFans, User::getAvatarImgUrl).eq(User::getId, userId);
         // 作者的用户名粉丝数
         User user = userMapper.selectOne(lqw);
         user.setArticleCount(articleCount);
-        resultMap.put("article",article);
-        resultMap.put("author",user);
+        resultMap.put("article", article);
+        resultMap.put("author", user);
         return Result.success(resultMap);
+    }
+
+    public Result<IPage<Article>> getArticlesByCid(long articleId, Integer current, Integer size) {
+        try {
+            LambdaQueryWrapper<ArticleCategory> lqw = new LambdaQueryWrapper<>();
+            lqw.eq(ArticleCategory::getCategoryId, articleId);
+            List<ArticleCategory> articleCategories = articleCategoryMapper.selectList(lqw);
+            List<Long> articleIds = new ArrayList<>(articleCategories.size());
+            articleCategories.forEach(item -> {
+                articleIds.add(item.getArticleId());
+            });
+            IPage<Article> iPage = new Page<>(current, size);
+            LambdaQueryWrapper<Article> lqw1 = new LambdaQueryWrapper<>();
+            lqw1.in(Article::getId, articleIds);
+            page(iPage, lqw1);
+            return Result.success(iPage);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return Result.fail();
+        }
     }
 }
 

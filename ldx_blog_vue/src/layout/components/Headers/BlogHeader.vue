@@ -1,81 +1,45 @@
 <template>
   <div style="height: 100%; width: 100%">
-    <el-menu
-      :router="false"
-      class="header-menu"
-      :default-active="activeIndex"
-      mode="horizontal"
-    >
-      <el-menu-item
-        index="1"
-        @click="$router.push({ name: 'Index' })"
-      >
+    <el-menu :router="false" class="header-menu" :default-active="activeIndex" mode="horizontal">
+      <el-menu-item index="1" @click="$router.push({ name: 'Index' })">
         首页
       </el-menu-item>
-      <el-menu-item
-        index="2"
-        class="hidden-xs-only"
-      >
+      <el-menu-item index="2" class="hidden-xs-only">
         友链
       </el-menu-item>
-      <el-menu-item index="3">
+      <el-menu-item @click="$router.push({ name: 'Categories' })">
         文章分类
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item @click="$router.push({ name: 'Tags' })">
         文章标签
       </el-menu-item>
-      <el-menu-item
-        index="5"
-        class="hidden-xs-only"
-      >
+      <el-menu-item class="hidden-xs-only">
         照片墙
       </el-menu-item>
-      <el-menu-item
-        index="6"
-        class="hidden-xs-only"
-      >
+      <el-menu-item index="6" class="hidden-xs-only">
         捐赠
       </el-menu-item>
-      <el-menu-item
-        index="7"
-        v-if="!userStore.hasLogin"
-        @click="$router.push({ name: 'Login' })"
-      >
+      <el-menu-item index="7" v-if="!userStore.hasLogin" @click="$router.push({ name: 'Login' })">
         登录
       </el-menu-item>
-      <el-submenu
-        v-else
-        index="8"
-        style="margin-left: 1vw"
-      >
+      <el-submenu v-else index="8" style="margin-left: 1vw">
         <template slot="title">
-          <el-image
-            class="hidden-xs-only"
-            style="
+          <el-image class="hidden-xs-only" style="
               border-radius: 50%;
               width: 40px;
               height: 40px;
               margin-right: 10px;
-            "
-            :src="user.avatarImgUrl"
-          />
-          <el-image
-            class="hidden-sm-and-up"
-            style="
+            " :src="user.avatarImgUrl" />
+          <el-image class="hidden-sm-and-up" style="
               border-radius: 50%;
               width: 8vw;
               height: 8vw;
               border: 1px solid red;
-            "
-            :src="user.avatarImgUrl"
-          />
+            " :src="user.avatarImgUrl" />
           <span class="hidden-xs-only">
             {{ user.username }}
           </span>
-          <span
-            class="hidden-sm-and-up"
-            style="font-size: 0.75rem"
-          >
+          <span class="hidden-sm-and-up" style="font-size: 0.75rem">
             {{ user.username }}
           </span>
         </template>
@@ -102,7 +66,7 @@
 import { useUserStore } from '@/stores/user'
 import { mapState } from 'pinia'
 export default {
-  data () {
+  data() {
     const activeIndex = '1'
     const userStore = useUserStore()
     return {
@@ -110,12 +74,12 @@ export default {
       activeIndex
     }
   },
-  created () {},
+  created() { },
   computed: {
     ...mapState(useUserStore, ['user'])
   },
   methods: {
-    logout () {
+    logout() {
       const sucess = this.userStore.logout()
       if (sucess) {
         this.$router.push(`/login?redirect=${this.$route.fullPath}`)

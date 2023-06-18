@@ -5,7 +5,7 @@ import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
 const http = {}
 const service = axios.create({
-  baseURL: '/apis',
+  baseURL: process.env.VUE_APP_BASE_API,
   timeout: 18000000
 })
 service.interceptors.request.use(
@@ -38,11 +38,12 @@ http.get = function (url, options) {
     service
       .get(url, options)
       .then((response) => {
+        console.log(response);
         if (response.code === 200) {
           resolve(response)
         } else {
           throttled(response.msg)
-          reject(response.msg)
+          resolve(response)
         }
       })
       .catch((e) => {
@@ -75,7 +76,7 @@ http.put = function (url, data, options) {
           resolve(response)
         } else {
           throttled(response.msg)
-          reject(response.msg)
+          resolve(response)
         }
       })
       .catch((e) => {

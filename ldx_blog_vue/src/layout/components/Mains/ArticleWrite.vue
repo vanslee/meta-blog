@@ -1,21 +1,9 @@
 <template>
-  <div
-    style="height: 99%; border: 2px solid #909399; border-radius: 1rem"
-    @keydown.ctrl.s.prevent="savecontent"
-  >
-    <v-md-editor
-      ref="editorRef"
-      v-model="content"
-      left-toolbar="table|insertFileTool|sumbitArticle|emoji|undo redo "
-      :toolbar="toolbar"
-      :toolbar-config="toolbarConfig"
-      height="100%"
-      :disabled-menus="[]"
-      :include-level="[1, 2, 3]"
-      :upload-image-config="uploadImgConfig"
-      @copy-code-success="handleCopyCodeSuccess"
-      @fullscreen-change="handleFullscreenChange"
-    />
+  <div style="height: 99%; border: 2px solid #909399; border-radius: 1rem" @keydown.ctrl.s.prevent="savecontent">
+    <v-md-editor ref="editorRef" v-model="content" left-toolbar="table|insertFileTool|sumbitArticle|emoji|undo redo "
+      :toolbar="toolbar" :toolbar-config="toolbarConfig" height="100%" :disabled-menus="[]" :include-level="[1, 2, 3]"
+      :upload-image-config="uploadImgConfig" @copy-code-success="handleCopyCodeSuccess"
+      @fullscreen-change="handleFullscreenChange" />
     <submit-article-dlg ref="submitArticleRef" />
   </div>
 </template>
@@ -23,13 +11,13 @@
 import { uploadFileApi } from '@/apis/upload'
 import { useClipboard } from '@vueuse/core'
 import { Notification } from 'element-ui'
-import SubmitArticleDlg from '@/views/dlg/SubmitArticleDlg.vue'
+import SubmitArticleDlg from '@/components/dlg/SubmitArticleDlg.vue'
 import { debounce, throttle } from 'lodash'
 export default {
   components: {
     SubmitArticleDlg
   },
-  data () {
+  data() {
     const uploadImgConfig = { accept: '*', multiple: false }
     const toolbarConfig = {
       'image-link': {
@@ -41,7 +29,7 @@ export default {
         title: '发布文章',
         icon: 'el-icon-success',
         _this: this,
-        action (editor) {
+        action(editor) {
           editor.$nextTick(async () => {
             const { _this } = this
             _this.submitArticle()
@@ -55,7 +43,7 @@ export default {
           {
             name: '图片链接',
             text: '图片链接',
-            action (editor) {
+            action(editor) {
               editor.insert(function (selected) {
                 const prefix = '![这是图片]'
                 const suffix = '{{{width="auto" height="auto"}}}'
@@ -71,7 +59,7 @@ export default {
           {
             name: '备注链接',
             text: '备注链接',
-            action (editor) {
+            action(editor) {
               editor.insert(function (selected) {
                 const prefix = '['
                 const suffix = '](链接地址)'
@@ -88,11 +76,10 @@ export default {
             name: '上传文件',
             text: '上传文件',
             _this: this,
-            action (editor) {
+            action(editor) {
               editor.$nextTick(async () => {
                 const { _this } = this
                 const event = await editor.$refs.uploadFile.upload()
-                console.log('asdas', _this)
                 _this.handleFileUpload(event.target.files[0])
               })
             }
@@ -109,7 +96,7 @@ export default {
     }
   },
 
-  mounted () {
+  mounted() {
     const content = localStorage.getItem('content')
     if (content) {
       this.content = localStorage.getItem('content')
@@ -123,7 +110,7 @@ export default {
     }, 3000)
   },
   methods: {
-    handleFullscreenChange (type) {
+    handleFullscreenChange(type) {
       if (type) {
         this.$message.success('进入全屏模式')
       }
@@ -131,8 +118,7 @@ export default {
     /**
      * 上传文件
      */
-    async handleFileUpload (file) {
-      console.log(file)
+    async handleFileUpload(file) {
       if (file instanceof File) {
         const formData = new FormData()
         formData.append('file', file)
@@ -150,7 +136,7 @@ export default {
         }
       }
     },
-    handleCopyCodeSuccess (code) {
+    handleCopyCodeSuccess(code) {
       const { copy } = useClipboard()
       copy(code)
       Notification.success({
@@ -159,7 +145,7 @@ export default {
         duration: 1000
       })
     },
-    saveData () {
+    saveData() {
       localStorage.setItem('content', this.content)
       this.$notify({
         title: '提示',
@@ -173,7 +159,7 @@ export default {
     /**
      * 发布文章
      */
-    submitArticle () {
+    submitArticle() {
       this.$refs.submitArticleRef.showDlg(this.content)
     }
   }

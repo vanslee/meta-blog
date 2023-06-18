@@ -2,28 +2,13 @@
   <div>
     <el-divider />
     <el-row>
-      <el-col
-        :span="2"
-        class="hidden-xs-only"
-      >
-        <el-image
-          :src="`${cdn}${comment.userAvatar}`"
-          class="user-avatar"
-        />
+      <el-col :span="2" class="hidden-xs-only">
+        <el-image :src="`${cdn}${comment.userAvatar}`" class="user-avatar" />
       </el-col>
-      <el-col
-        :span="4"
-        class="hidden-sm-and-up"
-      >
-        <el-image
-          style="width: 12vw"
-          :src="`${cdn}${comment.userAvatar}`"
-        />
+      <el-col :span="4" class="hidden-sm-and-up">
+        <el-image style="width: 12vw" :src="`${cdn}${comment.userAvatar}`" />
       </el-col>
-      <el-col
-        :span="16"
-        class="hidden-sm-and-up"
-      >
+      <el-col :span="16" class="hidden-sm-and-up">
         <el-row>
           <el-row>
             {{ comment.userNick }}
@@ -40,18 +25,11 @@
             <i @click="showCommmentInput(comment.id, comment.id, comment.userNick)">回复</i>
           </el-row>
         </el-row>
-        <el-row
-          style="margin-top: 15px"
-          type="flex"
-          align="middle"
-          v-for="children in comment.childrens"
-          :key="children.id"
-        >
+        <el-row style="margin-top: 15px" type="flex" align="middle" v-for="children in comment.childrens"
+          :key="children.id">
           <el-col :span="2">
-            <el-image
-              :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
-              :src="`${cdn}${children.userAvatar}`"
-            />
+            <el-image :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
+              :src="`${cdn}${children.userAvatar}`" />
           </el-col>
           <el-col :span="22">
             <el-row>
@@ -73,10 +51,7 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col
-        :span="20"
-        class="hidden-xs-only"
-      >
+      <el-col :span="20" class="hidden-xs-only">
         <el-row>
           <el-row>
             {{ comment.userNick }}
@@ -93,18 +68,11 @@
             <i @click="showCommmentInput(comment.id, comment.id, comment.userNick)">回复</i>
           </el-row>
         </el-row>
-        <el-row
-          style="margin-top: 15px"
-          type="flex"
-          align="middle"
-          v-for="children in comment.childrens"
-          :key="children.id"
-        >
+        <el-row style="margin-top: 15px" type="flex" align="middle" v-for="children in comment.childrens"
+          :key="children.id">
           <el-col :span="2">
-            <el-image
-              :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
-              :src="`${cdn}${children.userAvatar}`"
-            />
+            <el-image :style="{ width: '60px', height: '60px', borderRadius: '50%' }"
+              :src="`${cdn}${children.userAvatar}`" />
           </el-col>
           <el-col :span="22">
             <el-row>
@@ -127,27 +95,12 @@
         </el-row>
       </el-col>
     </el-row>
-    <el-drawer
-      size="30%"
-      title="发表评论"
-      direction="btt"
-      :show-close="false"
-      style="width: 50%; margin: 0 auto"
-      :visible.sync="commentInputVisible"
-      class="hidden-xs-only"
-    >
+    <el-drawer size="30%" title="发表评论" direction="btt" :show-close="false" style="width: 50%; margin: 0 auto"
+      :visible.sync="commentInputVisible" class="hidden-xs-only">
       <el-row>
-        <el-input
-          type="textarea"
-          :rows="3"
-          placeholder="机会是留给有准备的人"
-          v-model="params.content"
-        />
+        <el-input type="textarea" :rows="3" placeholder="机会是留给有准备的人" v-model="params.content" />
       </el-row>
-      <el-tooltip
-        placement="top"
-        v-model="emojiReplyVisible"
-      >
+      <el-tooltip placement="top" v-model="emojiReplyVisible">
         <div slot="content">
           <VEmojiPicker @select="selectReplyEmoji" />
         </div>
@@ -156,43 +109,23 @@
           表情
         </el-button>
       </el-tooltip>
-      <el-button
-        type="primary"
-        :loading="isLoading"
-        @click="submit"
-        style="position: absolute; right: 10px; bottom: 20px"
-      >
+      <el-button type="primary" :loading="isLoading" @click="submit"
+        style="position: absolute; right: 10px; bottom: 20px">
         发表评论
       </el-button>
     </el-drawer>
-    <el-drawer
-      title="发表评论"
-      direction="btt"
-      :show-close="false"
-      :visible.sync="commentInputVisible"
-      class="hidden-sm-and-up"
-    >
-      <el-input
-        style="width: 90vw"
-        placeholder="机会是留给有准备的人"
-        v-model="params.content"
-      >
-        <el-popover
-          trigger="click"
-          slot="append"
-        >
+    <el-drawer title="发表评论" direction="btt" :show-close="false" :visible.sync="commentInputVisible"
+      class="hidden-sm-and-up">
+      <el-input style="width: 90vw" placeholder="机会是留给有准备的人" v-model="params.content">
+        <el-popover trigger="click" slot="append">
           <VEmojiPicker @select="selectReplyEmoji" />
           <el-button slot="reference">
             <i class="el-icon-wind-power" />
           </el-button>
         </el-popover>
       </el-input>
-      <el-button
-        type="primary"
-        :loading="isLoading"
-        @click="submit"
-        style="position: absolute; right: 16vw; bottom: 20px"
-      >
+      <el-button type="primary" :loading="isLoading" @click="submit"
+        style="position: absolute; right: 16vw; bottom: 20px">
         发表评论
       </el-button>
     </el-drawer>
@@ -200,19 +133,23 @@
 </template>
 <script>
 import { VEmojiPicker } from 'v-emoji-picker'
+// @ts-ignore
 import { formatTime } from '@/utils/time'
+// @ts-ignore
 import { useUserStore } from '@/stores/user'
 import { mapState, mapActions } from 'pinia'
+// @ts-ignore
 import { useCommentStore } from '@/stores/comments'
+// @ts-ignore
 import { isLogin } from '@/utils/auth'
 export default {
   components: { VEmojiPicker },
   props: {
     comment: {
       type: Object,
-      default: () => {}
+      default: () => { }
     },
-    article_id: {
+    articleId: {
       type: Number,
       default: -1
     }
@@ -220,14 +157,14 @@ export default {
   computed: {
     ...mapState(useUserStore, ['user', 'hasLogin'])
   },
-  data () {
+  data() {
     const userStore = useUserStore()
     const params = {
       content: '',
       rootCommentId: '',
       replyCommentId: '',
       user_id: userStore.user.id,
-      article_id: this.article_id,
+      articleId: this.articleId,
       user_nick: userStore.user.username,
       user_avatar: userStore.user.avatarImgUrl
     }
@@ -243,16 +180,16 @@ export default {
       cdn: process.env.VUE_APP_WEBSITE_CDN
     }
   },
-  created () {},
-  mounted () {
+  created() { },
+  mounted() {
     this.userStore = useUserStore()
   },
   methods: {
-    selectReplyEmoji (emoji) {
+    selectReplyEmoji(emoji) {
       this.emojiReplyVisible = false
       this.params.content = `${this.params.content}${emoji.data}`
     },
-    showCommmentInput (rootCommentId, replyCommentId, nick) {
+    showCommmentInput(rootCommentId, replyCommentId, nick) {
       if (isLogin()) {
         this.params.rootCommentId = rootCommentId
         this.params.replyCommentId = replyCommentId
@@ -262,7 +199,7 @@ export default {
         this.$message.error('请先登录')
       }
     },
-    submit () {
+    submit() {
       this.isLoading = true
       const success = this.submitComment(this.params)
       if (success) {
@@ -282,6 +219,7 @@ export default {
 i {
   cursor: pointer;
 }
+
 .user-avatar {
   width: 80px;
   height: 80px;

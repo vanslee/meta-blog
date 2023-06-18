@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="container"
-    ref="containerRef"
-    @keydown.enter="login"
-  >
+  <div class="container" ref="containerRef" @keydown.enter="login">
     <div class="forms-container">
       <div class="signin-signup">
         <form class="sign-in-form">
@@ -12,57 +8,30 @@
           </h2>
           <div class="input-field">
             <i class="fas fa-user" />
-            <input
-              type="text"
-              autocomplete="username"
-              placeholder="用户名"
-              v-model="params.username"
-              id="username"
-            >
+            <input type="text" autocomplete="username" placeholder="用户名" v-model="params.username" id="username">
           </div>
           <div class="input-field">
             <i class="fas fa-lock" />
-            <input
-              type="password"
-              autocomplete="current-password"
-              placeholder="密码"
-              v-model="params.password"
-              id="password"
-            >
+            <input type="password" autocomplete="current-password" placeholder="密码" v-model="params.password"
+              id="password">
           </div>
-          <el-button
-            @click="login"
-            class="btn solid"
-            :loading="isLoading"
-          >
+          <el-button @click="login" class="btn solid" :loading="isLoading">
             立即登录
           </el-button>
           <p class="social-text">
             通过其他方式
           </p>
           <div class="social-media">
-            <a
-              :href="qqRedirectUri"
-              class="social-icon"
-            >
+            <a :href="qqRedirectUri" class="social-icon">
               <i class="iconfont fab icon-qq" />
             </a>
-            <a
-              :href="wechatRedirectUri"
-              class="social-icon"
-            >
+            <a :href="wechatRedirectUri" class="social-icon">
               <i class="fab iconfont icon-wechat" />
             </a>
-            <a
-              :href="giteeRedirectUri"
-              class="social-icon"
-            >
+            <a :href="giteeRedirectUri" class="social-icon">
               <i class="fab iconfont icon-gitee" />
             </a>
-            <a
-              :href="githubRedirectUri"
-              class="social-icon"
-            >
+            <a :href="githubRedirectUri" class="social-icon">
               <i class="fab iconfont">&#xe628;</i>
             </a>
           </div>
@@ -73,13 +42,7 @@
           </h2>
           <div class="input-field">
             <i class="fas fa-user" />
-            <input
-              type="text"
-              autocomplete="username"
-              placeholder="用户名"
-              v-model="params.username"
-              id="username1"
-            >
+            <input type="text" autocomplete="username" placeholder="用户名" v-model="params.username" id="username1">
           </div>
           <!-- <div class="input-field">
             <i class="fas fa-envelope"></i>
@@ -87,57 +50,31 @@
           </div> -->
           <div class="input-field">
             <i class="fas fa-lock" />
-            <input
-              type="password"
-              autocomplete="current-password"
-              placeholder="密码"
-              v-model="params.password"
-              id="password1"
-            >
+            <input type="password" autocomplete="current-password" placeholder="密码" v-model="params.password"
+              id="password1">
           </div>
           <div class="input-field">
             <i class="fas fa-lock" />
-            <input
-              type="password"
-              autocomplete="current-password"
-              placeholder="确认密码"
-              v-model="params.confirmPassword"
-              id="confirmPassword1"
-            >
+            <input type="password" autocomplete="current-password" placeholder="确认密码" v-model="params.confirmPassword"
+              id="confirmPassword1">
           </div>
-          <el-button
-            class="btn"
-            @click="registry"
-            :loading="isLoading"
-          >
+          <el-button class="btn" @click="registry" :loading="isLoading">
             立即注册
           </el-button>
           <p class="social-text">
             通过其他方式
           </p>
           <div class="social-media">
-            <a
-              :href="qqRedirectUri"
-              class="social-icon"
-            >
+            <a :href="qqRedirectUri" class="social-icon">
               <i class="iconfont fab icon-qq" />
             </a>
-            <a
-              :href="wechatRedirectUri"
-              class="social-icon"
-            >
+            <a :href="wechatRedirectUri" class="social-icon">
               <i class="fab iconfont icon-wechat" />
             </a>
-            <a
-              :href="giteeRedirectUri"
-              class="social-icon"
-            >
+            <a :href="giteeRedirectUri" class="social-icon">
               <i class="fab iconfont icon-gitee" />
             </a>
-            <a
-              :href="githubRedirectUri"
-              class="social-icon"
-            >
+            <a :href="githubRedirectUri" class="social-icon">
               <i class="fab iconfont">&#xe628;</i>
             </a>
           </div>
@@ -150,37 +87,21 @@
         <div class="content">
           <h3>加入我们</h3>
           <p>加入我们，成为本站的一份子。</p>
-          <button
-            class="btn transparent"
-            id="sign-up-btn"
-            @click="toSignUp"
-          >
+          <button class="btn transparent" id="sign-up-btn" @click="toSignUp">
             去注册
           </button>
         </div>
-        <img
-          src="./img/log.svg"
-          class="image"
-          alt=""
-        >
+        <img src="./img/log.svg" class="image" alt="">
       </div>
       <div class="panel right-panel">
         <div class="content">
           <h3>已有帐号？</h3>
           <p>立即登录已有帐号，享受独家权益。</p>
-          <button
-            class="btn transparent"
-            id="sign-in-btn"
-            @click="toLogin"
-          >
+          <button class="btn transparent" id="sign-in-btn" @click="toLogin">
             去登录
           </button>
         </div>
-        <img
-          src="./img/register.svg"
-          class="image"
-          alt=""
-        >
+        <img src="./img/register.svg" class="image" alt="">
       </div>
     </div>
   </div>
@@ -192,7 +113,7 @@ import { useUserStore } from '@/stores/user'
 // import { getToken } from '@/utils/auth'
 export default {
   name: 'LoginOrRegPage',
-  data () {
+  data() {
     const userStore = useUserStore()
     const params = {
       username: '',
@@ -213,12 +134,12 @@ export default {
       wechatRedirectUri
     }
   },
-  created () {
+  created() {
     // console.log(JSON.parse(localStorage.getItem('user')))
   },
   computed: {},
   methods: {
-    async registry () {
+    async registry() {
       const { code, msg } = await registryApi(this.params)
       this.isLoading = true
       if (code === 200) {
@@ -230,7 +151,7 @@ export default {
       this.initParams()
       this.isLoading = false
     },
-    login () {
+    login() {
       if (this.checkParams({ type: 'login' }) !== true) return
       this.isLoading = true
       this.userStore.login(this.params).then(res => {
@@ -242,19 +163,19 @@ export default {
       this.isLoading = false
       this.initParams()
     },
-    toLogin () {
+    toLogin() {
       this.$refs.containerRef.classList.remove('sign-up-mode')
     },
-    toSignUp () {
+    toSignUp() {
       this.$refs.containerRef.classList.add('sign-up-mode')
       // console.log('注册')
     },
-    initParams () {
+    initParams() {
       this.params.password = ''
       this.params.username = ''
       this.params.confirmPassword = ''
     },
-    checkParams (options) {
+    checkParams(options) {
       const { username, password, confirmPassword } = this.params
       // let usernameInput = document.getElementById('username')
       // let passwordInput = document.getElementById('password')

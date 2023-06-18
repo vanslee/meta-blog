@@ -69,17 +69,74 @@ const constantRoutes = [
     path: '/write',
     component: Layout,
     title: '发布文章',
+    meta: {
+      requireAuth: true
+    },
     children: [
       {
         path: '',
         name: 'Write',
-        meta: {
-          requireAuth: true
-        },
         components: {
           main: () => import('@/layout/components/Mains/ArticleWrite.vue'),
           left_aside: () =>
             import('@/layout/components/Sidebar/WriteLeftAside.vue')
+        }
+      }
+    ]
+  },
+  {
+    path: '/categories',
+    component: Layout,
+    title: '文章分类',
+    meta: {
+      requireAuth: false
+    },
+    children: [
+      {
+        path: '/',
+        name: 'Categories',
+        components: {
+          main: () => import('@/layout/components/Mains/ArticleCategories.vue'),
+          left_aside: () =>
+            import('@/layout/components/Sidebar/BlogLeftAside.vue')
+        }
+      }
+    ]
+  },
+  {
+    path: '/tags',
+    component: Layout,
+    title: '文章标签',
+    meta: {
+      requireAuth: false
+    },
+    children: [
+      {
+        path: '/',
+        name: 'Tags',
+        components: {
+          main: () => import('@/layout/components/Mains/ArticleTags.vue'),
+          left_aside: () =>
+            import('@/layout/components/Sidebar/BlogLeftAside.vue')
+        }
+      }
+    ]
+  },
+  {
+    path: '/article/category/:cid',
+    component: Layout,
+    title: '文章类别',
+    meta: {
+      requireAuth: false
+    },
+    children: [
+      {
+        path: '/',
+        name: 'CArticle',
+        components: {
+          main: () => import('@/layout/components/Mains/ArticleListCard.vue'),
+          left_aside: () =>
+            import('@/layout/components/Sidebar/BlogLeftAside.vue')
         }
       }
     ]

@@ -1,6 +1,7 @@
 /ldx_blog_admin/node_modules/
 /ldx_blog_vue/.vscode/
 /ldx_blog_vue/target
+/ldx_blog_vue/dist
 /ldx_blog_vue/.env.development.local
 /ldx_blog_vue/node_modules/
 /ldx_blog_vue/package-lock.json

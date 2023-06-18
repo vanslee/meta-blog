@@ -9,60 +9,59 @@ const service = axios.create({
   timeout: 18000000
 })
 service.interceptors.request.use(
-  config => {
+  (config) => {
     start()
     if (getToken()) {
       // 请求添加Token
-      config.headers['litubao_authentication'] = getToken()
+      config.headers.litubao_authentication = getToken()
     }
     return config
   },
-  error => {
+  (error) => {
     return Promise.reject(error)
   }
 )
 
 service.interceptors.response.use(
-  response => {
+  (response) => {
     close()
     return response.data
   },
-  error => {
+  (error) => {
     const msg = error?.response?.data?.msg ?? '未知错误'
     throttled(msg)
-    return Promise.reject(error)
+    // return Promise.reject(error);
   }
 )
 http.get = function (url, options) {
   return new Promise((resolve, reject) => {
     service
       .get(url, options)
-      .then(response => {
+      .then((response) => {
         if (response.code === 200) {
           resolve(response)
         } else {
-          throttled(response.message)
-          reject(response.message)
+          throttled(response.msg)
+          reject(response.msg)
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e)
       })
   })
 }
 http.post = function (url, data, options) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     service
       .post(url, data, options)
-      .then(response => {
+      .then((response) => {
         if (response.code === 200) {
           resolve(response)
         } else {
-          throttled(response.message)
-          reject(response.message)
+          throttled(response.msg)
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e)
       })
   })
@@ -71,23 +70,22 @@ http.put = function (url, data, options) {
   return new Promise((resolve, reject) => {
     service
       .put(url, data, options)
-      .then(response => {
+      .then((response) => {
         if (response.code === 200) {
           resolve(response)
         } else {
-          throttled(response.message)
-          reject(response.message)
+          throttled(response.msg)
+          reject(response.msg)
         }
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e)
       })
   })
 }
-const tipError = message => {
-  // console.log(res)
+const tipError = (msg) => {
   Message.error({
-    message: message,
+    message: msg,
     duration: 5 * 1000
   })
 }

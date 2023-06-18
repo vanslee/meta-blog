@@ -30,7 +30,7 @@ export default {
   components: {
     ArticleCard
   },
-  data() {
+  data () {
     const userStore = useUserStore()
     const params = {
       current: 0,
@@ -44,17 +44,17 @@ export default {
       formatTimeStamp
     }
   },
-  created() {
+  created () {
     this.fetchData()
   },
   computed: {},
   methods: {
-    async fetchData() {
+    async fetchData () {
       const { data = {} } = await getArticleListApi(this.params)
-      this.articles = data['records'] || []
-      this.total = data['total']
+      this.articles = data.records || []
+      this.total = data.total
     },
-    changePage(current) {
+    changePage (current) {
       this.params.current = current
       this.fetchData()
     }

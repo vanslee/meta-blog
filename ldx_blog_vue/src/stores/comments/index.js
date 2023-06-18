@@ -12,14 +12,14 @@ export const useCommentStore = defineStore('comment', {
   getters: {},
   actions: {
     // 用户登录获取token
-    async fetchData(params) {
+    async fetchData (params) {
       const { code, data } = await getCommentBriefApi(params)
       if (code === 200) {
-        this.comments = data['data']
-        this.total = data['total']
+        this.comments = data.data
+        this.total = data.total
       }
     },
-    async submitComment(params) {
+    async submitComment (params) {
       const { code } = await publishCommentApi(params)
       if (code === 200) {
         return true

@@ -1,8 +1,18 @@
 <template>
-  <div style="display: flex; justify-content: space-between; align-items: center">
+  <div
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
     <div class="hidden-xs-only">
-      <img v-if="hasLogin" v-lazy="user.avatarImgUrl" style="width: 6vw" />
-      <img v-else src="https://lidengxiang.top/default.jpg" style="width: 6vw" />
+      <img
+        v-if="hasLogin"
+        v-lazy="user.avatarImgUrl"
+        style="width: 6vw"
+      >
+      <img
+        v-else
+        src="https://lidengxiang.top/default.jpg"
+        style="width: 6vw"
+      >
     </div>
     <div style="flex-grow: 8; flex-shrink: 1; padding: 0 2vw">
       <el-input
@@ -13,18 +23,31 @@
       />
     </div>
     <div style="flex-grow: 1; flex-shrink: 1">
-      <el-button v-if="hasLogin" @click="submit" :loading="isLoading" style="height: 10vh">发表评论</el-button>
-      <el-button v-else style="height: 10vh" disabled>请先登录</el-button>
+      <el-button
+        v-if="hasLogin"
+        @click="submit"
+        :loading="isLoading"
+        style="height: 10vh"
+      >
+        发表评论
+      </el-button>
+      <el-button
+        v-else
+        style="height: 10vh"
+        disabled
+      >
+        请先登录
+      </el-button>
     </div>
 
     <!-- <el-row type="flex" justify="space-between" align="middle">
- 
+
       <el-col :span="3" class="hidden-sm-and-up">
         <img v-if="hasLogin" v-lazy="user.avatarImgUrl" style="width: 12vw" />
         <el-image v-else src="https://lidengxiang.top/default.jpg" style="width: 12vw; border-radius: 50%" />
       </el-col>
       <el-col :span="17" class="hidden-xs-only">
-        
+
       </el-col>
       <el-col :span="15" class="hidden-sm-and-up">
         <el-input placeholder="机会是留给有准备的人" v-model="commentParam.content" :disabled="!hasLogin">
@@ -68,7 +91,8 @@
 import { mapState } from 'pinia'
 import { useUserStore } from '@/stores/user'
 export default {
-  data() {
+  name: 'CommentComp',
+  data () {
     const userStore = useUserStore()
     const commentParam = {
       content: '',
@@ -82,16 +106,16 @@ export default {
       isLoading: false
     }
   },
-  created() {},
+  created () {},
   computed: {
     ...mapState(useUserStore, ['user', 'hasLogin'])
   },
   methods: {
-    selectRootEmoji(emoji) {
+    selectRootEmoji (emoji) {
       this.emojiRootVisible = false
-      this.commentParam.content = `${this.commentParam.content}${emoji['data']}`
+      this.commentParam.content = `${this.commentParam.content}${emoji.data}`
     },
-    submit() {
+    submit () {
       this.isLoading = true
       const success = this.submitComment(this.commentParam)
       if (success) {

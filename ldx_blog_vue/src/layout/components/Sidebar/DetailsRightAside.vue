@@ -2,7 +2,12 @@
   <div div="height: 100%">
     <el-card class="right-box">
       <el-row>
-        <el-col><i class="iconfont" style="font-size: 2.5rem">&#xe608;</i></el-col>
+        <el-col>
+          <i
+            class="iconfont"
+            style="font-size: 2.5rem"
+          >&#xe608;</i>
+        </el-col>
         <el-col>目录</el-col>
       </el-row>
     </el-card>
@@ -21,7 +26,12 @@
       </el-row>
 
       <el-row style="margin-top: 1vh">
-        <el-col><i class="iconfont" @click="scrollToEnd">&#xe744;</i></el-col>
+        <el-col>
+          <i
+            class="iconfont"
+            @click="scrollToEnd"
+          >&#xe744;</i>
+        </el-col>
         <el-col>1</el-col>
       </el-row>
       <el-row style="margin-top: 1vh">
@@ -36,13 +46,13 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {}
   },
-  created() {},
+  created () {},
   computed: {},
   methods: {
-    scrollToEnd() {
+    scrollToEnd () {
       this.$bus.$emit('scroll-to-end')
     }
   }

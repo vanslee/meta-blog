@@ -1,10 +1,11 @@
 {
-  "name": "ldx_blog_vue",
+  "name": "litubao",
   "version": "0.1.0",
   "private": true,
+  "author": "vanslee",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
-    "build": "vue-cli-service build --mode production",
+    "build": "vue-cli-service build --modern",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -12,6 +13,7 @@
     "@vueuse/core": "^10.1.2",
     "axios": "^1.4.0",
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.8",
     "default-passive-events": "^2.0.0",
     "element-ui": "^2.15.13",
     "lodash": "^4.17.21",
@@ -25,27 +27,22 @@
     "vue-router": "^3.6.5"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^5.0.8",
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "^5.0.8",
+    "@vue/eslint-config-standard": "^6.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "lint-staged": "^11.1.2",
     "sass": "^1.63.4",
     "sass-loader": "^13.3.2"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  }
 }

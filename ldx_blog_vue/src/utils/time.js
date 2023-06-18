@@ -1,4 +1,4 @@
-export function formatTimeStamp(timestamp) {
+export function formatTimeStamp (timestamp) {
   const date = new Date(timestamp * 1000)
   const year = date.getFullYear()
   const month = addZero(date.getMonth() + 1)
@@ -9,11 +9,11 @@ export function formatTimeStamp(timestamp) {
   const hour12 = hour % 12 === 0 ? 12 : hour % 12
   return `${year}年${month}月${day}日 ${meridiem} ${hour12}:${minute}分`
 }
-function addZero(num) {
+function addZero (num) {
   return num < 10 ? `0${num}` : num
 }
 
-export function formatTime(timestamp) {
+export function formatTime (timestamp) {
   const now = new Date() // 当前时间
   const target = new Date(timestamp * 1000) // 目标时间，这里使用一个固定的时间作为示例
   const diff = now - target // 计算当前时间与目标时间的差距，单位为毫秒

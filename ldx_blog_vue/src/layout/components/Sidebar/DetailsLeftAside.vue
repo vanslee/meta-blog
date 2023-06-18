@@ -13,17 +13,17 @@
 <script>
 import { useArticleStore } from '@/stores/article'
 export default {
-  data() {
+  data () {
     return {
       store: useArticleStore()
     }
   },
-  created() {},
-  mounted() {},
+  created () {},
+  mounted () {},
   computed: {},
 
   methods: {
-    handleAnchorClick(anchor) {
+    handleAnchorClick (anchor) {
       this.$bus.$emit('directory-navigation', anchor)
     }
   }

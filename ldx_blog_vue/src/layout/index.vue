@@ -1,12 +1,43 @@
 <template>
-  <div style="width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: space-between">
-    <header style="height: 10%; width: 100%"><BlogHeader /></header>
-    <main style="height: 90%; width: 100%; display: flex; justify-content: space-between">
-      <aside style="width: 30%" class="hidden-sm-and-down"><router-view name="left_aside" /></aside>
-      <content style="width: 100%; padding: 0 5vw"><router-view name="main" /></content>
-      <aside style="width: 30%" class="hidden-sm-and-down"><router-view name="right_aside" /></aside>
+  <div
+    style="
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    "
+  >
+    <header style="height: 10%; width: 100%">
+      <BlogHeader />
+    </header>
+    <main
+      style="
+        height: 90%;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      "
+    >
+      <aside
+        style="width: 30%"
+        class="hidden-sm-and-down"
+      >
+        <router-view name="left_aside" />
+      </aside>
+      <content style="width: 100%; padding: 0 5vw">
+        <router-view name="main" />
+      </content>
+      <aside
+        style="width: 30%"
+        class="hidden-sm-and-down"
+      >
+        <router-view name="right_aside" />
+      </aside>
     </main>
-    <footer style="width: 100%"><BlogFooter /></footer>
+    <footer style="width: 100%">
+      <BlogFooter />
+    </footer>
   </div>
   <!-- <el-container style="height: 100%; width: 100%">
     <el-header height="8vh">
@@ -37,10 +68,10 @@ export default {
     BlogFooter,
     BlogHeader
   },
-  data() {
+  data () {
     return {}
   },
-  created() {},
+  created () {},
   computed: {},
   methods: {}
 }

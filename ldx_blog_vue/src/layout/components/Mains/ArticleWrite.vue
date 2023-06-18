@@ -1,5 +1,8 @@
 <template>
-  <div style="height: 99%; border: 2px solid #909399; border-radius: 1rem" @keydown.ctrl.s.prevent="savecontent">
+  <div
+    style="height: 99%; border: 2px solid #909399; border-radius: 1rem"
+    @keydown.ctrl.s.prevent="savecontent"
+  >
     <v-md-editor
       ref="editorRef"
       v-model="content"
@@ -12,7 +15,7 @@
       :upload-image-config="uploadImgConfig"
       @copy-code-success="handleCopyCodeSuccess"
       @fullscreen-change="handleFullscreenChange"
-    ></v-md-editor>
+    />
     <submit-article-dlg ref="submitArticleRef" />
   </div>
 </template>
@@ -26,7 +29,7 @@ export default {
   components: {
     SubmitArticleDlg
   },
-  data() {
+  data () {
     const uploadImgConfig = { accept: '*', multiple: false }
     const toolbarConfig = {
       'image-link': {
@@ -38,7 +41,7 @@ export default {
         title: '发布文章',
         icon: 'el-icon-success',
         _this: this,
-        action(editor) {
+        action (editor) {
           editor.$nextTick(async () => {
             const { _this } = this
             _this.submitArticle()
@@ -52,7 +55,7 @@ export default {
           {
             name: '图片链接',
             text: '图片链接',
-            action(editor) {
+            action (editor) {
               editor.insert(function (selected) {
                 const prefix = '![这是图片]'
                 const suffix = '{{{width="auto" height="auto"}}}'
@@ -68,7 +71,7 @@ export default {
           {
             name: '备注链接',
             text: '备注链接',
-            action(editor) {
+            action (editor) {
               editor.insert(function (selected) {
                 const prefix = '['
                 const suffix = '](链接地址)'
@@ -85,7 +88,7 @@ export default {
             name: '上传文件',
             text: '上传文件',
             _this: this,
-            action(editor) {
+            action (editor) {
               editor.$nextTick(async () => {
                 const { _this } = this
                 const event = await editor.$refs.uploadFile.upload()
@@ -106,7 +109,7 @@ export default {
     }
   },
 
-  mounted() {
+  mounted () {
     const content = localStorage.getItem('content')
     if (content) {
       this.content = localStorage.getItem('content')
@@ -120,7 +123,7 @@ export default {
     }, 3000)
   },
   methods: {
-    handleFullscreenChange(type) {
+    handleFullscreenChange (type) {
       if (type) {
         this.$message.success('进入全屏模式')
       }
@@ -128,7 +131,7 @@ export default {
     /**
      * 上传文件
      */
-    async handleFileUpload(file) {
+    async handleFileUpload (file) {
       console.log(file)
       if (file instanceof File) {
         const formData = new FormData()
@@ -136,18 +139,18 @@ export default {
         const { data, code } = await uploadFileApi(formData)
         if (code === 200) {
           const imgRegex = /^.*\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|bmp|BMP)$/
-          const isImg = ''
+          let isImg = ''
           if (imgRegex.test(data.name)) {
             isImg = '!'
           } else {
-            this.$refs['editorRef'].text = this.$refs['editorRef'].text.concat(
+            this.$refs.editorRef.text = this.$refs.editorRef.text.concat(
               `${isImg}[${data.name}](${encodeURI(data.url)})`
             )
           }
         }
       }
     },
-    handleCopyCodeSuccess(code) {
+    handleCopyCodeSuccess (code) {
       const { copy } = useClipboard()
       copy(code)
       Notification.success({
@@ -156,7 +159,7 @@ export default {
         duration: 1000
       })
     },
-    saveData() {
+    saveData () {
       localStorage.setItem('content', this.content)
       this.$notify({
         title: '提示',
@@ -170,8 +173,8 @@ export default {
     /**
      * 发布文章
      */
-    submitArticle() {
-      this.$refs['submitArticleRef'].showDlg(this.content)
+    submitArticle () {
+      this.$refs.submitArticleRef.showDlg(this.content)
     }
   }
 }

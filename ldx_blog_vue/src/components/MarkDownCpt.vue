@@ -17,20 +17,19 @@ export default {
   computed: {
     ...mapState(useArticleStore, ['titles'])
   },
-  data() {
+  data () {
     return {
       html: ''
     }
   },
-  mounted() {
+  mounted () {
     setTimeout(() => {
       this.fetchData()
     }, 500)
   },
-  computed: {},
   methods: {
     ...mapActions(useArticleStore, ['setTitles']),
-    async fetchData() {
+    async fetchData () {
       const { text } = await getMarkdownTextApi(this.mdUrl)
       const md = new MarkdownIt()
       this.html = md.render(text)

@@ -1,8 +1,15 @@
 <template>
   <div>
     <CommentVue />
-    <div v-for="comment in comments" :key="comment.id">
-      <comment-item-vue :comment="comment" :article_id="article_id" @fetch-data="fetchData" />
+    <div
+      v-for="comment in comments"
+      :key="comment.id"
+    >
+      <comment-item-vue
+        :comment="comment"
+        :article-id="articleId"
+        @fetch-data="fetchData"
+      />
     </div>
     <el-pagination
       :total="total"
@@ -11,13 +18,12 @@
       :page-size="params.size"
       @current-change="handleChangePage"
       :current-page.sync="params.current"
-    ></el-pagination>
+    />
   </div>
 </template>
 <script>
 import CommentItemVue from './CommentItem.vue'
 import CommentVue from './Comment.vue'
-import { VEmojiPicker } from 'v-emoji-picker'
 import { mapActions, mapState } from 'pinia'
 import { useUserStore } from '@/stores/user'
 import { useCommentStore } from '@/stores/comments'
@@ -26,11 +32,10 @@ export default {
   name: 'CommentIndex',
   components: {
     CommentItemVue,
-    VEmojiPicker,
     CommentVue
   },
   props: {
-    article_id: {
+    articleId: {
       type: Number,
       default: -1
     }
@@ -39,13 +44,13 @@ export default {
     ...mapState(useUserStore, ['user', 'hasLogin']),
     ...mapState(useCommentStore, ['comments', 'total'])
   },
-  data() {
+  data () {
     const userStore = useUserStore()
     const commentStore = useCommentStore()
     const params = {
       size: 5,
       current: 1,
-      article_id: this.article_id
+      articleId: this.articleId
     }
 
     return {
@@ -56,12 +61,12 @@ export default {
       emojiRootVisible: false
     }
   },
-  created() {},
-  mounted() {
+  created () {},
+  mounted () {
     this.fetchData(this.params)
   },
   methods: {
-    handleChangePage(page) {
+    handleChangePage (page) {
       this.params.current = page
       this.fetchData(this.params)
     },

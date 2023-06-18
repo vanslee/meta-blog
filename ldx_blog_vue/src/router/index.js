@@ -17,7 +17,8 @@ const constantRoutes = [
         name: 'Index',
         components: {
           main: () => import('@/layout/components/Mains/ArticleListCard.vue'),
-          left_aside: () => import('@/layout/components/Sidebar/BlogRightAside.vue')
+          left_aside: () =>
+            import('@/layout/components/Sidebar/BlogRightAside.vue')
         }
       }
     ]
@@ -45,8 +46,10 @@ const constantRoutes = [
         name: 'Article',
         components: {
           main: () => import('@/layout/components/Mains/ArticleDetails.vue'),
-          left_aside: () => import('@/layout/components/Sidebar/DetailsLeftAside.vue'),
-          right_aside: () => import('@/layout/components/Sidebar/DetailsRightAside.vue')
+          left_aside: () =>
+            import('@/layout/components/Sidebar/DetailsLeftAside.vue'),
+          right_aside: () =>
+            import('@/layout/components/Sidebar/DetailsRightAside.vue')
         }
       }
     ]
@@ -60,7 +63,7 @@ const constantRoutes = [
     },
     component: () => import('@/views/error-page/loading.vue'),
     hidden: true,
-    props: route => ({ query: route.query.tk })
+    props: (route) => ({ query: route.query.tk })
   },
   {
     path: '/write',
@@ -75,7 +78,8 @@ const constantRoutes = [
         },
         components: {
           main: () => import('@/layout/components/Mains/ArticleWrite.vue'),
-          left_aside: () => import('@/layout/components/Sidebar/WriteLeftAside.vue')
+          left_aside: () =>
+            import('@/layout/components/Sidebar/WriteLeftAside.vue')
         }
       }
     ]

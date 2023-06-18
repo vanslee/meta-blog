@@ -34,7 +34,7 @@ VMdEditor.use(githubTheme, {
 VMdEditor.use(createCopyCodePlugin())
 VMdEditor.use(createEmojiPlugin())
 VMdEditor.use(createTodoListPlugin())
-VMdEditor.use(createTodoListPlugin())
+VMdEditor.use(createLineNumbertPlugin())
 VMdEditor.use(createAlignPlugin())
 Vue.use(VMdEditor)
 // import json from 'highlight.js/lib/languages/json'
@@ -58,7 +58,7 @@ Vue.prototype.$bus = EventBus // 将EventBus实例挂载到Vue原型上
  * ----------------------------
  */
 // Vue.config.productionTip = false
-const fixElTableErr = table => {
+const fixElTableErr = (table) => {
   const oldResizeListener = table.methods.resizeListener
   table.methods.resizeListener = function () {
     window.requestAnimationFrame(oldResizeListener.bind(this))
@@ -70,5 +70,5 @@ Vue.use(ElementUI)
 new Vue({
   pinia,
   router,
-  render: h => h(App)
+  render: (h) => h(App)
 }).$mount('#app')

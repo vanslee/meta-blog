@@ -76,7 +76,12 @@
 .content .login-wrapper .right-login-form .form-wrapper .input-items {
   margin: 20px 0;
 }
-.content .login-wrapper .right-login-form .form-wrapper .input-items .input-tips {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .input-items
+  .input-tips {
   display: inline-block;
   font-weight: 600;
   font-size: 20px;
@@ -92,7 +97,12 @@
   outline: none;
   transition: 0.5s;
 }
-.content .login-wrapper .right-login-form .form-wrapper .input-items .inputs:focus {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .input-items
+  .inputs:focus {
   border: 1px solid rgb(128, 106, 196);
 }
 .content .login-wrapper .right-login-form .form-wrapper .input-items .forgot {
@@ -125,7 +135,12 @@
   font-weight: 600;
   margin: 10px 0;
 }
-.content .login-wrapper .right-login-form .form-wrapper .siginup-tips span:last-child {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .siginup-tips
+  span:last-child {
   color: rgb(110, 87, 179);
   cursor: pointer;
 }
@@ -137,7 +152,13 @@
   align-items: center;
   justify-content: space-between;
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .divider .line {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .divider
+  .line {
   display: inline-block;
   max-width: 35%;
   width: 35%;
@@ -145,7 +166,13 @@
   height: 1px;
   background-color: rgb(162, 172, 185);
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .divider .divider-text {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .divider
+  .divider-text {
   vertical-align: middle;
   margin: 0 20px;
   display: inline-block;
@@ -153,13 +180,24 @@
   color: rgb(162, 172, 185);
   white-space: normal;
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .other-login-wrapper {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .other-login-wrapper {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .other-login-wrapper .other-login-item {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .other-login-wrapper
+  .other-login-item {
   width: 70px;
   padding: 10px;
   text-align: center;
@@ -170,15 +208,35 @@
   margin: 0 10px;
   transition: 0.4s;
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .other-login-wrapper .other-login-item img {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .other-login-wrapper
+  .other-login-item
+  img {
   width: 40px;
   height: 40px;
   vertical-align: middle;
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .other-login-wrapper .other-login-item span {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .other-login-wrapper
+  .other-login-item
+  span {
   vertical-align: middle;
 }
-.content .login-wrapper .right-login-form .form-wrapper .other-login .other-login-wrapper .other-login-item:hover {
+.content
+  .login-wrapper
+  .right-login-form
+  .form-wrapper
+  .other-login
+  .other-login-wrapper
+  .other-login-item:hover {
   width: 80px;
   height: 50%;
   background-color: #fff;

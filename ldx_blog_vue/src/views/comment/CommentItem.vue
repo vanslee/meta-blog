@@ -2,13 +2,28 @@
   <div>
     <el-divider />
     <el-row>
-      <el-col :span="2" class="hidden-xs-only">
-        <el-image :src="`${cdn}${comment.userAvatar}`" class="user-avatar" />
+      <el-col
+        :span="2"
+        class="hidden-xs-only"
+      >
+        <el-image
+          :src="`${cdn}${comment.userAvatar}`"
+          class="user-avatar"
+        />
       </el-col>
-      <el-col :span="4" class="hidden-sm-and-up">
-        <el-image style="width: 12vw" :src="`${cdn}${comment.userAvatar}`" />
+      <el-col
+        :span="4"
+        class="hidden-sm-and-up"
+      >
+        <el-image
+          style="width: 12vw"
+          :src="`${cdn}${comment.userAvatar}`"
+        />
       </el-col>
-      <el-col :span="16" class="hidden-sm-and-up">
+      <el-col
+        :span="16"
+        class="hidden-sm-and-up"
+      >
         <el-row>
           <el-row>
             {{ comment.userNick }}
@@ -45,7 +60,8 @@
                 回复 {{ children.content }}
               </el-row>
               <el-row>
-                {{ formatTime(children.createTime) }} {{ children.location }} &emsp; &emsp;
+                {{ formatTime(children.createTime) }}
+                {{ children.location }} &emsp; &emsp;
                 <i class="iconfont">&#xe717;</i>
                 {{ children.likes }}
                 &nbsp;
@@ -57,7 +73,10 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col :span="20" class="hidden-xs-only">
+      <el-col
+        :span="20"
+        class="hidden-xs-only"
+      >
         <el-row>
           <el-row>
             {{ comment.userNick }}
@@ -94,7 +113,8 @@
                 回复 {{ children.content }}
               </el-row>
               <el-row>
-                {{ formatTime(children.createTime) }} {{ children.location }} &emsp; &emsp;
+                {{ formatTime(children.createTime) }}
+                {{ children.location }} &emsp; &emsp;
                 <i class="iconfont">&#xe717;</i>
                 {{ children.likes }}
                 &nbsp;
@@ -117,14 +137,22 @@
       class="hidden-xs-only"
     >
       <el-row>
-        <el-input type="textarea" :rows="3" placeholder="机会是留给有准备的人" v-model="params.content" />
+        <el-input
+          type="textarea"
+          :rows="3"
+          placeholder="机会是留给有准备的人"
+          v-model="params.content"
+        />
       </el-row>
-      <el-tooltip placement="top" v-model="emojiReplyVisible">
+      <el-tooltip
+        placement="top"
+        v-model="emojiReplyVisible"
+      >
         <div slot="content">
           <VEmojiPicker @select="selectReplyEmoji" />
         </div>
         <el-button size="mini">
-          <i class="el-icon-wind-power"></i>
+          <i class="el-icon-wind-power" />
           表情
         </el-button>
       </el-tooltip>
@@ -144,11 +172,18 @@
       :visible.sync="commentInputVisible"
       class="hidden-sm-and-up"
     >
-      <el-input style="width: 90vw" placeholder="机会是留给有准备的人" v-model="params.content">
-        <el-popover trigger="click" slot="append">
+      <el-input
+        style="width: 90vw"
+        placeholder="机会是留给有准备的人"
+        v-model="params.content"
+      >
+        <el-popover
+          trigger="click"
+          slot="append"
+        >
           <VEmojiPicker @select="selectReplyEmoji" />
           <el-button slot="reference">
-            <i class="el-icon-wind-power"></i>
+            <i class="el-icon-wind-power" />
           </el-button>
         </el-popover>
       </el-input>
@@ -185,12 +220,12 @@ export default {
   computed: {
     ...mapState(useUserStore, ['user', 'hasLogin'])
   },
-  data() {
+  data () {
     const userStore = useUserStore()
     const params = {
       content: '',
-      root_comment_id: '',
-      reply_comment_id: '',
+      rootCommentId: '',
+      replyCommentId: '',
       user_id: userStore.user.id,
       article_id: this.article_id,
       user_nick: userStore.user.username,
@@ -208,26 +243,26 @@ export default {
       cdn: process.env.VUE_APP_WEBSITE_CDN
     }
   },
-  created() {},
-  mounted() {
+  created () {},
+  mounted () {
     this.userStore = useUserStore()
   },
   methods: {
-    selectReplyEmoji(emoji) {
+    selectReplyEmoji (emoji) {
       this.emojiReplyVisible = false
-      this.params.content = `${this.params.content}${emoji['data']}`
+      this.params.content = `${this.params.content}${emoji.data}`
     },
-    showCommmentInput(root_comment_id, reply_comment_id, nick) {
+    showCommmentInput (rootCommentId, replyCommentId, nick) {
       if (isLogin()) {
-        this.params.root_comment_id = root_comment_id
-        this.params.reply_comment_id = reply_comment_id
+        this.params.rootCommentId = rootCommentId
+        this.params.replyCommentId = replyCommentId
         this.params.content = `@${nick}: `
         this.commentInputVisible = true
       } else {
         this.$message.error('请先登录')
       }
     },
-    submit() {
+    submit () {
       this.isLoading = true
       const success = this.submitComment(this.params)
       if (success) {

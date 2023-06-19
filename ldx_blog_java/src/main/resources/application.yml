@@ -49,7 +49,7 @@ spring:
   mail:
     password: bmvjdypxyzgmbgfj
   profiles:
-    active: prod
+    active: dev
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -119,3 +119,9 @@ qiniuyun:
   md_folder: "blog/md/"
 
 
+redirect:
+  url: "https://www.lidengxiang.top/#/loading/"
+  error-page: "https://www.lidengxiang.top/#/login"
+logging:
+  level:
+    com.ldx.blog: info

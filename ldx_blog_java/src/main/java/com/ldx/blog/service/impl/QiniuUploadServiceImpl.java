@@ -33,8 +33,6 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
     private static final int QUEUE_CAPACITY = 100;
     private static final Long KEEP_ALIVE_TIME = 1L;
     private static final ArrayBlockingQueue ARRAY_BLOCKING_QUEUE = new ArrayBlockingQueue(QUEUE_CAPACITY);
-    @Value("${files.path}")
-    private String FILE_PATH;
 
     @Value("${website.config.cdn}")
     public String qiniuyun;
@@ -50,7 +48,7 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
         int i = originalFilename.lastIndexOf('.');
         String suffixName = "";
         if (i != -1) {
-            //如果没有后缀则为""
+            //有后缀取后缀名
             suffixName = originalFilename.substring(i);
         }
         String img_regex = "^.*\\.(?i:png|jpe?g|gif|bmp)$";
@@ -59,20 +57,32 @@ public class QiniuUploadServiceImpl implements QiniuUploadService {
         Object loginId = StpUtil.getLoginId();
         String url = "";
         if (matcher.matches()) {
-            File uploadFile = FileUtil.multipartFileToFile(file, FILE_PATH, originalFilename);
-            url = qiniuyun + ossUtil.uploadImg(uploadFile, loginId+"/");
+            File uploadFile = FileUtil.multipartFileToFile(file);
+            if (Objects.isNull(uploadFile)) {
+                return Result.fail(ResultCodeEnum.UPLOAD_FILE_ERROR);
+            }
+            url = qiniuyun + ossUtil.uploadImg(uploadFile, loginId + "/");
+        } else if (suffixName.equals("md")) {
+            File uploadFile = FileUtil.multipartFileToFile(file);
+            if (Objects.isNull(uploadFile)) {
+                return Result.fail(ResultCodeEnum.UPLOAD_FILE_ERROR);
+            }
+            url = qiniuyun + ossUtil.uploadMarkdown(uploadFile, loginId + "/");
+        } else {
+            File uploadFile = FileUtil.multipartFileToFile(file);
+            if (Objects.isNull(uploadFile)) {
+                return Result.fail(ResultCodeEnum.UPLOAD_FILE_ERROR);
+            }
+            url = qiniuyun + ossUtil.uploadFile(uploadFile, loginId + "/");
         }
-        if (suffixName.equals("md")) {
-            File uploadFile = FileUtil.multipartFileToFile(file, FILE_PATH, originalFilename);
-            url = qiniuyun + ossUtil.uploadMarkdown(uploadFile, loginId+"/");
-        }
+
 
         // 文件全路径名
         Map<String, String> returnFileName = new HashMap<>(3);
         returnFileName.put("name", originalFilename);
         returnFileName.put("suffix", suffixName);
         returnFileName.put("url", url);
-        if (Objects.isNull(url)|| "".equals(url)) {
+        if (Objects.isNull(url) || "".equals(url)) {
             return Result.fail(ResultCodeEnum.UPLOAD_FILE_ERROR);
         }
         return Result.success(ResultCodeEnum.UPLOAD_FILE_SUCCESS, returnFileName);

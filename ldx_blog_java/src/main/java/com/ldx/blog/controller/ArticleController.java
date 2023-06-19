@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Map;
 import java.util.Objects;
 
@@ -32,9 +34,15 @@ public class ArticleController {
     private RedisService redisService;
 
     @GetMapping("/list")
-    public Result<IPage<Article>> getArticleListApi(@RequestParam("current") Integer current, @RequestParam("size") Integer size) {
+    public Result<IPage<Article>> getArticleListApi(HttpServletRequest request) {
+        String cid = request.getParameter("cid");
+        if (cid.equals("-1")){
+            cid = null;
+        };
+        Integer current = Integer.parseInt(request.getParameter("current"));
+        Integer size = Integer.parseInt(request.getParameter("size")) ;
         log.debug("用户查询分页: current:{},Size:{}", current, size);
-        return articleService.getArticlePage(current, size);
+        return articleService.getArticlePage(current, size,cid);
     }
 
     /**
@@ -59,7 +67,7 @@ public class ArticleController {
      * 发布文章
      */
     @PutMapping("/publish")
-    public Result<ResultCodeEnum> publishArticleApi(@RequestBody Article article){
+    public Result<ResultCodeEnum> publishArticleApi(@Valid @RequestBody Article article){
         boolean save = articleService.publishArticle(article);
         if (save){
             return Result.success(ResultCodeEnum.PUBLISH_SUCCESS);

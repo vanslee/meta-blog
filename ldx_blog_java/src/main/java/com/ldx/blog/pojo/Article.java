@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class Article implements Serializable {
     /**
      * markdown文件
      */
+
     private String mdUrl;
     /**
      *
@@ -37,6 +40,7 @@ public class Article implements Serializable {
     /**
      *
      */
+    @NotBlank(message = "文章标题不能为空")
     private String articleTitle;
     /**
      *
@@ -52,6 +56,7 @@ public class Article implements Serializable {
      *
      */
     @TableField(fill = FieldFill.INSERT)
+    @NotBlank(message = "请上传文章封面")
     private String imgUrl;
     /**
      *
@@ -72,10 +77,13 @@ public class Article implements Serializable {
     @TableField(exist = false)
     private String authorName;
     @TableField(exist = false)
+    @Size(min = 1,message = "至少选择一个分类")
     private List<String> categories;
     @TableField(exist = false)
+    @Size(min = 1,message = "至少选择一个标签")
     private List<String> tags;
     @TableField(exist = false)
+    @NotBlank(message = "文章内容不能为空")
     private String articleContent;
     @TableField(exist = false)
     private String personalBrief;

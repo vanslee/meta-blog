@@ -12,31 +12,37 @@ export default {
 
 <style>
 * {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial,
-    sans-serif;
-}
-div {
-  scrollbar-width: thin;
-  scrollbar-color: #888 #f1f1f1;
-}
-
-/* 滚动条滑块 */
-div::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 10px;
-}
-
-/* 鼠标悬停在滚动条时的样式 */
-div::-webkit-scrollbar-thumb:hover {
-  background-color: #555;
-}
-
-html,
-body {
   margin: 0;
   padding: 0;
-  vertical-align: top;
-  height: 100vh;
-  overflow: hidden;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+::-webkit-scrollbar {
+  border-radius: 10px;
+  background: #f7f7f9;
+  width: 0.5rem; /* 纵向滚动条滑块宽度 */
+  height: 0.5rem; /* 横向滚动条滑块宽度 */
+  scrollbar-width: thin;
+}
+::-webkit-scrollbar-track-piece {
+  /*滚动条背景颜色*/
+  background: #f7f7f9;
+}
+::-webkit-scrollbar-thumb {
+  /* 滑块 */
+  border-radius: 10px;
+  background: #e5e5e5;
+}
+/* 也可以单独设置横向滚动条和纵向滚动条的背景颜色 */
+::-webkit-scrollbar-thumb:vertical {
+  /* 纵向滑块 */
+  border-radius: 10px;
+  background: #e5e5e5;
+}
+::-webkit-scrollbar-thumb:horizontal {
+  /* 横向滑块 */
+  border-radius: 10px;
+  background: #e5e5e5;
 }
 </style>

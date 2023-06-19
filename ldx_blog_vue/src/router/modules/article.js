@@ -9,7 +9,8 @@ const articleRouter = {
       name: 'Article',
       components: {
         main: () => import('@/layout/components/Mains/ArticleDetails.vue'),
-        left_aside: () => import('@/layout/components/Sidebar/DetailsLeftAside.vue')
+        left_aside: () =>
+          import('@/layout/components/Sidebar/DetailsLeftAside.vue')
       }
     }
   ]

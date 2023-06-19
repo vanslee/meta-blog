@@ -1,4 +1,4 @@
 import request from '@/utils/request'
-export function getWebSiteInfoApi() {
+export function getWebSiteInfoApi () {
   return request.get('website/info')
 }

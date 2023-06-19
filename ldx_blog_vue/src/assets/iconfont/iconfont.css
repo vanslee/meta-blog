@@ -1,74 +1,126 @@
-/* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
-  font-family: 'iconfont'; /* Project id 3841663 */
-  src: url('//at.alicdn.com/t/c/font_3841663_qnkmir1ecd.woff2?t=1686332456862') format('woff2'),
-    url('//at.alicdn.com/t/c/font_3841663_qnkmir1ecd.woff?t=1686332456862') format('woff'),
-    url('//at.alicdn.com/t/c/font_3841663_qnkmir1ecd.ttf?t=1686332456862') format('truetype');
+  font-family: "iconfont"; /* Project id 3841663 */
+  src: url("iconfont.woff2?t=1686988112801") format("woff2"),
+    url("iconfont.woff?t=1686988112801") format("woff"),
+    url("iconfont.ttf?t=1686988112801") format("truetype");
 }
+
 .iconfont {
-  font-family: 'iconfont' !important;
+  font-family: "iconfont" !important;
   font-size: 16px;
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-pushpin-fill:before {
+  content: "\e86d";
+}
+
+.icon-tag-fill:before {
+  content: "\e86e";
+}
+
+.icon-github:before {
+  content: "\e628";
+}
+
+.icon-comments:before {
+  content: "\e69b";
+}
+
+.icon-skip:before {
+  content: "\e718";
+}
+
+.icon-bad:before {
+  content: "\e716";
+}
+
+.icon-good:before {
+  content: "\e717";
+}
+
+.icon-mulu:before {
+  content: "\e608";
+}
+
+.icon-backtop:before {
+  content: "\e6c6";
+}
+
+.icon-a-9fengexian:before {
+  content: "\e63b";
+}
+
+.icon-fenlei-copy:before {
+  content: "\e64e";
+}
+
+.icon-fenlei1:before {
+  content: "\e62f";
+}
+
+.icon-biaoqian1:before {
+  content: "\e655";
+}
+
 .icon-icon:before {
-  content: '\e651';
+  content: "\e651";
 }
 
 .icon-pinglun:before {
-  content: '\e891';
+  content: "\e891";
 }
 
 .icon-shoucang:before {
-  content: '\e610';
+  content: "\e610";
 }
 
 .icon-gitee:before {
-  content: '\e60c';
+  content: "\e60c";
 }
 
 .icon-wechat:before {
-  content: '\e868';
+  content: "\e868";
 }
 
 .icon-qq:before {
-  content: '\e6ca';
+  content: "\e6ca";
 }
 
 .icon-search:before {
-  content: '\e61f';
+  content: "\e61f";
 }
 
 .icon-daohang:before {
-  content: '\e88a';
+  content: "\e88a";
 }
 
 .icon-liuyan:before {
-  content: '\e744';
+  content: "\e744";
 }
 
 .icon-home:before {
-  content: '\e68e';
+  content: "\e68e";
 }
 
 .icon-fenlei:before {
-  content: '\e653';
+  content: "\e653";
 }
 
 .icon-41shuoshuo:before {
-  content: '\e658';
+  content: "\e658";
 }
 
 .icon-biaoqian:before {
-  content: '\e63d';
+  content: "\e63d";
 }
 
 .icon-github-fill:before {
-  content: '\e885';
+  content: "\e885";
 }
 
 .icon-like:before {
-  content: '\e7bf';
+  content: "\e7bf";
 }

@@ -1,5 +1,5 @@
 <template>
-  <el-card :body-style="{ border: 'solid red 10px' }">
+  <el-card :body-style="{ border: '2px solid  #909399' }">
     <div
       v-for="anchor in store.titles"
       :key="anchor.lineIndex"
@@ -13,17 +13,17 @@
 <script>
 import { useArticleStore } from '@/stores/article'
 export default {
-  data() {
+  data () {
     return {
       store: useArticleStore()
     }
   },
-  created() {},
-  mounted() {},
+  created () {},
+  mounted () {},
   computed: {},
 
   methods: {
-    handleAnchorClick(anchor) {
+    handleAnchorClick (anchor) {
       this.$bus.$emit('directory-navigation', anchor)
     }
   }

@@ -1,52 +1,30 @@
 <template>
-  <el-row type="flex" justify="space-around">
-    <el-col :span="16">
-      <el-row type="flex" align="middle">
-        <el-col :span="3">
-          <el-image
-            :src="article.authorAvatar"
-            fit="fill"
-            style="widht: 4vw; height: 4vw; border-radius: 50%"
-          ></el-image>
-        </el-col>
-        <el-col :span="20">
-          <el-row>
-            <el-col>
-              <span style="font-size: 1.25rem">{{ article.articleTitle }}</span>
-            </el-col>
-            <el-col>
-              <el-link type="info" v-for="(tag, index) in article.tags" :key="'tag' + index">{{ tag }} &nbsp;</el-link>
-              <el-link type="info" v-for="(category, index) in article.categories" :key="'category' + index">
-                {{ category }} &nbsp;
-              </el-link>
-            </el-col>
-          </el-row>
-        </el-col>
-      </el-row>
-      <el-row style="cursor: pointer">
-        <div @click="jumpToArticleDetails">
-          <mark-down-cpt :md-url="article.mdUrl" />
-        </div>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="2">
-          <i class="iconfont icon-shoucang"></i>
-          {{ article.comments }}
-        </el-col>
-        <el-col :span="2">
-          <i class="iconfont icon-icon"></i>
-          {{ article.views }}
-        </el-col>
-        <el-col :span="2">
-          <i class="iconfont icon-liuyan"></i>
-          {{ article.likes }}
-        </el-col>
-      </el-row>
-    </el-col>
-    <el-col :span="4" style="padding: 15px 10px 10px 0">
-      <img :src="article.imgUrl" style="width: 200px; height: 200px" />
-    </el-col>
-  </el-row>
+  <div style="width: 100%; height: 100%" @click="jumpToArticleDetails">
+    <div style="display: flex; justify-content: space-between; flex-shrink: 0; align-items: center">
+      <div style="width: 15%; display: flex; align-items: center; flex-direction: column">
+        <img style="width: 100%" v-lazy="article.authorAvatar">
+        <i style="font-weight: 700; color: #e6a23c">{{ article.authorName }}</i>
+        <span style="font-size: 0.75rem; color: #909399">
+          分类:
+          <i v-for="(category, index) in article.categories" :key="'category' + index">{{ category }}</i>
+        </span>
+        <span style="font-size: 0.75rem; color: #909399">
+          标签:
+          <i v-for="(tag, index) in article.tags" :key="'tag' + index">{{ tag }}</i>
+        </span>
+      </div>
+      <div style="width: 50%; padding: 0 8vw; overflow: hidden">
+        <h3 style="color: #409eff; white-space: nowrap; text-overflow: ellipsis">
+          {{ article.articleTitle }}
+        </h3>
+        <mark-down-cpt :md-url="article.mdUrl" />
+      </div>
+      <div style="width: 35%">
+        <img v-lazy="article.imgUrl"
+          style="width: 95%; height: 100%; border: 1px solid #909399; border-radius: 0; object-fit: fill">
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import MarkDownCpt from '@/components/MarkDownCpt.vue'
@@ -55,7 +33,7 @@ export default {
     article: {
       type: Object,
       required: true,
-      default: () => {}
+      default: () => { }
     }
   },
   components: {
@@ -66,12 +44,12 @@ export default {
       content: ''
     }
   },
-  created() {},
+  created() { },
   computed: {},
-  mounted() {},
+  mounted() { },
   methods: {
     jumpToArticleDetails() {
-      this.$router.push({ name: `Article`, params: { id: this.article.id } })
+      this.$router.push({ name: 'Article', params: { id: this.article.id } })
     }
   }
 }

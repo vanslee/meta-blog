@@ -1,15 +1,15 @@
 <template>
-  <div />
+  <div>111</div>
 </template>
 <script>
 import { useUserStore } from '@/stores/user'
 import { mapActions, mapState } from 'pinia'
 export default {
   name: 'LoadingVue',
-  data() {
+  data () {
     return {}
   },
-  mounted() {
+  mounted () {
     const token = this.$route.params.tk
     const loading = this.$loading({
       lock: true,
@@ -26,7 +26,7 @@ export default {
       this.$router.push({ name: 'Login' })
     }
   },
-  created() {},
+  created () {},
   computed: {
     ...mapState(useUserStore, ['user'])
   },

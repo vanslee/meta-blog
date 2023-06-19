@@ -5,7 +5,7 @@
   "author": "vanslee",
   "scripts": {
     "serve": "vue-cli-service serve --mode development",
-    "build": "vue-cli-service build --mode production",
+    "build": "vue-cli-service build --mode modern",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

@@ -12,13 +12,13 @@
       :unique-opened="uniqueOpened"
       mode="vertical"
     >
-      <template v-for="route in routes">
+      <div v-for="route in routes">
         <vab-side-bar-item
           :key="route.path"
           :full-path="route.path"
           :item="route"
         />
-      </template>
+      </div>
     </el-menu>
   </el-scrollbar>
 </template>

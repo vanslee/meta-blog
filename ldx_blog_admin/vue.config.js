@@ -32,14 +32,14 @@ process.env.VUE_APP_TITLE = title || 'vue-admin-beautiful'
 process.env.VUE_APP_AUTHOR = author || 'https://vue-admin-beautiful.com'
 process.env.VUE_APP_UPDATE_TIME = time
 process.env.VUE_APP_VERSION = version
-
+const type = process.env.NODE_ENV
 const resolve = (dir) => path.join(__dirname, dir)
-const mockServer = () => {
-  if (process.env.NODE_ENV === 'development') return require('./mock')
-  else return ''
-}
+// const mockServer = () => {
+//   if ( process.env.NODE_ENV === 'development') return require('./mock')
+//   else return ''
+// }
 
-module.exports = {
+const config = {
   publicPath,
   assetsDir,
   outputDir,
@@ -47,7 +47,6 @@ module.exports = {
 
   transpileDependencies,
   devServer: {
-    hot: true,
     port: devPort,
     open: true,
     noInfo: false,
@@ -55,7 +54,7 @@ module.exports = {
       warnings: true,
       errors: true,
     },
-    after: mockServer(),
+    // after: mockServer(),
   },
   configureWebpack() {
     return {
@@ -195,3 +194,13 @@ module.exports = {
     },
   },
 }
+if (type === 'development') {
+  config.devServer.proxy = {
+    '/apis': {
+      ws: true,
+      changeOrigin: true,
+      target: 'http://localhost:8000',
+    },
+  }
+}
+module.exports = config

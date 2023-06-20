@@ -8,6 +8,7 @@ import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.RedisService;
 import com.ldx.blog.service.impl.ArticleDetailsServiceImpl;
 import com.ldx.blog.service.impl.ArticleServiceImpl;
+import com.ldx.blog.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,13 +37,27 @@ public class ArticleController {
     @GetMapping("/list")
     public Result<IPage<Article>> getArticleListApi(HttpServletRequest request) {
         String cid = request.getParameter("cid");
-        if (cid.equals("-1")){
+        if (cid.equals("-1")) {
             cid = null;
-        };
+        }
+        ;
         Integer current = Integer.parseInt(request.getParameter("current"));
-        Integer size = Integer.parseInt(request.getParameter("size")) ;
+        Integer size = Integer.parseInt(request.getParameter("size"));
+        String keyword = request.getParameter("keyword");
         log.debug("用户查询分页: current:{},Size:{}", current, size);
-        return articleService.getArticlePage(current, size,cid);
+        return articleService.getArticlePage(current, size, keyword, cid, null, null);
+    }
+
+    @GetMapping("/list/{uid}")
+    public Result<IPage<Article>> getArticlesByUid(HttpServletRequest request, @PathVariable long uid) {
+        String size = request.getParameter("size");
+        String keyword = request.getParameter("keyword");
+        String desc = request.getParameter("desc");
+        String current = request.getParameter("current");
+        if (StringUtil.isEmpty(size) || StringUtil.isEmpty(current)) {
+            return Result.fail(ResultCodeEnum.PARAM_IS_INVALID);
+        }
+        return articleService.getArticlesByUid(uid, keyword, desc, size, current);
     }
 
     /**
@@ -52,7 +67,7 @@ public class ArticleController {
      * @return
      */
     @GetMapping("/details/{article_id}")
-    public Result<Map<String,Object>> getArticleDetailsByIdApi(@PathVariable("article_id") long articleId) {
+    public Result<Map<String, Object>> getArticleDetailsByIdApi(@PathVariable("article_id") long articleId) {
         log.debug("用户查询文章详情: {}", articleId);
         String articleViewsKey = RedisKey.ARTICLE_VIEW.concat(String.valueOf(articleId));
         Integer views = (Integer) redisService.get(articleViewsKey);
@@ -63,15 +78,16 @@ public class ArticleController {
         }
         return articleService.getArticleById(articleId);
     }
+
     /**
      * 发布文章
      */
     @PutMapping("/publish")
-    public Result<ResultCodeEnum> publishArticleApi(@Valid @RequestBody Article article){
+    public Result<ResultCodeEnum> publishArticleApi(@Valid @RequestBody Article article) {
         boolean save = articleService.publishArticle(article);
-        if (save){
+        if (save) {
             return Result.success(ResultCodeEnum.PUBLISH_SUCCESS);
-        }else {
+        } else {
             return Result.fail(ResultCodeEnum.PUBLISH_FAIL);
         }
     }

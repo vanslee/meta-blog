@@ -40,7 +40,7 @@
     <el-table
       ref="tableSort"
       v-loading="listLoading"
-      :data="list"
+      :data="tableData"
       :element-loading-text="elementLoadingText"
       :height="height"
       @selection-change="setSelectRows"
@@ -58,13 +58,13 @@
       </el-table-column>
       <el-table-column
         show-overflow-tooltip
-        prop="title"
+        prop="articleTitle"
         label="标题"
       ></el-table-column>
       <el-table-column
         show-overflow-tooltip
         label="作者"
-        prop="author"
+        prop="authorName"
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="头像">
         <template #default="{ row }">
@@ -78,7 +78,7 @@
       <el-table-column
         show-overflow-tooltip
         label="点击量"
-        prop="pageViews"
+        prop="views"
         sortable
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="状态">
@@ -98,7 +98,7 @@
       <el-table-column
         show-overflow-tooltip
         label="时间"
-        prop="datetime"
+        prop="publishDate"
         width="200"
       ></el-table-column>
       <el-table-column show-overflow-tooltip label="操作" width="180px">
@@ -110,10 +110,10 @@
     </el-table>
     <el-pagination
       :background="background"
-      :current-page="queryForm.pageNo"
+      :current-page="params.current"
       :layout="layout"
-      :page-size="queryForm.pageSize"
-      :total="total"
+      :page-size="params.size"
+      :total="params.total"
       @current-change="handleCurrentChange"
       @size-change="handleSizeChange"
     ></el-pagination>
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-  import { getList, doDelete } from '@/api/table'
+  // import { getList, doDelete } from '@/api/table'
   import TableEdit from './components/TableEdit'
   export default {
     name: 'ComprehensiveTable',
@@ -139,14 +139,23 @@
         return statusMap[status]
       },
     },
+    props: {
+      tableData: {
+        type: Array,
+        default: () => [],
+      },
+      params: {
+        type: Object,
+        default: () => {},
+      },
+    },
     data() {
       return {
         imgShow: true,
         list: [],
         imageList: [],
-        listLoading: true,
+        listLoading: false,
         layout: 'total, sizes, prev, pager, next, jumper',
-        total: 0,
         background: true,
         selectRows: '',
         elementLoadingText: '正在加载...',
@@ -163,7 +172,9 @@
       },
     },
     created() {
-      this.fetchData()
+      // this.fetchData()
+      console.log(this.tableData)
+      console.log(this.params)
     },
     beforeDestroy() {},
     mounted() {},
@@ -206,30 +217,32 @@
         }
       },
       handleSizeChange(val) {
-        this.queryForm.pageSize = val
-        this.fetchData()
+        this.$emit('size-change', val)
+        // this.queryForm.pageSize = val
+        // this.fetchData()
       },
       handleCurrentChange(val) {
-        this.queryForm.pageNo = val
-        this.fetchData()
+        this.$emit('current-change', val)
+        // this.queryForm.pageNo = val
+        // this.fetchData()
       },
       handleQuery() {
         this.queryForm.pageNo = 1
         this.fetchData()
       },
       async fetchData() {
-        this.listLoading = true
-        const { data, totalCount } = await getList(this.queryForm)
-        this.list = data
-        const imageList = []
-        data.forEach((item, index) => {
-          imageList.push(item.img)
-        })
-        this.imageList = imageList
-        this.total = totalCount
-        setTimeout(() => {
-          this.listLoading = false
-        }, 500)
+        // this.listLoading = true
+        // const { data, totalCount } = await getList(this.queryForm)
+        // this.list = data
+        // const imageList = []
+        // data.forEach((item, index) => {
+        //   imageList.push(item.img)
+        // })
+        // this.imageList = imageList
+        // this.total = totalCount
+        // setTimeout(() => {
+        //   this.listLoading = false
+        // }, 500)
       },
       testMessage() {
         this.$baseMessage('test1', 'success')

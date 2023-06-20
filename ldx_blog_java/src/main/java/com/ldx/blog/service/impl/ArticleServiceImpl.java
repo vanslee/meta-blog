@@ -50,10 +50,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Resource
     private QiNiuYunOssUtil ossUtil;
 
-    public Result<IPage<Article>> getArticlePage(Integer current, Integer size,Object cid) {
-        if(Objects.isNull(cid)) {
+    public Result<IPage<Article>> getArticlePage(Integer current, Integer size, String keyword, Object cid, Object uid,String desc) {
+        if (Objects.isNull(cid)) {
             LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
-            lqw.orderByDesc(Article::getPublishDate);
+            lqw.eq(!Objects.isNull(uid), Article::getUserId, Long.valueOf(uid.toString()));
+            lqw.like(!Objects.isNull(keyword), Article::getArticleTitle, keyword);
+            lqw.orderByDesc(("DESC").equals(desc),Article::getPublishDate);
             IPage<Article> iPage = new Page<>(current, size);
             page(iPage, lqw);
             iPage.getRecords().forEach(article -> {
@@ -83,8 +85,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 article.setCategories(categories);
             });
             return Result.success(iPage);
-        }else {
-           return getArticlesByCid(Long.parseLong(cid.toString()),current,size);
+        } else {
+            return getArticlesByCid(Long.parseLong(cid.toString()), current, size);
         }
     }
 
@@ -171,6 +173,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             log.error(e.getMessage());
             return Result.fail();
         }
+    }
+
+    /**
+     * 根据uid获得文章信息
+     *
+     * @param uid
+     * @param keyword
+     * @param desc
+     * @param size
+     * @param current
+     * @return
+     */
+    public Result<IPage<Article>> getArticlesByUid(long uid, String keyword, String desc, String size, String current) {
+        if (Objects.isNull(desc)) {
+            desc = "DESC";
+        }
+        return getArticlePage(Integer.parseInt(current) ,Integer.parseInt(size) , keyword,null, uid,desc);
     }
 }
 

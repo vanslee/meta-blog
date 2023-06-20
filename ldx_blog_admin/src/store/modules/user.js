@@ -74,11 +74,13 @@ const actions = {
       Vue.prototype.$baseMessage('验证失败，请重新登录...', 'error')
       return false
     }
-    let { permissions, username, avatar } = data
+    let { permissions, username, avatarImgUrl } = data
+    permissions = ['admin']
+    avatarImgUrl = process.env.VUE_APP_CDN.concat(avatarImgUrl)
     if (permissions && username && Array.isArray(permissions)) {
       commit('setPermissions', permissions)
       commit('setUsername', username)
-      commit('setAvatar', avatar)
+      commit('setAvatar', avatarImgUrl)
       return permissions
     } else {
       Vue.prototype.$baseMessage('用户信息接口异常', 'error')

@@ -4,6 +4,7 @@ module.exports = {
     ' build: vue-admin-better \n vue-admin-beautiful.com \n https://gitee.com/chu1204505056/vue-admin-better \n time: ',
   donationConsole() {
     const chalk = require('chalk')
+    console.log(chalk.green(`> 当前运行的环境：${process.env.NODE_ENV}`))
     console.log(
       chalk.green(
         `> 欢迎使用vue-admin-better，github开源地址：https://github.com/chuzhixin/vue-admin-better`

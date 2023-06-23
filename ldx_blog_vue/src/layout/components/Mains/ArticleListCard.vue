@@ -8,52 +8,38 @@
         </el-card>
       </el-timeline-item>
     </el-timeline>
-    <el-pagination class="pagination" background layout="prev, pager, next" :total="total" @current-change="changePage" />
+    <el-pagination class="pagination" background layout="prev, pager, next" :total="params.total" :page-size="params.size"  @current-change="changePage" />
   </div>
 </template>
 <script>
 import { useUserStore } from '@/stores/user'
+import { useArticleStore } from '@/stores/article'
 import { formatTimeStamp } from '@/utils/time'
-import { getArticleListApi } from '@/apis/article'
 import ArticleCard from '@/layout/components/Mains/ArticieCard.vue'
+import { mapActions, mapState } from 'pinia'
 export default {
   components: {
     ArticleCard
   },
+  computed: {
+      ...mapState(useArticleStore,['articles','params'])
+  },
   data() {
     const userStore = useUserStore()
-    const params = {
-      size: 5,
-      cid: -1,
-      current: 0,
-    }
     return {
       total: 0,
-      params,
       userStore,
-      articles: [],
       formatTimeStamp
     }
   },
   created() {
-    if (this.$route.params.cid) {
-      this.params.cid = parseInt(cid)
-    } else {
-      this.params.cid = -1
-    }
-
-    this.fetchData()
+    this.getArticleList()
+    console.log(this.params);
   },
-  computed: {},
   methods: {
+    ...mapActions(useArticleStore,['getArticleList']),
     async fetchData() {
-      const { code, data = {} } = await getArticleListApi(this.params)
-      if (code === 200) {
-        console.log(data);
-        this.articles = data.records || []
-        this.total = data.total
-      }
-
+       await this.getArticleList()
     },
     changePage(current) {
       this.params.current = current

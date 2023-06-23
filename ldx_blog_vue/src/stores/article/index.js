@@ -1,4 +1,5 @@
 import {
+  getArticleListApi,
   publishArticleApi,
   getMarkdownTextApi,
   getArticleDetailsApi,
@@ -11,11 +12,18 @@ import { getArticleTagsApi } from '@/apis/article'
 export const useArticleStore = defineStore('article', {
   // other options...
   state: () => ({
+    articles:[],
     author: {},
     titles: [],
     article: {},
     tagsIpage: {},
     categoriesIpage: {},
+    params: {
+      cid: -1,
+      size: 5,
+      total: 0,
+      current: 1,
+    }
   }),
   getters: {
     getTitles: (state) => state.titles || [],
@@ -45,11 +53,11 @@ export const useArticleStore = defineStore('article', {
       if (code === 200) {
         this.author = data.author
         this.article = data.article
-        this.article.imgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.imgUrl}`
-        this.article.mdUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.mdUrl}`
+        // this.article.imgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.imgUrl}`
+        // this.article.mdUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.article.mdUrl}`
         const { text } = await getMarkdownTextApi(this.article.mdUrl)
         this.article.articleContent = text
-        this.author.avatarImgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.author.avatarImgUrl}`
+        // this.author.avatarImgUrl = `${process.env.VUE_APP_WEBSITE_CDN}${this.author.avatarImgUrl}`
         return true
       } else {
         return false
@@ -66,6 +74,14 @@ export const useArticleStore = defineStore('article', {
       if (code === 200) {
         this.categoriesIpage = data
       }
+    },
+    async getArticleList() {
+      const { data } = await getArticleListApi(this.params)
+      console.log('data',data);
+      this.articles = data.records
+      this.params.total = data.total
+      this.params.current = data.current
+      this.params.size = data.size
     }
   }
 })

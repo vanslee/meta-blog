@@ -59,11 +59,30 @@ export const asyncRoutes = [
     redirect: '/article',
     children: [
       {
-        path: 'article',
-        name: 'Article',
+        path: '/article',
+        name: 'ArticleList',
         component: () => import('@/views/article/index'),
         meta: {
           title: '文章管理',
+          icon: 'book',
+          affix: true,
+          permissions: ['admin'],
+        },
+      },
+    ],
+  },
+  {
+    path: '/article',
+    component: Layout,
+    redirect: '/edit',
+    hidden: true,
+    children: [
+      {
+        path: '/edit',
+        name: 'ArticleEdit',
+        component: () => import('@/views/article/components/ArticleEdit.vue'),
+        meta: {
+          title: '编辑文章',
           icon: 'book',
           affix: true,
           permissions: ['admin'],

@@ -76,7 +76,6 @@ const actions = {
     }
     let { permissions, username, avatarImgUrl } = data
     permissions = ['admin']
-    avatarImgUrl = process.env.VUE_APP_CDN.concat(avatarImgUrl)
     if (permissions && username && Array.isArray(permissions)) {
       commit('setPermissions', permissions)
       commit('setUsername', username)

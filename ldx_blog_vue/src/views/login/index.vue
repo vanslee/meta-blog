@@ -116,8 +116,8 @@ export default {
   data() {
     const userStore = useUserStore()
     const params = {
-      username: '',
-      password: '',
+      username: 'lidengxiang',
+      password: 'zhou2001.',
       confirmPassword: ''
     }
     const qqRedirectUri = `https://graph.qq.com/oauth2.0/show?which=Login&display=pc&response_type=code&client_id=${process.env.VUE_APP_QQ_CLIENTID}&redirect_uri=${process.env.VUE_APP_QQ_REDIRECTURI}&state=litubao`
@@ -131,11 +131,20 @@ export default {
       giteeRedirectUri,
       qqRedirectUri,
       githubRedirectUri,
-      wechatRedirectUri
+      wechatRedirectUri,
+      redirect: undefined,
     }
   },
   created() {
     // console.log(JSON.parse(localStorage.getItem('user')))
+  },
+  watch: {
+    $route: {
+      handler(route) {
+        this.redirect = (route.query && route.query.redirect) || '/'
+      },
+      immediate: true,
+    },
   },
   computed: {},
   methods: {
@@ -155,10 +164,12 @@ export default {
       if (this.checkParams({ type: 'login' }) !== true) return
       this.isLoading = true
       this.userStore.login(this.params).then(res => {
-        if (res) {
-          const { query } = this.$route
-          this.$router.push({ path: query.redirect || '/' })
-        }
+        const routerPath =
+          this.redirect === '/404' || this.redirect === '/401'
+            ? '/articles'
+            : this.redirect
+        console.log('routerPath', routerPath);
+        this.$router.push(routerPath).catch(() => { })
       })
       this.isLoading = false
       this.initParams()

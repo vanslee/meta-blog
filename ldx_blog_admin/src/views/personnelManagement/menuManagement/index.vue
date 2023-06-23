@@ -159,8 +159,8 @@
       async fetchData() {
         this.listLoading = true
 
-        const { data } = await getList()
-        this.list = data
+        // const { data } = await getList()
+        // this.list = data
         setTimeout(() => {
           this.listLoading = false
         }, 300)

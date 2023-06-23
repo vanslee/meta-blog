@@ -6,11 +6,11 @@
         <i style="font-weight: 700; color: #e6a23c">{{ article.authorName }}</i>
         <span style="font-size: 0.75rem; color: #909399">
           分类:
-          <i v-for="(category, index) in article.categories" :key="'category' + index">{{ category }}</i>
+          <i v-for="(category, index) in article.categories" :key="'category' + index">{{ category['name'] }}</i>
         </span>
         <span style="font-size: 0.75rem; color: #909399">
           标签:
-          <i v-for="(tag, index) in article.tags" :key="'tag' + index">{{ tag }}</i>
+          <i v-for="(tag, index) in article.tags" :key="'tag' + index">{{ tag['name'] }}</i>
         </span>
       </div>
       <div style="width: 50%; padding: 0 8vw; overflow: hidden">

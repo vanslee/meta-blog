@@ -566,15 +566,15 @@
         this.$baseEventBus.$emit('theme')
       },
       async fetchData() {
-        const { data } = await getList()
-        data.map((item, index) => {
-          if (index === data.length - 1) {
-            item.color = '#0bbd87'
-          }
-        })
-        this.activities = data
-        const res = await getNoticeList()
-        this.noticeList = res.data
+        // const { data } = await getList()
+        // data.map((item, index) => {
+        //   if (index === data.length - 1) {
+        //     item.color = '#0bbd87'
+        //   }
+        // })
+        // this.activities = data
+        // const res = await getNoticeList()
+        // this.noticeList = res.data
         /* getRepos({
         token: "1061286824f978ea3cf98b7b8ea26fe27ba7cea1",
       }).then((res) => {

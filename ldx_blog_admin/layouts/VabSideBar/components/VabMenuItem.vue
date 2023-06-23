@@ -19,6 +19,7 @@
 <script>
   import { isExternal } from '@/utils/validate'
   import path from 'path'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'VabMenuItem',
@@ -40,6 +41,7 @@
         default: '',
       },
     },
+    computed: mapGetters({ collapse: 'settings/collapse' }),
     methods: {
       handlePath(routePath) {
         if (isExternal(routePath)) {

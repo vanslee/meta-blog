@@ -37,7 +37,7 @@ public class UserController {
         return userService.doRegistry(user, ip);
     }
 
-    @GetMapping("logout")
+    @PostMapping("logout")
     public Result<ResultCodeEnum> logoutApi() {
         try {
             StpUtil.logout();

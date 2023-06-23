@@ -22,7 +22,7 @@ public interface ArticleCommentMapper extends BaseMapper<ArticleComment> {
      * @param size      当前条数
      * @return
      */
-    @Select("SELECT * FROM article_comment where rootCommentId = 0 and replyCommentId = 0 and articleId = #{articleId} and isDelete = 0 order by likes desc limit #{page},#{size}")
+    @Select("SELECT * FROM article_comment where root_comment_id = 0 and reply_comment_id = 0 and article_id = #{articleId} and is_delete = 0 order by likes desc limit #{page},#{size}")
     List<ArticleComment> getRootComments(@Param("articleId") Long articleId, @Param("page") Integer page, @Param("size") Integer size);
 
     /**
@@ -31,7 +31,7 @@ public interface ArticleCommentMapper extends BaseMapper<ArticleComment> {
      * @param rootId 根评论ID
      * @return
      */
-    @Select("SELECT * FROM article_comment where articleId = #{articleId} and isDelete = 0 and rootCommentId =#{rootId} order by likes desc limit 0,3 ")
+    @Select("SELECT * FROM article_comment where article_id = #{articleId} and is_delete = 0 and reply_comment_id =#{rootId} order by likes desc limit 0,3 ")
     List<ArticleComment> getChildrenComments(@Param("articleId") Long articleId, @Param("rootId") Long rootId);
 
     /**
@@ -39,7 +39,7 @@ public interface ArticleCommentMapper extends BaseMapper<ArticleComment> {
      * @param articleId
      * @return
      */
-    @Select("SELECT count(1) FROM article_comment where rootCommentId = 0 and replyCommentId = 0 and articleId = #{articleId} and isDelete = 0 ")
+    @Select("SELECT count(1) FROM article_comment where root_comment_id = 0 and reply_comment_id = 0 and article_id = #{articleId} and is_delete = 0 ")
     Long getRootCommentsCount(@Param("articleId") Long articleId);
 }
 

@@ -9,6 +9,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 /**
  * @author Uaena
  * @date 2023/5/26 21:39
@@ -47,5 +49,11 @@ public class FieldAutoComplete implements MetaObjectHandler {
         this.setFieldValByName("updateDate", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("recentlyLanded", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("updateTime", System.currentTimeMillis() / 1000, metaObject);
+        if (metaObject.getOriginalObject() instanceof Article) {
+            Article article = (Article) metaObject.getOriginalObject();
+            if (!Objects.isNull(article.getImgUrl())) {
+                this.setFieldValByName("imgUrl", article.getImgUrl().replace(CDN, ""), metaObject);
+            }
+        }
     }
 }

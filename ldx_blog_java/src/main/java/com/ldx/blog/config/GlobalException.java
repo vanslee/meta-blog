@@ -34,7 +34,7 @@ public class GlobalException {
 
     public Result<ResultCodeEnum> exception(Exception e) {
         if (e instanceof NotLoginException) {
-            return Result.fail(ResultCodeEnum.TOKEN_INVALID);
+            return Result.fail(ResultCodeEnum.NOT_LOGIN);
         }
         log.error("全局异常信息 ex={}", e.getMessage(), e);
         return Result.fail(ResultCodeEnum.FAIL);

@@ -43,7 +43,7 @@ public class SaTokenInterceptor extends SaInterceptor {
             if (response.getContentType() == null) {
                 response.setContentType("text/plain; charset=utf-8");
             }
-            response.getWriter().print(Result.fail(ResultCodeEnum.TOKEN_INVALID));
+            response.getWriter().print(Result.fail(ResultCodeEnum.NOT_LOGIN));
             return false;
         }
         return true;

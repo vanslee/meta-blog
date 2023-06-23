@@ -13,11 +13,11 @@ import com.ldx.blog.utils.FileUtil;
 import com.ldx.blog.utils.QiNiuYunOssUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author ldx
@@ -50,12 +50,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Resource
     private QiNiuYunOssUtil ossUtil;
 
-    public Result<IPage<Article>> getArticlePage(Integer current, Integer size, String keyword, Object cid, Object uid,String desc) {
+    public Result<IPage<Article>> getArticlePage(Integer current, Integer size, String keyword, Object cid, Object uid, String desc) {
         if (Objects.isNull(cid)) {
             LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
-            lqw.eq(!Objects.isNull(uid), Article::getUserId, Long.valueOf(uid.toString()));
+            if (!Objects.isNull(uid)) {
+                lqw.eq(Article::getUserId, Long.valueOf(uid.toString()));
+            }
             lqw.like(!Objects.isNull(keyword), Article::getArticleTitle, keyword);
-            lqw.orderByDesc(("DESC").equals(desc),Article::getPublishDate);
+            lqw.orderByDesc(("DESC").equals(desc), Article::getPublishDate);
             IPage<Article> iPage = new Page<>(current, size);
             page(iPage, lqw);
             iPage.getRecords().forEach(article -> {
@@ -69,20 +71,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
                 article.setAuthorAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
                 article.setAuthorName(user.getUsername());
                 article.setPersonalBrief(user.getPersonalBrief());
-                LambdaQueryWrapper<ArticleCategory> lqw1 = new LambdaQueryWrapper<>();
-                LambdaQueryWrapper<ArticleTag> lqw2 = new LambdaQueryWrapper<>();
-                lqw1.eq(ArticleCategory::getArticleId, articleId);
-                lqw2.eq(ArticleTag::getArticleId, articleId);
-                List<String> categories = new ArrayList<>(3);
-                List<String> tags = new ArrayList<>(3);
-                articleCategoryMapper.selectList(lqw1).forEach(category -> {
-                    categories.add(categoriesMapper.selectById(category.getCategoryId()).getCategoryName());
-                });
-                articleTagMapper.selectList(lqw2).forEach(tag -> {
-                    tags.add(tagsMapper.selectById(tag.getTagId()).getTagName());
-                });
-                article.setTags(tags);
-                article.setCategories(categories);
+                article.setTags(getTags(articleId));
+                article.setCategories(getCategories(articleId));
             });
             return Result.success(iPage);
         } else {
@@ -92,44 +82,29 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     public boolean publishArticle(Article article) {
         try {
-            article.setImgUrl(article.getImgUrl());
             File file = FileUtil.generateMarkdown(article.getArticleTitle(), article.getArticleContent());
             String url = ossUtil.uploadMarkdown(file, StpUtil.getLoginId() + "/");
             article.setMdUrl(url);
             articleMapper.insert(article);
             Long articleId = article.getId();
-            List<String> categories = article.getCategories();
-            List<String> tags = article.getTags();
-            List<Categories> articleCategories = categoriesMapper.selectList(null);
-            List<Tags> articleTags = tagsMapper.selectList(null);
-            AtomicInteger index = new AtomicInteger(0);
-            articleTags.stream().forEach(item -> {
-                if (index.get() == tags.size()) {
-                    return;
-                }
-                if (!tags.contains(item.getTagName())) {
-                    synchronized (index) {
-                        Tags newTag = new Tags(null, tags.get(index.get()));
-                        tagsMapper.insert(newTag);
-                        articleTagMapper.insert(new ArticleTag(articleId, newTag.getId()));
-                    }
-                    index.incrementAndGet();
-                }
-            });
-            index.set(0);
-            articleCategories.stream().forEach(item -> {
-                if (index.get() == categories.size()) {
-                    return;
-                }
-                if (!categories.contains(item.getCategoryName())) {
-                    synchronized (index) {
-                        Categories newCategory = new Categories(categories.get(index.get()));
-                        categoriesMapper.insert(newCategory);
-                        articleCategoryMapper.insert(new ArticleCategory(articleId, newCategory.getId()));
-                    }
-                    index.incrementAndGet();
-                }
-            });
+            setTags(article.getTags(), articleId);
+            setCategories(article.getCategories(), articleId);
+            return true;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateArticle(Article article) {
+        try {
+            File file = FileUtil.generateMarkdown(article.getArticleTitle(), article.getArticleContent());
+            String url = ossUtil.uploadMarkdown(file, StpUtil.getLoginId() + "/");
+            article.setMdUrl(url);
+            article.setUpdateDate(System.currentTimeMillis() / 1000);
+            articleMapper.updateById(article);
+            setTags(article.getTags(), article.getId());
+            setCategories(article.getCategories(), article.getId());
             return true;
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -140,19 +115,43 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public Result<Map<String, Object>> getArticleById(long articleId) {
         Map<String, Object> resultMap = new HashMap<>(2);
         Article article = articleMapper.selectById(articleId);
+        article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
+        article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
         LambdaQueryWrapper<Article> lqw1 = new LambdaQueryWrapper<>();
         lqw1.eq(Article::getUserId, article.getUserId());
         Long articleCount = articleMapper.selectCount(lqw1);
         // 作者文章数量
         Long userId = article.getUserId();
         LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
-        lqw.select(User::getUsername, User::getFans, User::getAvatarImgUrl).eq(User::getId, userId);
+        lqw.select(User::getUsername, User::getFans, User::getAvatarImgUrl, User::getId).eq(User::getId, userId);
         // 作者的用户名粉丝数
         User user = userMapper.selectOne(lqw);
+        user.setAvatarImgUrl(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
         user.setArticleCount(articleCount);
         resultMap.put("article", article);
         resultMap.put("author", user);
         return Result.success(resultMap);
+    }
+
+    public Result<Article> getArticle(long articleId) {
+        Article article = articleMapper.selectById(articleId);
+        List<Categories> categories = getCategories(articleId);
+        List<Tags> tags = getTags(articleId);
+        article.setCategories(categories);
+        article.setTags(tags);
+        article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
+        article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
+        LambdaQueryWrapper<Article> lqw1 = new LambdaQueryWrapper<>();
+        lqw1.eq(Article::getUserId, article.getUserId());
+        // 作者文章数量
+        Long userId = article.getUserId();
+        LambdaQueryWrapper<User> lqw = new LambdaQueryWrapper<>();
+        lqw.select(User::getUsername, User::getAvatarImgUrl).eq(User::getId, userId);
+        // 作者的用户名粉丝数
+        User user = userMapper.selectOne(lqw);
+        article.setUsername(user.getUsername());
+        article.setAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
+        return Result.success(article);
     }
 
     public Result<IPage<Article>> getArticlesByCid(long articleId, Integer current, Integer size) {
@@ -189,8 +188,83 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         if (Objects.isNull(desc)) {
             desc = "DESC";
         }
-        return getArticlePage(Integer.parseInt(current) ,Integer.parseInt(size) , keyword,null, uid,desc);
+        return getArticlePage(Integer.parseInt(current), Integer.parseInt(size), keyword, null, uid, desc);
     }
+
+    public List<Categories> getCategories(long articleId) {
+        LambdaQueryWrapper<ArticleCategory> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleCategory::getArticleId, articleId);
+        List<ArticleCategory> articleCategories = articleCategoryMapper.selectList(lqw);
+        List<Integer> cids = new ArrayList<>(articleCategories.size());
+        articleCategories.forEach(cid -> {
+            cids.add(cid.getCategoryId());
+        });
+        if (CollectionUtils.isEmpty(cids)) {
+            return new ArrayList<>(0);
+        } else {
+            List<Categories> categories = categoriesMapper.selectBatchIds(cids);
+            return categories;
+        }
+
+
+    }
+
+    public List<Tags> getTags(long articleId) {
+        LambdaQueryWrapper<ArticleTag> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(ArticleTag::getArticleId, articleId);
+        List<ArticleTag> articleTags = articleTagMapper.selectList(lqw);
+        List<Integer> tids = new ArrayList<>(articleTags.size());
+        articleTags.forEach(tid -> {
+            tids.add(tid.getTagId());
+        });
+        if (CollectionUtils.isEmpty(tids)) {
+            return new ArrayList<>(0);
+        } else {
+            List<Tags> tags = tagsMapper.selectBatchIds(tids);
+            return tags;
+        }
+    }
+
+    public void setTags(List<Tags> tags, Long articleId) {
+        LambdaQueryWrapper<Tags> lqw = new LambdaQueryWrapper<>();
+        List<Tags> allTags = tagsMapper.selectList(lqw);
+        List<Tags> tagsInDb = new ArrayList<>(allTags.size());
+        allTags.forEach(tag -> {
+            tagsInDb.add(tag);
+        });
+        tags.forEach(tag -> {
+//            tagName = tagName.trim();
+            if (!tagsInDb.contains(tag)) {
+                tag.setCreateTime(System.currentTimeMillis() / 1000);
+                tagsMapper.insert(tag);
+                tag.setName(tag.getName().trim());
+                ArticleTag articleTag = new ArticleTag(articleId, tag.getId());
+                articleTagMapper.insert(articleTag);
+            }
+        });
+
+    }
+
+    public void setCategories(List<Categories> categories, Long articleId) {
+        LambdaQueryWrapper<Categories> lqw = new LambdaQueryWrapper<>();
+        lqw.select(Categories::getName);
+        List<Categories> allCategories = categoriesMapper.selectList(lqw);
+        List<Categories> categoriesInDb = new ArrayList<>(allCategories.size());
+        allCategories.forEach(category -> {
+            categoriesInDb.add(category);
+        });
+        categories.forEach(category -> {
+            if (!categoriesInDb.contains(category)) {
+                category.setCreateTime(System.currentTimeMillis() / 1000);
+                categoriesMapper.insert(category);
+                category.setName(category.getName().trim());
+                ArticleCategory articleTag = new ArticleCategory(articleId, category.getId());
+                articleCategoryMapper.insert(articleTag);
+            }
+        });
+    }
+
+
 }
 
 

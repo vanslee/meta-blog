@@ -7,9 +7,13 @@ import '@/remixIcon'
 import '@/colorfulIcon'
 import '@/config/permission'
 import '@/utils/errorLog'
+import '@/markdown/index'
 import './vabIcon'
 import VabPermissions from 'layouts/Permissions'
 import Vab from '@/utils/vab'
-
+import VueLazyload from 'vue-lazyload'
 Vue.use(Vab)
 Vue.use(VabPermissions)
+Vue.use(VueLazyload, {
+  loading: 'https://lidengxiang.top/blog/loading.gif',
+})

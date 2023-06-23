@@ -1,2 +1,4 @@
 const setting = require('./setting.config')
-module.exports = Object.assign({}, setting)
+const theme = require('./theme.config')
+const network = require('./net.config')
+module.exports = Object.assign({},theme, setting,network)

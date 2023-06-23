@@ -55,7 +55,7 @@ public class Article implements Serializable {
     /**
      *
      */
-    @TableField(fill = FieldFill.INSERT)
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     @NotBlank(message = "请上传文章封面")
     private String imgUrl;
     /**
@@ -77,15 +77,22 @@ public class Article implements Serializable {
     @TableField(exist = false)
     private String authorName;
     @TableField(exist = false)
-    @Size(min = 1,message = "至少选择一个分类")
-    private List<String> categories;
+    private List<Categories> categories;
     @TableField(exist = false)
     @Size(min = 1,message = "至少选择一个标签")
-    private List<String> tags;
+    private List<String> tagNames;
+    @TableField(exist = false)
+    @Size(min = 1,message = "至少选择一个分类")
+    private List<String> categoryNames;
+    @TableField(exist = false)
+    private List<Tags> tags;
     @TableField(exist = false)
     @NotBlank(message = "文章内容不能为空")
     private String articleContent;
     @TableField(exist = false)
     private String personalBrief;
-
+    @TableField(exist = false)
+    private String username;
+    @TableField(exist = false)
+    private String avatar;
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -78,6 +79,35 @@ public class ArticleController {
         }
         return articleService.getArticleById(articleId);
     }
+    /**
+     * 根据article_id获取文章详情
+     *
+     * @param articleId
+     * @return
+     */
+    @GetMapping("/{article_id}")
+    public Result<Article> getArticleById(@PathVariable("article_id") long articleId) {
+        return articleService.getArticle(articleId);
+    }
+    @DeleteMapping("/delete/{article_id}")
+    public Result<Boolean> deleteArticleById(@PathVariable("article_id") long articleId){
+        try{
+            return Result.success(articleService.removeById(articleId));
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            log.error("删除文章失败:{}",articleId);
+            return Result.fail(ResultCodeEnum.DELETE_ARTICLE_FAIL);
+        }
+    }
+    @DeleteMapping("/delete/batch")
+    public Result<Boolean> batchDeleteArticles(@RequestBody List<Long> ids){
+        try{
+            return Result.success(articleService.removeBatchByIds(ids));
+        }catch (RuntimeException e){
+            log.error("删除文章失败:{}",ids);
+            return Result.fail(ResultCodeEnum.DELETE_ARTICLE_FAIL);
+        }
+    }
 
     /**
      * 发布文章
@@ -85,6 +115,18 @@ public class ArticleController {
     @PutMapping("/publish")
     public Result<ResultCodeEnum> publishArticleApi(@Valid @RequestBody Article article) {
         boolean save = articleService.publishArticle(article);
+        if (save) {
+            return Result.success(ResultCodeEnum.PUBLISH_SUCCESS);
+        } else {
+            return Result.fail(ResultCodeEnum.PUBLISH_FAIL);
+        }
+    }
+    /**
+     * 修改文章
+     */
+    @PutMapping("/update")
+    public Result<ResultCodeEnum> updateArticleApi(@Valid @RequestBody Article article) {
+        boolean save = articleService.updateArticle(article);
         if (save) {
             return Result.success(ResultCodeEnum.PUBLISH_SUCCESS);
         } else {

@@ -32,6 +32,8 @@ import java.util.Objects;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         implements UserService {
+    @Value("${website.config.cdn}")
+    private String CDN_WEBSITE;
     @Value("${redirect.url}")
     private String REDIRECT_URL;
     @Value("${redirect.error-page}")
@@ -68,6 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public Result<User> userSafeInfo() {
         String userId = (String) StpUtil.getLoginId();
         User user = userMapper.selectById(userId).setPassword("********").setPhone("131********");
+        user.setAvatarImgUrl(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
         return Result.success(user);
     }
 

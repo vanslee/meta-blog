@@ -2,10 +2,12 @@ package com.ldx.blog.pojo;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
 * @author Uaena
@@ -13,6 +15,7 @@ import java.io.Serializable;
 */
 @Getter
 @Setter
+@AllArgsConstructor
 public class Tags implements Serializable {
 
     /**
@@ -23,7 +26,7 @@ public class Tags implements Serializable {
     /**
     *
     */
-    private String tagName;
+    private String name;
     /**
     * 
     */
@@ -37,8 +40,30 @@ public class Tags implements Serializable {
     */
     private Integer categoryId;
 
-    public Tags(Integer id, String tagName) {
+    public Tags(Integer id, String name) {
         this.id = id;
-        this.tagName = tagName;
+        this.name = name;
+    }
+
+    public Tags(String name) {
+        this.name = name;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tags tags = (Tags) o;
+        return name.equals(tags.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

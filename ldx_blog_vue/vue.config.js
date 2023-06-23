@@ -4,7 +4,17 @@ const config = {
   lintOnSave: false,
   runtimeCompiler: true,
   // 选项
-  transpileDependencies: true
+  transpileDependencies: true,
+  css: {
+    sourceMap: false,
+  },
+  configureWebpack: {
+    resolve: {
+      fallback: {
+        "path": require.resolve("path-browserify")
+      }
+    }
+  }
 }
 const flag = process.env.NODE_ENV
 console.log("=================================");

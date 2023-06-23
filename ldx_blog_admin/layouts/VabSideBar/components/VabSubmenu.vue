@@ -22,8 +22,9 @@
 </template>
 
 <script>
-  import { isExternal } from '@/utils/validate'
   import path from 'path'
+  import { mapGetters } from 'vuex'
+  import { isExternal } from '@/utils/validate'
 
   export default {
     name: 'VabSubmenu',
@@ -44,6 +45,11 @@
         type: String,
         default: '',
       },
+    },
+    computed: {
+      ...mapGetters({
+        collapse: 'settings/collapse',
+      }),
     },
     methods: {
       handlePath(routePath) {

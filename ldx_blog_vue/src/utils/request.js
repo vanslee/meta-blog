@@ -3,9 +3,10 @@ import { throttle } from 'lodash'
 import { close, start } from '@/utils/nprogress'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
+import {baseURL} from "@/config/"
 const http = {}
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API,
+  baseURL,
   timeout: 18000000
 })
 service.interceptors.request.use(
@@ -13,7 +14,7 @@ service.interceptors.request.use(
     start()
     if (getToken()) {
       // 请求添加Token
-      config.headers.litubao_authentication = getToken()
+      config.headers['litubao_authentication'] = getToken()
     }
     return config
   },
@@ -38,7 +39,6 @@ http.get = function (url, options) {
     service
       .get(url, options)
       .then((response) => {
-        console.log(response);
         if (response.code === 200) {
           resolve(response)
         } else {

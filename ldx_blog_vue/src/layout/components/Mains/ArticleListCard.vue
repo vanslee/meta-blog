@@ -8,7 +8,8 @@
         </el-card>
       </el-timeline-item>
     </el-timeline>
-    <el-pagination class="pagination" background layout="prev, pager, next" :total="params.total" :page-size="params.size"  @current-change="changePage" />
+    <el-pagination class="pagination" background layout="prev, pager, next" :total="params.total" :page-size="params.size"
+      @current-change="changePage" />
   </div>
 </template>
 <script>
@@ -22,7 +23,7 @@ export default {
     ArticleCard
   },
   computed: {
-      ...mapState(useArticleStore,['articles','params'])
+    ...mapState(useArticleStore, ['articles', 'params'])
   },
   data() {
     const userStore = useUserStore()
@@ -34,12 +35,11 @@ export default {
   },
   created() {
     this.getArticleList()
-    console.log(this.params);
   },
   methods: {
-    ...mapActions(useArticleStore,['getArticleList']),
+    ...mapActions(useArticleStore, ['getArticleList']),
     async fetchData() {
-       await this.getArticleList()
+      await this.getArticleList()
     },
     changePage(current) {
       this.params.current = current

@@ -37,14 +37,20 @@ public class User implements Serializable {
     private String personalBrief;
     @TableField(exist = false)
     private Long articleCount;
-    @TableField(fill = FieldFill.INSERT)
-    private String avatarImgUrl;
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private long recentlyLanded;
+    private String avatarImgUrl;
     @TableField(fill = FieldFill.INSERT)
     private boolean isDelete;
     private String ip;
     private String unionId;
-
+    private String loginWay;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long recentlyTime;
+    @TableField(exist = false, fill = FieldFill.UPDATE)
+    private String newPassword;
+    @TableField(fill = FieldFill.UPDATE)
+    private Long updateTime;
     private static final long serialVersionUID = 1L;
 }

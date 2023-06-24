@@ -51,4 +51,8 @@ public class UserController {
     public Result<User> userSafeInfoApi() {
         return userService.userSafeInfo();
     }
+    @PostMapping("info")
+    public Result<Boolean> updateUserInfoApi(@Valid @RequestBody User user){
+        return userService.updateUserInfo(user);
+    }
 }

@@ -1,21 +1,38 @@
 <template>
-  <div style="display: flex;justify-content: space-between;" :class="classObj">
-    <vab-side-bar style="flex-grow: 1;" />
-    <router-view style="flex-grow: 1;" />
+  <div style="display: flex;width: 100vw;height: 100vh;" :class="classObj">
+    <aside v-if="collapse" style="width: 20%;height: 100%;">
+      <aside-bar />
+    </aside>
+    <nav style="display: flex;flex-direction: column;overflow: hidden;width: 100%;">
+      <header style="height: 5%;">
+        <admin-header />
+      </header>
+      <main style="height: 95%;">
+        <router-view />
+      </main>
+    </nav>
+
   </div>
 </template>
 
 <script>
+import AdminHeader from '@/layout/admin/Header'
+import AsideBar from '@/layout/admin/components/AsideBar'
 import { useSettingStore } from '@/stores/settings'
 import { mapActions, mapState } from 'pinia'
 import { tokenName } from '@/config'
 export default {
   name: 'Layout',
+  components: {
+    AsideBar,
+    AdminHeader
+  },
   data() {
     return { oldLayout: '' }
   },
   computed: {
     ...mapState(useSettingStore, ['layout', 'tabsBar', 'collapse', 'header', 'device']),
+
     classObj() {
       return {
         mobile: this.device === 'mobile',
@@ -39,12 +56,12 @@ export default {
     const isMobile = this.handleIsMobile()
     if (isMobile) {
       if (isMobile) {
-        //横向布局时如果是手机端访问那么改成纵向版
-        this.$store.dispatch('settings/changeLayout', 'vertical')
+        // 横向布局时如果是手机端访问那么改成纵向版
+        // this.$store.dispatch('settings/changeLayout', 'vertical')
       } else {
-        this.$store.dispatch('settings/changeLayout', this.oldLayout)
+        // this.$store.dispatch('settings/changeLayout', this.oldLayout)
       }
-      this.$store.dispatch('settings/toggleDevice', 'mobile')
+      // this.$store.dispatch('settings/toggleDevice', 'mobile')
       // setTimeout(() => {
       //   this.$store.dispatch('settings/foldSideBar')
       // }, 2000)

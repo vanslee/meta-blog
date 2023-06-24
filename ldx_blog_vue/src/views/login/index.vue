@@ -116,7 +116,7 @@ export default {
   data() {
     const userStore = useUserStore()
     const params = {
-      username: 'lidengxiang',
+      username: 'vanslee64',
       password: 'zhou2001.',
       confirmPassword: ''
     }
@@ -168,7 +168,6 @@ export default {
           this.redirect === '/404' || this.redirect === '/401'
             ? '/articles'
             : this.redirect
-        console.log('routerPath', routerPath);
         this.$router.push(routerPath).catch(() => { })
       })
       this.isLoading = false

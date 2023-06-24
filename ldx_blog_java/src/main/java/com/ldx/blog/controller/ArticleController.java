@@ -8,7 +8,6 @@ import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.RedisService;
 import com.ldx.blog.service.impl.ArticleDetailsServiceImpl;
 import com.ldx.blog.service.impl.ArticleServiceImpl;
-import com.ldx.blog.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,29 +36,20 @@ public class ArticleController {
 
     @GetMapping("/list")
     public Result<IPage<Article>> getArticleListApi(HttpServletRequest request) {
-        String cid = request.getParameter("cid");
-        if (cid.equals("-1")) {
-            cid = null;
-        }
-        ;
-        Integer current = Integer.parseInt(request.getParameter("current"));
-        Integer size = Integer.parseInt(request.getParameter("size"));
-        String keyword = request.getParameter("keyword");
-        log.debug("用户查询分页: current:{},Size:{}", current, size);
-        return articleService.getArticlePage(current, size, keyword, cid, null, null);
+        return articleService.getArticlePage(request);
     }
 
-    @GetMapping("/list/{uid}")
-    public Result<IPage<Article>> getArticlesByUid(HttpServletRequest request, @PathVariable long uid) {
-        String size = request.getParameter("size");
-        String keyword = request.getParameter("keyword");
-        String desc = request.getParameter("desc");
-        String current = request.getParameter("current");
-        if (StringUtil.isEmpty(size) || StringUtil.isEmpty(current)) {
-            return Result.fail(ResultCodeEnum.PARAM_IS_INVALID);
-        }
-        return articleService.getArticlesByUid(uid, keyword, desc, size, current);
-    }
+//    @GetMapping("/list/{uid}")
+//    public Result<IPage<Article>> getArticlesByUid(HttpServletRequest request, @PathVariable long uid) {
+//        String size = request.getParameter("size");
+//        String keyword = request.getParameter("keyword");
+//        String desc = request.getParameter("desc");
+//        String current = request.getParameter("current");
+//        if (StringUtil.isEmpty(size) || StringUtil.isEmpty(current)) {
+//            return Result.fail(ResultCodeEnum.PARAM_IS_INVALID);
+//        }
+//        return articleService.getArticlesByUid(uid, keyword, desc, size, current);
+//    }
 
     /**
      * 根据article_id获取文章详情

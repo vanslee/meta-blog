@@ -34,7 +34,7 @@ public enum ResultCodeEnum {
     LOGIN_SUCCESS(200, "登录成功"), LOGOUT_SUCCESS(200, "退出成功"),
     USER_HAS_EXIST(503, "用户已存在,去登录"), REGISTRY_SUCCESS(200, "注册成功"), REGISTRY_ERROR(504, "注册失败"),
     OAUTH_FAIL(501, "第三方认证失败"), OAUTH_SUCCESS(211, "第三方认证成功"), CODE_INVALID(504, "Code已过期"),
-    DELETE_ARTICLE_FAIL(500, "删除文章失败");
+    DELETE_ARTICLE_FAIL(500, "删除文章失败"), UPDATE_USER_ERROR(500, "用户信息更新失败"), USERNAME_HAS_EXIST(500, "用户名已存在");
 
 
     /**

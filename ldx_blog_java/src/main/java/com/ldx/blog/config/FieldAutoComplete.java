@@ -28,7 +28,7 @@ public class FieldAutoComplete implements MetaObjectHandler {
         this.setFieldValByName("updateDate", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("isDelete", false, metaObject);
         this.setFieldValByName("gender", false, metaObject);
-        this.setFieldValByName("recentlyLanded", System.currentTimeMillis() / 1000, metaObject);
+        this.setFieldValByName("recentlyTime", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("createTime", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("updateTime", System.currentTimeMillis() / 1000, metaObject);
         if (metaObject.getOriginalObject() instanceof User) {
@@ -47,8 +47,14 @@ public class FieldAutoComplete implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("start update auto complete field ...");
         this.setFieldValByName("updateDate", System.currentTimeMillis() / 1000, metaObject);
-        this.setFieldValByName("recentlyLanded", System.currentTimeMillis() / 1000, metaObject);
+        this.setFieldValByName("recentlyTime", System.currentTimeMillis() / 1000, metaObject);
         this.setFieldValByName("updateTime", System.currentTimeMillis() / 1000, metaObject);
+        if (metaObject.getOriginalObject() instanceof User) {
+            String avatarImgUrl = ((User) metaObject.getOriginalObject()).getAvatarImgUrl();
+            if (!Objects.isNull(avatarImgUrl)) {
+                this.setFieldValByName("avatarImgUrl", avatarImgUrl.replace(CDN, ""), metaObject);
+            }
+        }
         if (metaObject.getOriginalObject() instanceof Article) {
             Article article = (Article) metaObject.getOriginalObject();
             if (!Objects.isNull(article.getImgUrl())) {

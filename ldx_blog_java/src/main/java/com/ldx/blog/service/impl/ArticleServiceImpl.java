@@ -11,11 +11,13 @@ import com.ldx.blog.result.Result;
 import com.ldx.blog.service.ArticleService;
 import com.ldx.blog.utils.FileUtil;
 import com.ldx.blog.utils.QiNiuYunOssUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.*;
 
@@ -25,6 +27,7 @@ import java.util.*;
  * @createDate 2023-05-21 22:17:01
  */
 @Service
+@Slf4j
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         implements ArticleService {
     private String QINIU_CDN;
@@ -50,34 +53,40 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     @Resource
     private QiNiuYunOssUtil ossUtil;
 
-    public Result<IPage<Article>> getArticlePage(Integer current, Integer size, String keyword, Object cid, Object uid, String desc) {
-        if (Objects.isNull(cid)) {
-            LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
-            if (!Objects.isNull(uid)) {
-                lqw.eq(Article::getUserId, Long.valueOf(uid.toString()));
-            }
-            lqw.like(!Objects.isNull(keyword), Article::getArticleTitle, keyword);
-            lqw.orderByDesc(("DESC").equals(desc), Article::getPublishDate);
-            IPage<Article> iPage = new Page<>(current, size);
-            page(iPage, lqw);
-            iPage.getRecords().forEach(article -> {
-                article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
-                article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
-                Long userId = article.getUserId();
-                Long articleId = article.getId();
-                LambdaQueryWrapper<User> lqw3 = new LambdaQueryWrapper<>();
-                lqw3.eq(User::getId, userId).select(User::getAvatarImgUrl, User::getUsername, User::getPersonalBrief);
-                User user = userMapper.selectOne(lqw3);
-                article.setAuthorAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
-                article.setAuthorName(user.getUsername());
-                article.setPersonalBrief(user.getPersonalBrief());
-                article.setTags(getTags(articleId));
-                article.setCategories(getCategories(articleId));
-            });
-            return Result.success(iPage);
-        } else {
-            return getArticlesByCid(Long.parseLong(cid.toString()), current, size);
+    public Result<IPage<Article>> getArticlePage(HttpServletRequest request) {
+        String uid = request.getParameter("uid");
+        String sort = request.getParameter("sort");
+        String keyword = request.getParameter("keyword");
+        Integer size = Integer.parseInt(request.getParameter("size"));
+        Integer current = Integer.parseInt(request.getParameter("current"));
+        log.debug("用户查询分页: current:{},Size:{}", current, size);
+        LambdaQueryWrapper<Article> lqw = new LambdaQueryWrapper<>();
+        if (!Objects.isNull(uid)) {
+            lqw.eq(Article::getUserId, uid);
         }
+        if (!Objects.isNull(keyword)) {
+            lqw.like(Article::getArticleTitle, keyword);
+        }
+        if (!Objects.isNull(sort)) {
+            lqw.orderByDesc(sort.equals("desc"), Article::getPublishDate);
+        }
+        IPage<Article> iPage = new Page<>(current, size);
+        page(iPage, lqw);
+        iPage.getRecords().forEach(article -> {
+            article.setMdUrl(CDN_WEBSITE.concat(article.getMdUrl()));
+            article.setImgUrl(CDN_WEBSITE.concat(article.getImgUrl()));
+            Long userId = article.getUserId();
+            Long articleId = article.getId();
+            LambdaQueryWrapper<User> lqw3 = new LambdaQueryWrapper<>();
+            lqw3.eq(User::getId, userId).select(User::getAvatarImgUrl, User::getUsername, User::getPersonalBrief);
+            User user = userMapper.selectOne(lqw3);
+            article.setAuthorAvatar(CDN_WEBSITE.concat(user.getAvatarImgUrl()));
+            article.setAuthorName(user.getUsername());
+            article.setPersonalBrief(user.getPersonalBrief());
+            article.setTags(getTags(articleId));
+            article.setCategories(getCategories(articleId));
+        });
+        return Result.success(iPage);
     }
 
     public boolean publishArticle(Article article) {
@@ -174,22 +183,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
     }
 
-    /**
-     * 根据uid获得文章信息
-     *
-     * @param uid
-     * @param keyword
-     * @param desc
-     * @param size
-     * @param current
-     * @return
-     */
-    public Result<IPage<Article>> getArticlesByUid(long uid, String keyword, String desc, String size, String current) {
-        if (Objects.isNull(desc)) {
-            desc = "DESC";
-        }
-        return getArticlePage(Integer.parseInt(current), Integer.parseInt(size), keyword, null, uid, desc);
-    }
+//    /**
+//     * 根据uid获得文章信息
+//     *
+//     * @param uid
+//     * @param keyword
+//     * @param desc
+//     * @param size
+//     * @param current
+//     * @return
+//     */
+//    public Result<IPage<Article>> getArticlesByUid(long uid, String keyword, String desc, String size, String current) {
+//        if (Objects.isNull(desc)) {
+//            desc = "DESC";
+//        }
+//        return getArticlePage(Integer.parseInt(current), Integer.parseInt(size), keyword, null, uid, desc);
+//    }
 
     public List<Categories> getCategories(long articleId) {
         LambdaQueryWrapper<ArticleCategory> lqw = new LambdaQueryWrapper<>();

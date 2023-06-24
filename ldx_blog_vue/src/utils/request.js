@@ -3,7 +3,7 @@ import { throttle } from 'lodash'
 import { close, start } from '@/utils/nprogress'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
-import {baseURL} from "@/config/"
+import { baseURL } from "@/config/"
 const http = {}
 const service = axios.create({
   baseURL,
@@ -71,6 +71,23 @@ http.put = function (url, data, options) {
   return new Promise((resolve, reject) => {
     service
       .put(url, data, options)
+      .then((response) => {
+        if (response.code === 200) {
+          resolve(response)
+        } else {
+          throttled(response.msg)
+          resolve(response)
+        }
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  })
+}
+http.delete = function (url, data, options) {
+  return new Promise((resolve, reject) => {
+    service
+      .delete(url, data, options)
       .then((response) => {
         if (response.code === 200) {
           resolve(response)

@@ -1,18 +1,16 @@
 <template>
     <el-menu-item :index="handlePath(routeChildren.path)" @click="handleLink">
-        <!-- <vab-icon v-if="routeChildren.meta.icon" :icon="['fas', routeChildren.meta.icon]" class="vab-fas-icon" /> -->
-        <span>{{ routeChildren.meta.title }}</span>
+        <i :class="routeChildren.meta.icon" />
+        <!-- <span>{{ routeChildren.meta.title }}</span> -->
         <el-tag v-if="routeChildren.meta && routeChildren.meta.badge" type="danger" effect="dark">
             {{ routeChildren.meta.badge }}
         </el-tag>
     </el-menu-item>
 </template>
-  
 <script>
 import { isExternal } from '@/utils/validate'
 import path from 'path'
 export default {
-    name: 'VabMenuItem',
     props: {
         routeChildren: {
             type: Object,
@@ -30,6 +28,14 @@ export default {
             type: String,
             default: '',
         },
+    },
+    data() {
+        return {
+        }
+    },
+    created() {
+    },
+    computed: {
     },
     methods: {
         handlePath(routePath) {
@@ -73,4 +79,4 @@ export default {
     },
 }
 </script>
-  
+<style  scoped></style>

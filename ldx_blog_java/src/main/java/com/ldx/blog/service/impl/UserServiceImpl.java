@@ -4,6 +4,7 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ldx.blog.mapper.UserMapper;
 import com.ldx.blog.pojo.User;
@@ -13,6 +14,7 @@ import com.ldx.blog.pojo.oath.qq.QQUserInfo;
 import com.ldx.blog.result.Result;
 import com.ldx.blog.result.ResultCodeEnum;
 import com.ldx.blog.service.UserService;
+import com.ldx.blog.utils.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (BCrypt.checkpw(password, user.getPassword())) {
             StpUtil.login(user.getId());
             user.setIp(ip);
-            user.setRecentlyLanded(System.currentTimeMillis() / 1000);
+            user.setRecentlyTime(System.currentTimeMillis() / 1000);
             userMapper.updateById(user);
             SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
             tokenInfo.setTag(username);
@@ -92,12 +94,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         .setTrueName(giteeUser.getName())
                         .setAvatarImgUrl("default.jpg")
                         .setEmail(giteeUser.getEmail())
-                        .setRecentlyLanded(ts);
+                        .setRecentlyTime(ts);
                 userMapper.insert(newUser);
                 StpUtil.login(newUser.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
             } else {
-                user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
+                user.setIp(ip).setRecentlyTime(System.currentTimeMillis() / 1000);
                 userMapper.updateById(user);
                 StpUtil.login(user.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
@@ -119,12 +121,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         .setUsername(qqUserInfo.getNickname())
                         .setPassword(password)
                         .setAvatarImgUrl("default.jpg")
-                        .setRecentlyLanded(ts);
+                        .setRecentlyTime(ts);
                 userMapper.insert(newUser);
                 StpUtil.login(newUser.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
             } else {
-                user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
+                user.setIp(ip).setRecentlyTime(System.currentTimeMillis() / 1000);
                 userMapper.updateById(user);
                 StpUtil.login(user.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
@@ -148,12 +150,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
                         .setAvatarImgUrl("default.jpg")
                         .setEmail(githubUserInfo.getEmail())
                         .setPersonalBrief(githubUserInfo.getBio())
-                        .setRecentlyLanded(ts);
+                        .setRecentlyTime(ts);
                 userMapper.insert(newUser);
                 StpUtil.login(newUser.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
             } else {
-                user.setIp(ip).setRecentlyLanded(System.currentTimeMillis() / 1000);
+                user.setIp(ip).setRecentlyTime(System.currentTimeMillis() / 1000);
                 userMapper.updateById(user);
                 StpUtil.login(user.getId());
                 response.sendRedirect(REDIRECT_URL + StpUtil.getTokenInfo().getTokenValue());
@@ -182,6 +184,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             return Result.success(ResultCodeEnum.REGISTRY_SUCCESS);
         } else {
             return Result.fail(ResultCodeEnum.REGISTRY_ERROR);
+        }
+    }
+
+    public Result<Boolean> updateUserInfo(User user) {
+        LambdaQueryWrapper<User> lqw1 = new LambdaQueryWrapper<>();
+        lqw1.select(User::getId);
+        lqw1.eq(User::getUsername,user.getUsername());
+        User userInDb = userMapper.selectOne(lqw1);
+        if(!userInDb.getId().equals(user.getId())){
+         return Result.fail(ResultCodeEnum.USERNAME_HAS_EXIST);
+        }
+        LambdaUpdateWrapper<User> lqw = new LambdaUpdateWrapper<>();
+        if (!StringUtil.isEmpty(user.getNewPassword())) {
+            lqw.set(User::getPassword, BCrypt.hashpw(user.getNewPassword()));
+        }
+        lqw.set(User::getUsername,user.getUsername());
+        lqw.set(User::getPhone,user.getPhone());
+        lqw.set(User::getEmail,user.getEmail());
+        lqw.set(User::getPersonalBrief,user.getPersonalBrief());
+        lqw.set(User::isGender,user.isGender());
+        lqw.eq(User::getId,user.getId());
+        boolean update = this.update(lqw);
+        if(update){
+            return Result.success(update);
+        }else {
+            return Result.fail(ResultCodeEnum.UPDATE_USER_ERROR);
         }
     }
 }

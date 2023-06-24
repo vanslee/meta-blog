@@ -48,7 +48,7 @@
             <i class="el-icon-edit-outline" />
             写博客
           </el-menu-item>
-          <el-menu-item index="2-2">
+          <el-menu-item @click="$router.push({ name: 'User' })">
             <i class="el-icon-s-custom" />
             个人中心
           </el-menu-item>

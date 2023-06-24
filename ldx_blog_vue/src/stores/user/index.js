@@ -5,7 +5,7 @@ import {
   removeAccessToken,
   setAccessToken,
 } from '@/utils/accessToken'
-import { loginApi, userInfoApi, logoutApi } from '@/apis/user'
+import { loginApi, userInfoApi, logoutApi, updateUserInfoApi } from '@/apis/user'
 import { title, tokenName } from '@/config'
 import { Message } from 'element-ui'
 export const useUserStore = defineStore('user', {
@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', {
   // 定义state
   state: () => ({
     user: {},
-    accessToken: '',
+    accessToken: getAccessToken(),
     hasLogin: false,
     permissions: [],
     username: '',
@@ -32,6 +32,7 @@ export const useUserStore = defineStore('user', {
       const { data } = await loginApi(params)
       const accessToken = data['tokenValue']
       if (accessToken) {
+        this.hasLogin = true
         this.accessToken = accessToken
         setAccessToken(accessToken)
         const hour = new Date().getHours()
@@ -52,32 +53,15 @@ export const useUserStore = defineStore('user', {
     },
     // 获取token成功后获取用户信息
     async getUserInfo() {
-      const { data } = await userInfoApi(this.accessToken)
-      if (!data) {
+      const { code, data } = await userInfoApi()
+      if (code !== 200) {
         Message.error('验证失败，请重新登录...')
         return false
-      }
-      let { permissions, username, avatarImgUrl } = data
-      permissions = ['admin']
-      if (permissions && username && Array.isArray(permissions)) {
-        this.permissions = permissions
-        this.username = username
-        this.avatar = avatarImgUrl
-        return permissions
       } else {
-        Message.error('用户信息接口异常')
-        return false
+        this.permissions = ['admin']
+        this.user = data
+        return this.permissions
       }
-      // const { data, code } = await userInfoApi()
-      // if (code === 200) {
-      //   // 获取用户信息
-      //   data.avatarImgUrl =
-      //     process.env.VUE_APP_WEBSITE_CDN + data.avatarImgUrl
-      //   this.user = data
-      //   return true
-      // } else {
-      //   return false
-      // }
     },
     async logout() {
       const { code } = await logoutApi()
@@ -89,6 +73,26 @@ export const useUserStore = defineStore('user', {
     },
     setPermissions(permissions) {
       this.permissions = permissions
+    },
+    resetAccessToken() {
+      this.permissions = []
+      setAccessToken('')
+      removeAccessToken()
+    },
+    async updateUserInfo() {
+      const { code, msg } = await updateUserInfoApi(this.user)
+      if (code === 200) {
+        Message.success('修改成功')
+      } else[
+        Message.error(msg)
+      ]
+    },
+    uploadUserAvatar(res) {
+      const { data, code } = res
+      if (code === 200) {
+        this.user.avatarImgUrl = data.url
+      }
     }
+
   }
 })

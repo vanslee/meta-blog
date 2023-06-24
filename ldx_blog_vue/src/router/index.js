@@ -45,7 +45,8 @@ export const asyncRoutes = [
   {
     path: '/',
     component: Layout,
-
+    redirect: '/',
+    hidden: true,
     children: [
       {
         meta: {
@@ -65,6 +66,7 @@ export const asyncRoutes = [
   {
     path: '/article/:id',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: '',
@@ -87,6 +89,7 @@ export const asyncRoutes = [
   {
     path: '/write',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: '',
@@ -107,6 +110,7 @@ export const asyncRoutes = [
   {
     path: '/article/category/:cid',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: '/',
@@ -126,6 +130,7 @@ export const asyncRoutes = [
   {
     path: '/categories',
     component: Layout,
+    hidden: true,
     children: [
       {
         path: '/',
@@ -147,6 +152,7 @@ export const asyncRoutes = [
     path: '/tags',
     component: Layout,
     title: '文章标签',
+    hidden: true,
     children: [
       {
         path: '/',
@@ -164,8 +170,6 @@ export const asyncRoutes = [
       }
     ]
   },
-]
-export const userRoutes = [
   {
     path: '/user',
     component: AdminLayout,
@@ -174,13 +178,30 @@ export const userRoutes = [
       {
         path: '/user',
         name: 'User',
-        component: () => import('@/views/user/index.vue'),
+        component: () => import('@/layout/admin/Main/UserInfo.vue'),
         meta: {
-          icon: 'user',
+          icon: 'el-icon-user-solid',
           title: '个人中心',
           permissions: ['admin']
         },
-      }
+      },
+    ]
+  },
+  {
+    path: '/articles',
+    component: AdminLayout,
+    redirect: '/article',
+    children: [
+      {
+        path: '/articles',
+        name: 'Articles',
+        component: () => import('@/layout/admin/Main/ArticleList.vue'),
+        meta: {
+          icon: 'el-icon-tickets',
+          title: '文章管理',
+          permissions: ['admin']
+        },
+      },
     ]
   }
 ]

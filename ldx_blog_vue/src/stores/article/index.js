@@ -1,26 +1,28 @@
 import {
+  deleteAritcleApi,
   getArticleListApi,
   publishArticleApi,
   getMarkdownTextApi,
   getArticleDetailsApi,
-  getArticleCategoriesApi
+  getArticleCategoriesApi,
 } from '@/apis/article'
 import { defineStore } from 'pinia'
 import { getArticleTagsApi } from '@/apis/article'
+import { Message } from 'element-ui'
 // useStore 可以是 useUser、useCart 之类的任何东西
 // 第一个参数是应用程序中 store 的唯一 id
 export const useArticleStore = defineStore('article', {
   // other options...
   state: () => ({
-    articles:[],
+    articles: [],
     author: {},
     titles: [],
     article: {},
     tagsIpage: {},
     categoriesIpage: {},
     params: {
-      cid: -1,
-      size: 5,
+      uid: '',
+      size: 10,
       total: 0,
       current: 1,
     }
@@ -41,7 +43,6 @@ export const useArticleStore = defineStore('article', {
     },
     async publishArticle(article) {
       const { code } = await publishArticleApi(article)
-      console.log(code);
       if (code === 200) {
         return true
       } else {
@@ -76,12 +77,27 @@ export const useArticleStore = defineStore('article', {
       }
     },
     async getArticleList() {
+      // this.params.uid = uid
       const { data } = await getArticleListApi(this.params)
-      console.log('data',data);
       this.articles = data.records
       this.params.total = data.total
       this.params.current = data.current
       this.params.size = data.size
+    },
+    async handleCurrentChange(current) {
+      this.params.current = current
+      this.getArticleList()
+    },
+    async handleSizeChange(size) {
+      this.params.size = size
+      this.getArticleList()
+    },
+    async deleteArticle(id) {
+      const { code, msg } = await deleteAritcleApi(id)
+      if (code === 200) {
+        Message.success(msg)
+        this.getArticleList()
+      }
     }
   }
 })

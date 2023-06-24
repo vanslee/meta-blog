@@ -9,10 +9,12 @@ export function convertRouter(asyncRoutes) {
     if (route.component) {
       if (route.component === 'Layout') {
         route.component = (resolve) => require(['@/layout/admin'], resolve)
-      } else if (route.component === 'EmptyLayout') {
-        route.component = (resolve) =>
-          require(['@/layout/admin/EmptyLayout'], resolve)
-      } else {
+      }
+      // else if (route.component === 'EmptyLayout') {
+      //   route.component = (resolve) =>
+      //     require(['@/layout/admin/EmptyLayout'], resolve)
+      // }
+      else {
         const index = route.component.indexOf('views')
         const path =
           index > 0 ? route.component.slice(index) : `views/${route.component}`

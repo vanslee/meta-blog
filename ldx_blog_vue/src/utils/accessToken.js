@@ -1,4 +1,4 @@
-import { storage, tokenTableName } from '@/config'
+import { storage, userInfoName, tokenTableName } from '@/config'
 
 /**
  * @author https://vue-admin-beautiful.com （不想保留author可删除）
@@ -47,13 +47,19 @@ export function setAccessToken(accessToken) {
 export function removeAccessToken() {
   if (storage) {
     if ('localStorage' === storage) {
-      return localStorage.removeItem(tokenTableName)
+      localStorage.removeItem(userInfoName)
+      localStorage.removeItem(tokenTableName)
+      return
     } else if ('sessionStorage' === storage) {
       return sessionStorage.clear()
     } else {
-      return localStorage.removeItem(tokenTableName)
+      localStorage.removeItem(userInfoName)
+      localStorage.removeItem(tokenTableName)
+      return
     }
   } else {
-    return localStorage.removeItem(tokenTableName)
+    localStorage.removeItem(userInfoName)
+    localStorage.removeItem(tokenTableName)
+    return
   }
 }

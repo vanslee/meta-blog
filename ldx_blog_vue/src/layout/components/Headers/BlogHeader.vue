@@ -64,7 +64,7 @@
 <script>
 // import { logoutApi } from '@/apis/user'
 import { useUserStore } from '@/stores/user'
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 export default {
   data() {
     const activeIndex = '1'
@@ -79,12 +79,13 @@ export default {
     ...mapState(useUserStore, ['user'])
   },
   methods: {
-    logout() {
-      const sucess = this.userStore.logout()
-      if (sucess) {
-        this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-      }
-    }
+    ...mapActions(useUserStore, ['logout']),
+    // logout() {
+    //   const sucess = this.userStore.logout()
+    //   if (sucess) {
+    //     this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    //   }
+    // }
   }
 }
 </script>

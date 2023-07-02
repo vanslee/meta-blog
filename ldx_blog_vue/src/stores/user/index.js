@@ -8,6 +8,7 @@ import {
 import { loginApi, userInfoApi, logoutApi, updateUserInfoApi } from '@/apis/user'
 import { title, tokenName } from '@/config'
 import { Message } from 'element-ui'
+import router from '@/router'
 export const useUserStore = defineStore('user', {
   // 开启持久化
   persist: false,
@@ -66,6 +67,8 @@ export const useUserStore = defineStore('user', {
     async logout() {
       const { code } = await logoutApi()
       if (code === 200) {
+        removeAccessToken()
+        router.push({ name: 'Login' })
         this.$reset()
         return true
       }

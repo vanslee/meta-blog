@@ -138,14 +138,14 @@ export default {
   created() {
     // console.log(JSON.parse(localStorage.getItem('user')))
   },
-  watch: {
-    $route: {
-      handler(route) {
-        this.redirect = (route.query && route.query.redirect) || '/'
-      },
-      immediate: true,
-    },
-  },
+  // watch: {
+  //   $route: {
+  //     handler(route) {
+  //       this.redirect = (route.query && route.query.redirect) || '/'
+  //     },
+  //     immediate: true,
+  //   },
+  // },
   computed: {},
   methods: {
     async registry() {
@@ -164,10 +164,10 @@ export default {
       if (this.checkParams({ type: 'login' }) !== true) return
       this.isLoading = true
       this.userStore.login(this.params).then(res => {
+        console.log(this.redirect);
         const routerPath =
           this.redirect === '/404' || this.redirect === '/401'
-            ? '/articles'
-            : this.redirect
+            ? this.redirect : '/'
         this.$router.push(routerPath).catch(() => { })
       })
       this.isLoading = false

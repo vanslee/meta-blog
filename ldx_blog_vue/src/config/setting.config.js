@@ -36,6 +36,8 @@ const setting = {
   loadingText: '正在加载中...',
   // token名称
   tokenName: 'accessToken',
+  // 用户信息名称
+  userInfoName: 'user',
   // token在localStorage、sessionStorage存储的key的名称
   tokenTableName: 'litubao_authentication',
   // token存储位置localStorage sessionStorage

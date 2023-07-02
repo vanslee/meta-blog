@@ -1,9 +1,11 @@
 import axios from 'axios'
+import router from '@/router'
 import { throttle } from 'lodash'
 import { close, start } from '@/utils/nprogress'
 import { Message } from 'element-ui'
 import { getToken } from '@/utils/auth'
 import { baseURL } from "@/config/"
+import { removeAccessToken } from '@/utils/accessToken'
 const http = {}
 const service = axios.create({
   baseURL,
@@ -25,6 +27,13 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response) => {
+    const { data } = response
+    if (data.code === 5000) {
+      // 身份过期
+      // 1.删除token
+      removeAccessToken()
+      router.push({ name: "Login" })
+    }
     close()
     return response.data
   },

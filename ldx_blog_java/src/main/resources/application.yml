@@ -118,7 +118,6 @@ qiniuyun:
   file_folder: "blog/file/"
   md_folder: "blog/md/"
 
-
 redirect:
   url: "https://www.lidengxiang.top/#/loading/"
   error-page: "https://www.lidengxiang.top/#/login"

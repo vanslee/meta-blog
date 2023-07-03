@@ -3,11 +3,10 @@
  * @description 路由守卫，目前两种模式：all模式与intelligence模式
  */
 import router from '@/router'
-import store from '@/stores'
 import VabProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { useUserStore } from '@/stores/user'
-import { getAccessToken } from '@/utils/accessToken'
+import { isLogin } from '@/utils/accessToken'
 import getPageTitle from '@/utils/pageTitle'
 import {
     authentication,
@@ -27,7 +26,7 @@ router.beforeResolve(async (to, from, next) => {
     if (progressBar) VabProgress.start()
     const userStore = useUserStore()
 
-    let hasLogin = userStore.hasLogin
+    let hasLogin = isLogin()
     if (!loginInterception) hasLogin = true
 
     if (hasLogin) {

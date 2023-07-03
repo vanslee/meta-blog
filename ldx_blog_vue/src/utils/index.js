@@ -102,12 +102,12 @@ export function paramObj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
@@ -264,3 +264,10 @@ export const off = (function () {
     }
   }
 })()
+export function isEmpty(str) {
+  if (typeof str === 'string' && str.length > 0) {
+    return false
+  } else {
+    return true
+  }
+}

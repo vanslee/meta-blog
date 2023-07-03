@@ -102,7 +102,7 @@ public class ArticleController {
     /**
      * 发布文章
      */
-    @PutMapping("/publish")
+    @PostMapping(value = "/publish")
     public Result<ResultCodeEnum> publishArticleApi(@Valid @RequestBody Article article) {
         boolean save = articleService.publishArticle(article);
         if (save) {

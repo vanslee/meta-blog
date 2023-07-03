@@ -23,8 +23,9 @@
       </div>
       <div style="flex-grow: 1; text-align: center">
         <h1>封面</h1>
-        <el-upload drag name="file" accept="image/*" :show-file-list="false" :on-success="handleAvatarSuccess"
-          :action="UPLOAD_SERVER_URL" :headers="{ litubao_authentication: getToken() }">
+        <!-- {{ article.imgUrl }} -->
+        <el-upload drag name="file" accept="image/*" :show-file-list="false" :on-success="handleCoverSuccess"
+          :action="UPLOAD_SERVER_URL" :headers="{ litubao_authentication: getAccessToken() }">
           <img class="hidden-sm-and-up" v-lazy="article.imgUrl" style="
               width: 9rem;
               height: 9rem;
@@ -67,6 +68,7 @@ import { useArticleStore } from '@/stores/article'
 import { mapState, mapActions } from 'pinia'
 import TagInput from '@/components/TagInput.vue'
 import { getToken } from '@/utils/auth'
+import { getAccessToken } from '@/utils/accessToken'
 export default {
   components: {
     TagInput
@@ -122,7 +124,7 @@ export default {
         this.$router.push({ name: 'Index' })
       }
     },
-    handleAvatarSuccess(res) {
+    handleCoverSuccess(res) {
       const { data, code } = res
       if (code === 200) {
         this.article.imgUrl = data.url
@@ -149,7 +151,7 @@ export default {
         1
       )
     },
-    getToken
+    getAccessToken
   }
 }
 </script>

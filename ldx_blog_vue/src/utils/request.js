@@ -3,9 +3,8 @@ import router from '@/router'
 import { throttle } from 'lodash'
 import { close, start } from '@/utils/nprogress'
 import { Message } from 'element-ui'
-import { getToken } from '@/utils/auth'
 import { baseURL } from "@/config/"
-import { removeAccessToken } from '@/utils/accessToken'
+import { removeAccessToken, getAccessToken } from '@/utils/accessToken'
 const http = {}
 const service = axios.create({
   baseURL,
@@ -14,9 +13,9 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     start()
-    if (getToken()) {
+    if (getAccessToken()) {
       // 请求添加Token
-      config.headers['litubao_authentication'] = getToken()
+      config.headers['litubao_authentication'] = getAccessToken()
     }
     return config
   },
@@ -79,7 +78,7 @@ http.post = function (url, data, options) {
 http.put = function (url, data, options) {
   return new Promise((resolve, reject) => {
     service
-      .put(url, data, options)
+      .put(url, data, { headers: 'application/json' })
       .then((response) => {
         if (response.code === 200) {
           resolve(response)

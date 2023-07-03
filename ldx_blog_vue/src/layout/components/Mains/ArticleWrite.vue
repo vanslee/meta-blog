@@ -128,11 +128,10 @@ export default {
           let isImg = ''
           if (imgRegex.test(data.name)) {
             isImg = '!'
-          } else {
-            this.$refs.editorRef.text = this.$refs.editorRef.text.concat(
-              `${isImg}[${data.name}](${encodeURI(data.url)})`
-            )
           }
+          this.$refs.editorRef.text = this.$refs.editorRef.text.concat(
+            `${isImg}[${data.name}](${encodeURI(data.url)})`
+          )
         }
       }
     },

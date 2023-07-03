@@ -116,7 +116,6 @@ export default {
                 type: 'warning',
                 center: true
             }).then(() => {
-                console.log('this', this);
                 this.deleteArticle(row.id)
             }).catch(() => {
                 this.$message({

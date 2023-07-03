@@ -19,7 +19,7 @@
       <el-menu-item index="6" class="hidden-xs-only">
         捐赠
       </el-menu-item>
-      <el-menu-item index="7" v-if="!userStore.hasLogin" @click="$router.push({ name: 'Login' })">
+      <el-menu-item index="7" v-if="!isLogin()" @click="$router.push({ name: 'Login' })">
         登录
       </el-menu-item>
       <el-submenu v-else index="8" style="margin-left: 1vw">
@@ -43,7 +43,7 @@
             {{ user.username }}
           </span>
         </template>
-        <div v-show="userStore.hasLogin">
+        <div v-show="isLogin()">
           <el-menu-item @click="$router.push({ name: 'Write' })">
             <i class="el-icon-edit-outline" />
             写博客
@@ -63,6 +63,7 @@
 </template>
 <script>
 // import { logoutApi } from '@/apis/user'
+import { isLogin } from '@/utils/accessToken'
 import { useUserStore } from '@/stores/user'
 import { mapState, mapActions } from 'pinia'
 export default {
@@ -86,6 +87,7 @@ export default {
     //     this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     //   }
     // }
+    isLogin,
   }
 }
 </script>

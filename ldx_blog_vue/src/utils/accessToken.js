@@ -1,5 +1,8 @@
 import { storage, userInfoName, tokenTableName } from '@/config'
-
+import { isEmpty } from '@/utils'
+export function isLogin() {
+  return isEmpty(getAccessToken()) ? false : true;
+}
 /**
  * @author https://vue-admin-beautiful.com （不想保留author可删除）
  * @description 获取accessToken

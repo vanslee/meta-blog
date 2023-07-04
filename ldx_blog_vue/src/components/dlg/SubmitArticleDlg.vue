@@ -48,12 +48,12 @@
     <!-- <el-card style="" v-html="html" /> -->
     <div style="display: flex; align-items: center; justify-content: center">
       <span>标签:</span>
-      <tag-input text="新建" @set-items="setTags" :data="article.tags" @rm-item="removeTag" icon="icon-tag-fill" />
+      <tag-input text="新建" @set-items="setTags" :data="article.tagNames" @rm-item="removeTag" icon="icon-tag-fill" />
     </div>
     <div style="display: flex; align-items: center; justify-content: center">
       <span>分类:</span>
       <tag-input text="新建" icon="icon-pushpin-fill" @set-items="setCategories" @rm-item="removeCategory"
-        :data="article.categories" type="danger" />
+        :data="article.categoryNames" type="danger" />
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="(visible = false), (loading = false)">取消</el-button>
@@ -77,8 +77,8 @@ export default {
     const userStore = useUserStore()
     const article = {
       imgUrl: '',
-      tags: [],
-      categories: [],
+      tagNames: [],
+      categoryNames: [],
       articleTitle: '',
       articleContent: '',
       articleType: '原创',
@@ -137,17 +137,17 @@ export default {
       this.visible = true
     },
     setCategories(category) {
-      this.article.categories.push(category)
+      this.article.categoryNames.push(category)
     },
     setTags(tag) {
-      this.article.tags.push(tag)
+      this.article.tagNames.push(tag)
     },
     removeTag(tag) {
-      this.article.tags.splice(this.article.tags.indexOf(tag), 1)
+      this.article.tagNames.splice(this.article.tagNames.indexOf(tag), 1)
     },
     removeCategory(category) {
-      this.article.categories.splice(
-        this.article.categories.indexOf(category),
+      this.article.categoryNames.splice(
+        this.article.categoryNames.indexOf(category),
         1
       )
     },

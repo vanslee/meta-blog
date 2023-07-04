@@ -96,8 +96,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
             article.setMdUrl(url);
             articleMapper.insert(article);
             Long articleId = article.getId();
-            setTags(article.getTags(), articleId);
-            setCategories(article.getCategories(), articleId);
+            covertTagNamesToTags(article.getTagNames(), articleId);
+            covertCategoryNamesToCategories(article.getCategoryNames(), articleId);
             return true;
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -234,6 +234,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         }
     }
 
+    public void covertTagNamesToTags(List<String> tags,Long articleId) {
+        List<Tags> result = new ArrayList<>(tags.size());
+        tags.forEach(tagName -> {
+            result.add(new Tags(tagName));
+        });
+        setTags(result,articleId);
+    }
+    public void covertCategoryNamesToCategories(List<String> categories,Long articleId) {
+        List<Categories> result = new ArrayList<>(categories.size());
+        categories.forEach(categoryName -> {
+            result.add(new Categories(categoryName));
+        });
+        setCategories(result,articleId);
+    }
     public void setTags(List<Tags> tags, Long articleId) {
         LambdaQueryWrapper<Tags> lqw = new LambdaQueryWrapper<>();
         List<Tags> allTags = tagsMapper.selectList(lqw);

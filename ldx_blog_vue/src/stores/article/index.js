@@ -25,6 +25,7 @@ export const useArticleStore = defineStore('article', {
       size: 10,
       total: 0,
       current: 1,
+      sort: 'desc'
     }
   }),
   getters: {

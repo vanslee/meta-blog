@@ -12,7 +12,8 @@ import router from './router'
  * 事件总线
  */
 export const EventBus = new Vue()
-Vue.prototype.$bus = EventBus // 将EventBus实例挂载到Vue原型上
+Vue.prototype.$bus = EventBus
+// 将EventBus实例挂载到Vue原型上
 /**
  * ----------------------------
  */
